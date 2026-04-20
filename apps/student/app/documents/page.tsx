@@ -150,6 +150,21 @@ export default function DocumentsPage() {
           <EmptyState icon="📄" body={t("document.checklist.emptyDone")} />
         )}
       </section>
+
+      <section className="mt-6 rounded-[var(--radius-lg)] border border-[var(--color-border)] bg-[var(--color-background-brand-subtle)] p-4">
+        <p className="text-[var(--text-sm)] font-[var(--weight-semibold)] text-[var(--color-text-primary)]">
+          {t("discover.title")}
+        </p>
+        <p className="mt-1 text-[var(--text-sm)] text-[var(--color-text-secondary)]">
+          {t("discover.subtitle")}
+        </p>
+        <Link
+          href="/discover"
+          className="mt-3 inline-flex h-10 items-center justify-center rounded-[var(--radius-md)] bg-[var(--color-interactive-brand)] px-4 text-[var(--text-sm)] font-[var(--weight-semibold)] text-[var(--color-text-inverse)] hover:bg-[var(--color-interactive-brand-hover)]"
+        >
+          {t("cta.exploreCourses")}
+        </Link>
+      </section>
     </PageShell>
   );
 }

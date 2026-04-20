@@ -10,7 +10,7 @@ import { useLocale } from "../_components/locale-provider";
 
 const QUICK_LINKS = [
   { key: "documents", icon: "📄", href: "/documents" },
-  { key: "eligibility", icon: "✓", href: "/dashboard" },
+  { key: "eligibility", icon: "✓", href: "/discover" },
   { key: "notifications", icon: "🔔", href: "/dashboard" },
   { key: "helpdesk", icon: "💬", href: "/help" },
 ] as const;

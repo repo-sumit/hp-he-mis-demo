@@ -13,7 +13,9 @@
       "Bash(taskkill //PID 5268 //F)",
       "Bash(taskkill //PID 20256 //F)",
       "Bash(curl -s -o /dev/null -w \"upload/bogus → HTTP %{http_code}\\\\n\" \"http://localhost:3001/documents/upload/bogus\")",
-      "Bash(curl -s -o /dev/null -w \"rejection/bogus → HTTP %{http_code}\\\\n\" \"http://localhost:3001/documents/rejection/bogus\")"
+      "Bash(curl -s -o /dev/null -w \"rejection/bogus → HTTP %{http_code}\\\\n\" \"http://localhost:3001/documents/rejection/bogus\")",
+      "Bash(curl -s -o /dev/null -w \"college/bogus → HTTP %{http_code}\\\\n\" \"http://localhost:3001/discover/college/bogus\")",
+      "Bash(curl -s -o /dev/null -w \"course/bogus  → HTTP %{http_code}\\\\n\" \"http://localhost:3001/discover/course/bogus\")"
     ]
   }
 }
