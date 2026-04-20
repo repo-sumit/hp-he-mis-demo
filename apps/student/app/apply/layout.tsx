@@ -1,6 +1,9 @@
 import type { ReactNode } from "react";
-import { ApplicationsProvider } from "../_components/apply/applications-provider";
 
+/**
+ * Intentionally a pass-through — ApplicationsProvider is mounted at the root
+ * so /applications and the dashboard can read submission state too.
+ */
 export default function ApplyLayout({ children }: { children: ReactNode }) {
-  return <ApplicationsProvider>{children}</ApplicationsProvider>;
+  return <>{children}</>;
 }

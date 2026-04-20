@@ -10,21 +10,30 @@ import {
   useState,
   type ReactNode,
 } from "react";
+import { makeApplicationNumber } from "./application-number";
 import { maxPreferencesFor } from "./rules";
+
+export type ApplicationStatus = "draft" | "submitted";
 
 export interface ApplicationDraft {
   courseId: string;
   itemIds: string[];
   updatedAt?: number;
+  status?: ApplicationStatus;
+  submittedAt?: number;
+  applicationNumber?: string;
 }
 
 type ApplicationsMap = Record<string, ApplicationDraft>;
 
 interface ApplicationsContextValue {
   applications: ApplicationsMap;
+  hydrated: boolean;
   getDraft: (courseId: string) => ApplicationDraft;
   count: (courseId: string) => number;
   has: (courseId: string, itemId: string) => boolean;
+  isSubmitted: (courseId: string) => boolean;
+  submittedCourseIds: () => string[];
   /** Add when there is room; no-ops silently when the course is at its max. */
   add: (courseId: string, itemId: string) => boolean;
   remove: (courseId: string, itemId: string) => void;
@@ -32,6 +41,8 @@ interface ApplicationsContextValue {
   moveUp: (courseId: string, itemId: string) => void;
   moveDown: (courseId: string, itemId: string) => void;
   clear: (courseId: string) => void;
+  /** Flips the draft into `submitted`, generating an application number if none exists. Returns that number (or null when there's nothing to submit). */
+  submit: (courseId: string) => string | null;
 }
 
 const STORAGE_KEY = "hp-mis:applications";
@@ -43,7 +54,7 @@ function emptyDraft(courseId: string): ApplicationDraft {
 
 export function ApplicationsProvider({ children }: { children: ReactNode }) {
   const [applications, setApplications] = useState<ApplicationsMap>({});
-  const hydrated = useRef(false);
+  const [hydrated, setHydrated] = useState(false);
   const writeTimer = useRef<number | null>(null);
 
   useEffect(() => {
@@ -53,11 +64,11 @@ export function ApplicationsProvider({ children }: { children: ReactNode }) {
     } catch {
       /* start fresh on corrupted state */
     }
-    hydrated.current = true;
+    setHydrated(true);
   }, []);
 
   useEffect(() => {
-    if (!hydrated.current) return;
+    if (!hydrated) return;
     if (writeTimer.current !== null) window.clearTimeout(writeTimer.current);
     writeTimer.current = window.setTimeout(() => {
       window.localStorage.setItem(STORAGE_KEY, JSON.stringify(applications));
@@ -65,7 +76,7 @@ export function ApplicationsProvider({ children }: { children: ReactNode }) {
     return () => {
       if (writeTimer.current !== null) window.clearTimeout(writeTimer.current);
     };
-  }, [applications]);
+  }, [applications, hydrated]);
 
   const getDraft = useCallback<ApplicationsContextValue["getDraft"]>(
     (courseId) => applications[courseId] ?? emptyDraft(courseId),
@@ -156,9 +167,71 @@ export function ApplicationsProvider({ children }: { children: ReactNode }) {
     [patch],
   );
 
+  const isSubmitted = useCallback<ApplicationsContextValue["isSubmitted"]>(
+    (courseId) => applications[courseId]?.status === "submitted",
+    [applications],
+  );
+
+  const submittedCourseIds = useCallback<ApplicationsContextValue["submittedCourseIds"]>(
+    () =>
+      Object.entries(applications)
+        .filter(([, draft]) => draft.status === "submitted")
+        .map(([id]) => id),
+    [applications],
+  );
+
+  const submit = useCallback<ApplicationsContextValue["submit"]>(
+    (courseId) => {
+      const draft = applications[courseId];
+      if (!draft || draft.itemIds.length === 0) return null;
+      if (draft.status === "submitted" && draft.applicationNumber) {
+        return draft.applicationNumber;
+      }
+      const applicationNumber = draft.applicationNumber ?? makeApplicationNumber();
+      patch(courseId, {
+        ...draft,
+        status: "submitted",
+        submittedAt: Date.now(),
+        applicationNumber,
+      });
+      return applicationNumber;
+    },
+    [applications, patch],
+  );
+
   const value = useMemo<ApplicationsContextValue>(
-    () => ({ applications, getDraft, count, has, add, remove, toggle, moveUp, moveDown, clear }),
-    [applications, getDraft, count, has, add, remove, toggle, moveUp, moveDown, clear],
+    () => ({
+      applications,
+      hydrated,
+      getDraft,
+      count,
+      has,
+      isSubmitted,
+      submittedCourseIds,
+      add,
+      remove,
+      toggle,
+      moveUp,
+      moveDown,
+      clear,
+      submit,
+    }),
+    [
+      applications,
+      hydrated,
+      getDraft,
+      count,
+      has,
+      isSubmitted,
+      submittedCourseIds,
+      add,
+      remove,
+      toggle,
+      moveUp,
+      moveDown,
+      clear,
+      submit,
+    ],
   );
 
   return <ApplicationsContext.Provider value={value}>{children}</ApplicationsContext.Provider>;

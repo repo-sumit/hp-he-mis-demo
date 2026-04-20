@@ -112,10 +112,10 @@ export default function RankPage({ params }: { params: Promise<Params> }) {
       <div className="sticky bottom-0 -mx-4 mt-5 border-t border-[var(--color-border)] bg-[var(--color-surface)] px-4 py-3">
         <PrimaryButton
           type="button"
-          onClick={() => router.push("/apply")}
+          onClick={() => router.push(`/apply/${courseId}/review`)}
           disabled={selectedCount === 0}
         >
-          {t("cta.saveRanking")}
+          {t("cta.continueToDeclaration")}
         </PrimaryButton>
         <p className="mt-2 text-center text-[var(--text-xs)] text-[var(--color-text-tertiary)]">
           {t("apply.rank.saveHint")}

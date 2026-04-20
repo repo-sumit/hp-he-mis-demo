@@ -2,6 +2,8 @@ import type { Metadata, Viewport } from "next";
 import { Montserrat, Noto_Sans_Devanagari } from "next/font/google";
 import { LocaleProvider } from "./_components/locale-provider";
 import { ProfileProvider } from "./_components/profile/profile-provider";
+import { DocumentsProvider } from "./_components/documents/documents-provider";
+import { ApplicationsProvider } from "./_components/apply/applications-provider";
 import "./globals.css";
 
 const montserrat = Montserrat({
@@ -39,7 +41,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     >
       <body className="min-h-full bg-[var(--color-background-subtle)]">
         <LocaleProvider>
-          <ProfileProvider>{children}</ProfileProvider>
+          <ProfileProvider>
+            <DocumentsProvider>
+              <ApplicationsProvider>{children}</ApplicationsProvider>
+            </DocumentsProvider>
+          </ProfileProvider>
         </LocaleProvider>
       </body>
     </html>

@@ -2,11 +2,14 @@
 
 import Link from "next/link";
 import { PageShell } from "../_components/page-shell";
-import { StatusTracker } from "../_components/status-tracker";
+import { StatusTracker, type StatusStep } from "../_components/status-tracker";
 import { NextActionCard } from "../_components/next-action-card";
 import { NotificationItem } from "../_components/notification-item";
 import { BottomTabBar } from "../_components/bottom-tab-bar";
 import { useLocale } from "../_components/locale-provider";
+import { useApplications } from "../_components/apply/applications-provider";
+import { getCourse } from "../_components/discover/mock-data";
+import { formatTimestamp } from "../_components/documents/format";
 
 const QUICK_LINKS = [
   { key: "documents", icon: "📄", href: "/documents" },
@@ -15,14 +18,27 @@ const QUICK_LINKS = [
   { key: "helpdesk", icon: "💬", href: "/help" },
 ] as const;
 
-const NOTIFICATIONS = [
+const BASE_NOTIFICATIONS = [
   { key: "welcome", time: "2 min ago", unread: true },
   { key: "dates", time: "1 hr ago", unread: true },
   { key: "language", time: "Today", unread: false },
 ] as const;
 
 export default function DashboardPage() {
-  const { t } = useLocale();
+  const { t, locale } = useLocale();
+  const { applications, submittedCourseIds } = useApplications();
+
+  const submittedIds = submittedCourseIds();
+  const hasSubmitted = submittedIds.length > 0;
+
+  // Advance the status tracker whenever the student has at least one
+  // submitted application — keeps the 7-step pipeline honest.
+  const currentStep: StatusStep = hasSubmitted ? "submitted" : "profileComplete";
+
+  // Next-action flips from "finish profile" to "your application is being reviewed"
+  // as soon as there's a submission in flight.
+  const firstSubmitted = hasSubmitted ? applications[submittedIds[0]!] : null;
+  const firstSubmittedCourse = firstSubmitted ? getCourse(firstSubmitted.courseId) : null;
 
   return (
     <PageShell
@@ -47,21 +63,68 @@ export default function DashboardPage() {
           {t("screen.dashboard.statusTitle")}
         </h3>
         <div className="rounded-[var(--radius-lg)] border border-[var(--color-border)] bg-[var(--color-surface)] p-4">
-          <StatusTracker currentStep="profileComplete" />
+          <StatusTracker currentStep={currentStep} />
         </div>
       </section>
+
+      {hasSubmitted ? (
+        <section className="mt-5 space-y-2">
+          <h3 className="text-[var(--text-sm)] font-[var(--weight-semibold)] uppercase tracking-wide text-[var(--color-text-tertiary)]">
+            {t("apply.myApps.title")}
+          </h3>
+          {submittedIds.map((cid) => {
+            const entry = applications[cid];
+            const course = getCourse(cid);
+            if (!entry || !course) return null;
+            return (
+              <Link
+                key={cid}
+                href={`/apply/${cid}/submitted`}
+                className="flex items-center justify-between gap-3 rounded-[var(--radius-lg)] border border-[var(--color-interactive-success)] bg-[var(--color-status-success-bg)] p-3"
+              >
+                <div className="min-w-0 flex-1">
+                  <p className="text-[var(--text-xs)] uppercase tracking-wide text-[var(--color-status-success-fg)]">
+                    {t("status.applicationSubmitted")} · {course.code}
+                  </p>
+                  <p className="mt-0.5 text-[var(--text-sm)] font-[var(--weight-semibold)] text-[var(--color-text-primary)]">
+                    {entry.applicationNumber}
+                  </p>
+                  {entry.submittedAt ? (
+                    <p className="text-[var(--text-xs)] text-[var(--color-text-secondary)]">
+                      {formatTimestamp(entry.submittedAt, locale)}
+                    </p>
+                  ) : null}
+                </div>
+                <span aria-hidden="true" className="text-[var(--color-text-secondary)]">
+                  →
+                </span>
+              </Link>
+            );
+          })}
+        </section>
+      ) : null}
 
       <section className="mt-5">
         <h3 className="mb-2 text-[var(--text-sm)] font-[var(--weight-semibold)] uppercase tracking-wide text-[var(--color-text-tertiary)]">
           {t("screen.dashboard.nextActionTitle")}
         </h3>
-        <NextActionCard
-          title={t("screen.dashboard.nextActionTitle")}
-          body={t("screen.dashboard.nextActionBody", { n: 3 })}
-          cta={t("screen.dashboard.nextActionCta")}
-          href="/profile/step/1"
-          deadline={t("screen.home.datesLine")}
-        />
+        {hasSubmitted && firstSubmitted && firstSubmittedCourse ? (
+          <NextActionCard
+            title={t("status.underReview")}
+            body={t("submitted.nextStepsBody")}
+            cta={t("cta.viewApplications")}
+            href="/applications"
+            deadline={firstSubmitted.applicationNumber}
+          />
+        ) : (
+          <NextActionCard
+            title={t("screen.dashboard.nextActionTitle")}
+            body={t("screen.dashboard.nextActionBody", { n: 3 })}
+            cta={t("screen.dashboard.nextActionCta")}
+            href="/profile/step/1"
+            deadline={t("screen.home.datesLine")}
+          />
+        )}
       </section>
 
       <section className="mt-5">
@@ -77,7 +140,7 @@ export default function DashboardPage() {
           </Link>
         </div>
         <ul className="mt-2 rounded-[var(--radius-lg)] border border-[var(--color-border)] bg-[var(--color-surface)] px-4">
-          {NOTIFICATIONS.map((item) => (
+          {BASE_NOTIFICATIONS.map((item) => (
             <NotificationItem
               key={item.key}
               title={t(`screen.dashboard.mockNotifications.${item.key}`)}

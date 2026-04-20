@@ -65,7 +65,15 @@
     "saveRanking": "Save ranking",
     "browseMore": "Browse more options",
     "backToApply": "Back to applications",
-    "addMore": "Add more"
+    "addMore": "Add more",
+    "continueToDeclaration": "Review and continue",
+    "backToReview": "Back to review",
+    "submitApplication": "Submit application",
+    "backToDashboard": "Back to home",
+    "viewApplications": "View my applications",
+    "downloadReceipt": "Download receipt",
+    "downloadLetter": "Download provisional letter",
+    "continueApplication": "Continue application"
   },
   "status": {
     "registered": "Registered",
@@ -782,6 +790,98 @@
       "combinationLabel": "{a} + {b}",
       "bucketLabel": "Buckets {a} · {b}",
       "seats": "{total} seats · {vacant} vacant"
+    },
+    "review": {
+      "title": "Review your {course} application",
+      "subtitle": "Everything below goes to the college when you submit. Edit anything that's out of date.",
+      "applicationType": "{code} · {name}",
+      "sections": {
+        "profile": "Personal + address",
+        "academic": "Class 12",
+        "claims": "Reservation and claims",
+        "documents": "Documents",
+        "preferences": "Preferences"
+      },
+      "rows": {
+        "fullName": "Full name",
+        "dob": "Date of birth",
+        "mobile": "Mobile",
+        "email": "Email",
+        "permanentAddress": "Permanent address",
+        "district": "District",
+        "pincode": "PIN code",
+        "board": "Board",
+        "stream": "Stream",
+        "bof": "Best-of-five",
+        "result": "Result status",
+        "category": "Category",
+        "claims": "Claims",
+        "singleGirlChild": "Single Girl Child",
+        "pwd": "PwD"
+      },
+      "documentsSummary": "{uploaded} of {required} required uploaded · {verified} verified",
+      "documentsEmpty": "You haven't uploaded any required documents yet.",
+      "preferencesSummary": "{n} of {max} preferences ranked",
+      "preferencesEmpty": "You haven't ranked any preferences yet.",
+      "rankBadge": "#{n}",
+      "notProvided": "Not provided yet"
+    },
+    "readiness": {
+      "title": "Ready to submit?",
+      "profile": {
+        "ok": "Profile is complete.",
+        "missing": "Finish your profile — {n} field(s) left."
+      },
+      "documents": {
+        "ok": "All required documents are uploaded.",
+        "partial": "{uploaded} of {required} required documents uploaded.",
+        "missing": "No required documents uploaded yet."
+      },
+      "preferences": {
+        "ok": "{n} preference(s) ranked.",
+        "missing": "Add at least 1 preference."
+      },
+      "blockedTitle": "Fix these before submitting",
+      "blockedHint": "Each item links back to the right screen.",
+      "allGoodTitle": "You're good to go",
+      "allGoodHint": "Review the declaration next, then submit."
+    },
+    "declaration": {
+      "title": "Declaration and fee",
+      "subtitle": "One last step before we send your application to the college.",
+      "body": "I confirm that all the information I have provided above is true and correct. I have uploaded my own documents. I understand that if any information is found to be wrong, my application or admission may be cancelled, and I may lose the fee I paid.",
+      "acceptLabel": "I accept the declaration above",
+      "consentError": "Please tick the declaration to continue.",
+      "feeTitle": "Application fee",
+      "feeBody": "₹{amount} for {course}. One fee per course type.",
+      "paymentLaterNote": "For this demo build we'll skip the real payment screen — submitting here counts as \"fee paid\".",
+      "backHint": "Need to edit? Go back to review."
+    },
+    "submit": {
+      "title": "Submitting your application",
+      "body": "Please don't close this screen — it only takes a moment.",
+      "processing": "Processing…"
+    },
+    "submitted": {
+      "title": "Application submitted",
+      "subtitle": "We've received your {course} application and shared it with the college.",
+      "applicationNumberLabel": "Application number",
+      "submittedAtLabel": "Submitted on",
+      "receiptNote": "Your receipt and provisional letter will download as a PDF in the full build.",
+      "nextStepsTitle": "What happens next",
+      "nextStepsBody": "The college will verify your documents and mark one of three outcomes — Accept, Conditional Accept, or Reject. We'll notify you on your mobile and inside the app."
+    },
+    "myApps": {
+      "title": "My applications",
+      "subtitle": "Every course you've opted into. Open any to continue editing or review.",
+      "empty": "You haven't started an application yet. Find eligible courses to begin.",
+      "status": {
+        "draft": "Draft",
+        "submitted": "Submitted"
+      },
+      "continueCta": "Continue",
+      "viewCta": "View",
+      "preferencesCount": "{n} preference(s)"
     }
   }
 }
