@@ -12,9 +12,8 @@ const STEPS = [
 ] as const;
 
 /**
- * Pre-login explainer — ported from the retired public-web landing's
- * "How it works" section. Mobile-first ordered list so the four steps feel
- * like a single short scroll.
+ * Pre-login "How it works" explainer. Mobile-first ordered list so the four
+ * steps feel like a single short scroll.
  */
 export default function HowItWorksPage() {
   const { t } = useLocale();

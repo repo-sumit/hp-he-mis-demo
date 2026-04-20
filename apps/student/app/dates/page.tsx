@@ -13,9 +13,8 @@ const ROWS = [
 ] as const;
 
 /**
- * Pre-login dates screen. Absorbs the "Important dates" block from the
- * retired public-web landing. Bilingual via the existing LocaleProvider —
- * both the row label and the date value are translated.
+ * Pre-login "Important dates" screen. Bilingual via the existing
+ * LocaleProvider — both the row label and the date value are translated.
  */
 export default function DatesPage() {
   const { t } = useLocale();

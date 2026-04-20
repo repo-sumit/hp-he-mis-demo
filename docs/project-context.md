@@ -53,9 +53,9 @@ Everything else from the prior plan (19-entity data model, bilingual strategy, s
 
 ### What's removed from the 3-surface approach
 
-- **`apps/public-web`** — deprecated. The folder can be deleted or left dormant until decommissioned, but it stops being a shipped surface. No links to/from it in V2.
-- **Port 3000** — retired from the dev script orchestra. `pnpm dev` no longer boots a third process.
-- **`NEXT_PUBLIC_STUDENT_APP_URL` env var** — was introduced in the demo-polish pass to let public-web link into the student app. Becomes unnecessary; remove from the public-web `.env.local` lifecycle (the student app is now the entry point).
+- **`apps/public-web`** — removed. The folder has been deleted from the repo; it stops being a shipped surface.
+- **Port 3000** — retired from the dev script orchestra. `pnpm dev` only runs `student` (3001) and `portal` (3002).
+- **`NEXT_PUBLIC_STUDENT_APP_URL` env var** — was introduced in the demo-polish pass to let public-web link into the student app. Gone along with public-web.
 - **Separate "SEO-friendly landing" concern** — irrelevant. Distribution to students is through SwiftChat messaging, not Google search. Any SEO obligation Anthropic-side should be handled by a one-page DHE-maintained static site, outside this product.
 
 ### How public / pre-login content is now handled
@@ -511,12 +511,9 @@ Grouped by flow. **Bold** = new in V2 (absorbed pre-login content). Strikethroug
 
 ### What to de-scope / remove
 
-- **`apps/public-web`** — stop shipping. Two options:
-  1. **Delete the folder outright** (cleanest; any future "public site" is a separate project owned by DHE).
-  2. **Leave it dormant** (don't include in `pnpm dev` orchestration, keep the code in-repo as a reference until end of demo period, then delete).
-  Recommendation: **option 2 for the demo, option 1 right after.** The deletion isn't urgent and keeping it lets you cannibalise copy/components for the new pre-login routes.
-- **`NEXT_PUBLIC_STUDENT_APP_URL`** env var in public-web — irrelevant after public-web goes away.
-- **3-port `pnpm dev`** — collapse to 2.
+- **`apps/public-web`** — removed. Any future "public site" is a separate project owned by DHE.
+- **`NEXT_PUBLIC_STUDENT_APP_URL`** env var in public-web — gone along with public-web.
+- **3-port `pnpm dev`** — collapsed to 2 (`student` on 3001, `portal` on 3002).
 
 ### What to merge / repurpose
 
