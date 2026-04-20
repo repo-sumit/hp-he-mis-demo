@@ -1,7 +1,9 @@
 {
   "permissions": {
     "allow": [
-      "Bash(pnpm --filter student build)"
+      "Bash(pnpm --filter student build)",
+      "Bash(git add *)",
+      "Bash(git commit -m ' *)"
     ]
   }
 }
