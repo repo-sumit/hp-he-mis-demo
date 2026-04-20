@@ -4,13 +4,11 @@ import { useMemo, useState } from "react";
 import { PortalFrame } from "../_components/portal-frame";
 import {
   MOCK_APPLICATIONS,
-  REVIEWER_COLLEGE,
-  REVIEWER_NAME,
-  REVIEWER_ROLE,
   type AppBaseStatus,
   type MockApplication,
 } from "../_components/data/mock-applications";
 import { useScrutiny } from "../_components/data/scrutiny-provider";
+import { useSession, type PortalRole } from "../_components/data/session-provider";
 import { SummaryStrip } from "../_components/admin/summary-strip";
 import {
   EMPTY_FILTERS,
@@ -49,19 +47,49 @@ function passesFilters(
   return true;
 }
 
+/**
+ * Scope the queue by the active role:
+ *   - state_admin / leadership → every application
+ *   - college_admin / college_operator → only their college
+ *   - convenor → only applications flagged for second-level review
+ *                (proxied by `discrepancy_raised` in the mock)
+ *   - finance → no application visibility
+ */
+function scopedApplications(
+  all: readonly MockApplication[],
+  role: PortalRole,
+  collegeId: string | undefined,
+  effectiveStatus: (id: string) => AppBaseStatus,
+): MockApplication[] {
+  if (role === "state_admin" || role === "leadership") return [...all];
+  if (role === "college_admin" || role === "college_operator") {
+    return all.filter((app) => app.collegeId === collegeId);
+  }
+  if (role === "convenor") {
+    return all.filter((app) => effectiveStatus(app.id) === "discrepancy_raised");
+  }
+  return []; // finance gets nothing
+}
+
 export default function ApplicationsQueuePage() {
   const { effectiveStatus, discrepancyCount } = useScrutiny();
+  const { session } = useSession();
   const [filters, setFilters] = useState<QueueFilters>(EMPTY_FILTERS);
   const [search, setSearch] = useState("");
 
+  const visible = useMemo(
+    () => scopedApplications(MOCK_APPLICATIONS, session.role, session.collegeId, effectiveStatus),
+    [session.role, session.collegeId, effectiveStatus],
+  );
+
   const rows: QueueRow[] = useMemo(
     () =>
-      MOCK_APPLICATIONS.map((app) => ({
+      visible.map((app) => ({
         app,
         status: effectiveStatus(app.id),
         discrepancyCount: discrepancyCount(app.id),
       })),
-    [effectiveStatus, discrepancyCount],
+    [visible, effectiveStatus, discrepancyCount],
   );
 
   const counts = useMemo(() => {
@@ -124,18 +152,12 @@ export default function ApplicationsQueuePage() {
   return (
     <PortalFrame
       active="applications"
-      eyebrow="Scrutiny · Cycle 2026-27"
-      title="Application queue"
-      headerRight={
-        <div className="text-right">
-          <p className="font-[var(--weight-semibold)] text-[var(--color-text-primary)]">
-            {REVIEWER_NAME}
-          </p>
-          <p className="text-[var(--text-xs)] text-[var(--color-text-tertiary)]">
-            {REVIEWER_ROLE} · {REVIEWER_COLLEGE}
-          </p>
-        </div>
+      eyebrow={
+        session.collegeName
+          ? `Scrutiny · ${session.collegeName}`
+          : "Scrutiny · Cycle 2026-27"
       }
+      title="Application queue"
     >
       <SummaryStrip
         tiles={[

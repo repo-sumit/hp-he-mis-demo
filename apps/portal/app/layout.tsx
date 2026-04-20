@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Montserrat, Noto_Sans_Devanagari } from "next/font/google";
+import { SessionProvider } from "./_components/data/session-provider";
 import "./globals.css";
 
 const montserrat = Montserrat({
@@ -27,7 +28,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       lang="en"
       className={`${montserrat.variable} ${notoDevanagari.variable} h-full antialiased`}
     >
-      <body className="min-h-full">{children}</body>
+      <body className="min-h-full">
+        <SessionProvider>{children}</SessionProvider>
+      </body>
     </html>
   );
 }

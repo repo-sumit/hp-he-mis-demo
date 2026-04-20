@@ -4,10 +4,16 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 import { t } from "@hp-mis/i18n";
 import { cn } from "@hp-mis/ui";
+import { useSession, type PortalRole } from "./data/session-provider";
+import { RoleSwitcher } from "./admin/role-switcher";
 
 export type PortalNavKey =
   | "overview"
   | "applications"
+  | "convenor_queue"
+  | "college_dashboard"
+  | "finance"
+  | "leadership"
   | "colleges"
   | "courses"
   | "seats"
@@ -19,25 +25,150 @@ export type PortalNavKey =
 
 type NavItem = {
   key: PortalNavKey;
-  href: string;
   icon: string;
-  /** True when the destination route hasn't been built in this V1 shell.
-   *  Disabled items render as non-clickable with a "Soon" label instead of
-   *  routing to a 404. */
+  /** Who sees this item. */
+  roles: PortalRole[];
+  /** Static href used by all roles; overridden by `hrefByRole` when present. */
+  href?: string;
+  /** Per-role href override — used by Overview to land each role on their own home. */
+  hrefByRole?: Partial<Record<PortalRole, string>>;
+  /** i18n key under `portal.sidebar.*`. */
+  labelKey: string;
+  /** Routes that exist but haven't been built — render as non-clickable "Soon". */
   disabled?: boolean;
 };
 
+const ALL_ROLES: PortalRole[] = [
+  "state_admin",
+  "college_admin",
+  "college_operator",
+  "convenor",
+  "finance",
+  "leadership",
+];
+
+/**
+ * Overview lands each role on their own "home" so a college operator doesn't
+ * have to scroll past state-wide KPIs to reach their queue.
+ */
+const OVERVIEW_HREF_BY_ROLE: Partial<Record<PortalRole, string>> = {
+  state_admin: "/",
+  college_admin: "/college/dashboard",
+  college_operator: "/college/dashboard",
+  convenor: "/convenor/queue",
+  finance: "/finance",
+  leadership: "/leadership",
+};
+
 const NAV_ITEMS: readonly NavItem[] = [
-  { key: "overview", href: "/", icon: "📊" },
-  { key: "applications", href: "/applications", icon: "📝" },
-  { key: "colleges", href: "/colleges", icon: "🏛️", disabled: true },
-  { key: "courses", href: "/courses", icon: "📚", disabled: true },
-  { key: "seats", href: "/seats", icon: "🎫", disabled: true },
-  { key: "merit", href: "/merit", icon: "🏅", disabled: true },
-  { key: "allocation", href: "/allocation", icon: "🎯", disabled: true },
-  { key: "reports", href: "/reports", icon: "📈", disabled: true },
-  { key: "users", href: "/users", icon: "👥", disabled: true },
-  { key: "settings", href: "/settings", icon: "⚙️", disabled: true },
+  {
+    key: "overview",
+    icon: "📊",
+    roles: ALL_ROLES,
+    hrefByRole: OVERVIEW_HREF_BY_ROLE,
+    labelKey: "portal.sidebar.overview",
+  },
+  {
+    key: "applications",
+    icon: "📝",
+    roles: ["state_admin", "college_admin", "college_operator", "leadership"],
+    href: "/applications",
+    labelKey: "portal.sidebar.applications",
+  },
+  {
+    key: "convenor_queue",
+    icon: "🧭",
+    roles: ["convenor"],
+    href: "/convenor/queue",
+    labelKey: "portal.sidebar.convenorQueue",
+  },
+  {
+    key: "college_dashboard",
+    icon: "🏫",
+    roles: ["college_admin", "college_operator"],
+    href: "/college/dashboard",
+    labelKey: "portal.sidebar.collegeDashboard",
+  },
+  {
+    key: "finance",
+    icon: "💳",
+    roles: ["finance"],
+    href: "/finance",
+    labelKey: "portal.sidebar.finance",
+  },
+  {
+    key: "leadership",
+    icon: "🏛",
+    roles: ["leadership"],
+    href: "/leadership",
+    labelKey: "portal.sidebar.leadership",
+  },
+  // Placeholders — built in later sprints. Role-filtered so each persona only
+  // sees the "Soon" items they'll eventually use.
+  {
+    key: "colleges",
+    icon: "🏛️",
+    roles: ["state_admin", "leadership"],
+    href: "/colleges",
+    disabled: true,
+    labelKey: "portal.sidebar.colleges",
+  },
+  {
+    key: "courses",
+    icon: "📚",
+    roles: ["state_admin"],
+    href: "/courses",
+    disabled: true,
+    labelKey: "portal.sidebar.courses",
+  },
+  {
+    key: "seats",
+    icon: "🎫",
+    roles: ["state_admin", "college_admin"],
+    href: "/seats",
+    disabled: true,
+    labelKey: "portal.sidebar.seats",
+  },
+  {
+    key: "merit",
+    icon: "🏅",
+    roles: ["state_admin"],
+    href: "/merit",
+    disabled: true,
+    labelKey: "portal.sidebar.merit",
+  },
+  {
+    key: "allocation",
+    icon: "🎯",
+    roles: ["state_admin"],
+    href: "/allocation",
+    disabled: true,
+    labelKey: "portal.sidebar.allocation",
+  },
+  {
+    key: "reports",
+    icon: "📈",
+    roles: ["state_admin", "college_admin", "finance", "leadership"],
+    href: "/reports",
+    disabled: true,
+    labelKey: "portal.sidebar.reports",
+  },
+  {
+    key: "users",
+    icon: "👥",
+    roles: ["state_admin", "college_admin"],
+    href: "/users",
+    disabled: true,
+    labelKey: "portal.sidebar.users",
+  },
+  {
+    key: "settings",
+    icon: "⚙️",
+    roles: ALL_ROLES,
+    href: "/settings",
+    disabled: true,
+    labelKey: "portal.sidebar.settings",
+  },
 ];
 
 interface Props {
@@ -47,7 +178,7 @@ interface Props {
   eyebrow?: string;
   /** Top-bar title (h1). */
   title: string;
-  /** Optional right-aligned node in the top bar (e.g. reviewer identity). */
+  /** Optional right-aligned node in the top bar. Defaults to the role switcher. */
   headerRight?: ReactNode;
   /** Page content. Main gets standard padding; pages can override via `contentClassName`. */
   children: ReactNode;
@@ -58,7 +189,9 @@ interface Props {
 /**
  * Shared admin shell — left sidebar, top bar, main content. Desktop-first;
  * collapses to a single column under 1024px and hides the sidebar below 768px
- * (admin traffic is desktop but tablet reviewers exist).
+ * (admin traffic is desktop but tablet reviewers exist). Sidebar items are
+ * filtered by the session's role, and the Overview item's href flips per
+ * role so each persona lands on their own dashboard.
  */
 export function PortalFrame({
   active,
@@ -68,6 +201,11 @@ export function PortalFrame({
   children,
   contentClassName,
 }: Props) {
+  const { session } = useSession();
+  const role = session.role;
+
+  const visibleItems = NAV_ITEMS.filter((item) => item.roles.includes(role));
+
   return (
     <div className="flex min-h-dvh flex-col md:grid md:grid-cols-[240px_1fr]">
       <aside className="hidden flex-col border-r border-[var(--color-border)] bg-[var(--color-surface)] md:flex">
@@ -81,8 +219,12 @@ export function PortalFrame({
         </div>
         <nav className="flex-1 px-2 py-3">
           <ul className="space-y-1">
-            {NAV_ITEMS.map((item) => {
+            {visibleItems.map((item) => {
               const isActive = item.key === active;
+              const href =
+                item.hrefByRole?.[role] ??
+                item.href ??
+                "/";
               if (item.disabled) {
                 return (
                   <li key={item.key}>
@@ -94,9 +236,7 @@ export function PortalFrame({
                       )}
                     >
                       <span aria-hidden="true">{item.icon}</span>
-                      <span className="flex-1">
-                        {t("en", `portal.sidebar.${item.key}`)}
-                      </span>
+                      <span className="flex-1">{t("en", item.labelKey)}</span>
                       <span className="rounded-[var(--radius-pill)] bg-[var(--color-background-muted)] px-2 py-0.5 text-[10px] font-[var(--weight-semibold)] uppercase tracking-wide text-[var(--color-text-tertiary)]">
                         Soon
                       </span>
@@ -107,7 +247,7 @@ export function PortalFrame({
               return (
                 <li key={item.key}>
                   <Link
-                    href={item.href}
+                    href={href}
                     aria-current={isActive ? "page" : undefined}
                     className={cn(
                       "flex items-center gap-3 rounded-[var(--radius-md)] px-3 py-2 text-[var(--text-sm)]",
@@ -117,7 +257,7 @@ export function PortalFrame({
                     )}
                   >
                     <span aria-hidden="true">{item.icon}</span>
-                    <span>{t("en", `portal.sidebar.${item.key}`)}</span>
+                    <span>{t("en", item.labelKey)}</span>
                   </Link>
                 </li>
               );
@@ -140,7 +280,7 @@ export function PortalFrame({
             </h1>
           </div>
           <div className="flex shrink-0 items-center gap-3 text-[var(--text-sm)] text-[var(--color-text-secondary)]">
-            {headerRight ?? <span>State admin · demo@hp.gov.in</span>}
+            {headerRight ?? <RoleSwitcher />}
           </div>
         </header>
 

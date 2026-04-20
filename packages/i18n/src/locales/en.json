@@ -134,7 +134,11 @@
       "allocation": "Allocation",
       "reports": "Reports",
       "users": "Users",
-      "settings": "Settings"
+      "settings": "Settings",
+      "collegeDashboard": "My college",
+      "convenorQueue": "Convenor queue",
+      "finance": "Finance",
+      "leadership": "Leadership"
     }
   },
   "common": {
@@ -979,5 +983,88 @@
     "emailAddress": "admissions-help@hp.gov.in",
     "officeLabel": "Office",
     "officeAddress": "Directorate of Higher Education, Shimla — 171001"
+  },
+  "preLogin": {
+    "learnBeforeApplying": {
+      "title": "Learn before applying",
+      "subtitle": "No sign-up needed — read up and come back when you're ready."
+    },
+    "cards": {
+      "dates": {
+        "title": "Important dates",
+        "body": "When registration opens, when to apply, when the merit list drops."
+      },
+      "howItWorks": {
+        "title": "How it works",
+        "body": "Four steps from profile to seat allotment."
+      },
+      "eligibilityCheck": {
+        "title": "Am I eligible?",
+        "body": "Answer three quick questions to see the courses open to you."
+      },
+      "meritLookup": {
+        "title": "Check the merit list",
+        "body": "Lookup by roll number — opens once the state publishes the merit list."
+      }
+    },
+    "dates": {
+      "title": "Cycle 2026-27 dates",
+      "subtitle": "Dates are indicative and get confirmed once the Department of Higher Education publishes the official circular.",
+      "rows": {
+        "registrationOpens": "Registration opens",
+        "applicationsClose": "Applications close",
+        "meritPublishes": "Merit list publishes",
+        "firstAllotment": "First allotment round"
+      },
+      "dateValues": {
+        "registrationOpens": "Sunday, 15 June 2026",
+        "applicationsClose": "Wednesday, 24 June 2026, 5:00 PM",
+        "meritPublishes": "Friday, 26 June 2026",
+        "firstAllotment": "Monday, 29 June 2026"
+      },
+      "footnote": "Save any update that's important — we also send reminders on SMS before deadlines."
+    },
+    "howItWorks": {
+      "title": "Four steps from profile to seat",
+      "subtitle": "The whole flow fits in your phone. No paper, no visits to the college before allotment.",
+      "steps": {
+        "registerTitle": "Register once",
+        "registerBody": "Email + mobile, OTP verification. One identity across every HP government college.",
+        "profileTitle": "Build your profile",
+        "profileBody": "Five guided steps — personal, address, Class 12, claims, bank. We save as you go.",
+        "pickTitle": "Pick eligible courses",
+        "pickBody": "See only what you qualify for. BA is combination-based; BSc / BCom are college-based.",
+        "trackTitle": "Apply, track, confirm",
+        "trackBody": "Rank preferences, pay the application fee, and track scrutiny right from your phone."
+      },
+      "readyCta": "Start your application"
+    },
+    "eligibilityCheck": {
+      "title": "Am I eligible?",
+      "subtitle": "Three quick questions — nothing gets saved unless you register.",
+      "question1": "Your Class 12 stream",
+      "question2": "Your best-of-five percentage",
+      "question3": "Your board",
+      "percentagePlaceholder": "e.g. 62.4",
+      "checkCta": "Show my options",
+      "resetCta": "Start over",
+      "resultsHeading": "Here's where you stand",
+      "resultsEmpty": "Nothing we can offer with those details. Double-check or contact the helpdesk.",
+      "resultsEligible": "{n} course(s) open to you",
+      "resultsConditional": "{n} course(s) open with a condition",
+      "resultsNotEligible": "{n} course(s) not a match",
+      "nextCta": "Register to apply",
+      "disclaimer": "This is a guide only — final eligibility is confirmed by the college after you submit your application."
+    },
+    "meritLookup": {
+      "title": "Check the merit list",
+      "subtitle": "Enter your application number or Class 12 roll number. Results show once the state publishes the merit list for Cycle 2026-27.",
+      "inputLabel": "Application number or roll number",
+      "inputPlaceholder": "e.g. HP-ADM-2026-000147",
+      "lookupCta": "Check",
+      "notPublishedTitle": "Merit list is not live yet",
+      "notPublishedBody": "We'll open this lookup on Friday, 26 June 2026. Meanwhile, keep your application details handy.",
+      "backHint": "Back to home"
+    }
   }
 }

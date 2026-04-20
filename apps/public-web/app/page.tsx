@@ -66,10 +66,12 @@ const HIGHLIGHTS = [
 ];
 
 export default function LandingPage() {
-  // Resolve sibling app URLs from env so the landing page isn't hard-pinned
-  // to localhost ports. Defaults match the dev setup in package.json scripts.
-  const studentAppUrl = process.env.NEXT_PUBLIC_STUDENT_APP_URL ?? "http://localhost:3001";
-  const portalUrl = process.env.NEXT_PUBLIC_PORTAL_URL ?? "http://localhost:3002";
+  // V2 note: apps/public-web is retired from active orchestration — pre-login
+  // content now lives inside the student mini app (see /dates, /how-it-works,
+  // /eligibility-check, /merit-lookup). This file remains as a reference only,
+  // so we hard-code the neighbour URLs rather than pull from env vars.
+  const studentAppUrl = "http://localhost:3001";
+  const portalUrl = "http://localhost:3002";
 
   return (
     <div className="min-h-dvh bg-gradient-to-b from-[var(--color-background-brand-subtle)] to-[var(--color-background)]">

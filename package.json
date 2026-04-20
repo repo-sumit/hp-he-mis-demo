@@ -4,13 +4,12 @@
   "private": true,
   "packageManager": "pnpm@10.33.0",
   "scripts": {
-    "dev": "turbo run dev --parallel",
+    "dev": "turbo run dev --parallel --filter=student --filter=portal",
     "dev:student": "pnpm --filter student dev",
     "dev:portal": "pnpm --filter portal dev",
-    "dev:public": "pnpm --filter public-web dev",
-    "build": "turbo run build",
-    "lint": "turbo run lint",
-    "typecheck": "turbo run typecheck",
+    "build": "turbo run build --filter=student --filter=portal",
+    "lint": "turbo run lint --filter=student --filter=portal",
+    "typecheck": "turbo run typecheck --filter=student --filter=portal",
     "clean": "turbo run clean && rimraf node_modules .turbo"
   },
   "devDependencies": {

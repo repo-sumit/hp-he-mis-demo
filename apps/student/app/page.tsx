@@ -33,6 +33,52 @@ export default function HomePage() {
         </PrimaryLink>
       </section>
 
+      {/* "Learn before applying" — absorbs the retired public-web content.
+          Four pre-login routes, each readable without registering. */}
+      <section className="mt-6">
+        <p className="text-[var(--text-xs)] font-[var(--weight-semibold)] uppercase tracking-wide text-[var(--color-text-tertiary)]">
+          {t("preLogin.learnBeforeApplying.title")}
+        </p>
+        <p className="mt-1 text-[var(--text-sm)] text-[var(--color-text-secondary)]">
+          {t("preLogin.learnBeforeApplying.subtitle")}
+        </p>
+        <ul className="mt-3 space-y-2">
+          {(
+            [
+              { href: "/dates", key: "dates", icon: "🗓" },
+              { href: "/how-it-works", key: "howItWorks", icon: "🧭" },
+              { href: "/eligibility-check", key: "eligibilityCheck", icon: "✓" },
+              { href: "/merit-lookup", key: "meritLookup", icon: "🏅" },
+            ] as const
+          ).map((item) => (
+            <li key={item.key}>
+              <Link
+                href={item.href}
+                className="flex items-center gap-3 rounded-[var(--radius-lg)] border border-[var(--color-border)] bg-[var(--color-surface)] p-3 hover:bg-[var(--color-background-subtle)]"
+              >
+                <span
+                  aria-hidden="true"
+                  className="flex h-9 w-9 flex-none items-center justify-center rounded-[var(--radius-md)] bg-[var(--color-background-brand-subtle)] text-[var(--color-text-brand)]"
+                >
+                  {item.icon}
+                </span>
+                <span className="min-w-0 flex-1">
+                  <span className="block text-[var(--text-sm)] font-[var(--weight-semibold)] text-[var(--color-text-primary)]">
+                    {t(`preLogin.cards.${item.key}.title`)}
+                  </span>
+                  <span className="block text-[var(--text-xs)] text-[var(--color-text-secondary)]">
+                    {t(`preLogin.cards.${item.key}.body`)}
+                  </span>
+                </span>
+                <span aria-hidden="true" className="text-[var(--color-text-tertiary)]">
+                  →
+                </span>
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </section>
+
       <section className="mt-6 rounded-[var(--radius-lg)] border border-[var(--color-border)] bg-[var(--color-background-subtle)] p-4">
         <p className="text-[var(--text-sm)] text-[var(--color-text-secondary)]">
           <span aria-hidden="true" className="mr-1">ℹ️</span>
