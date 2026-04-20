@@ -84,6 +84,14 @@ export function EligibilityResultCard({ result, hideDistrict, hideCollege }: Pro
       ) : null}
 
       <div className="mt-3 flex flex-wrap gap-2">
+        {result.state !== "not_eligible" ? (
+          <Link
+            href={`/apply/${result.courseId}/preferences`}
+            className="inline-flex h-10 items-center justify-center rounded-[var(--radius-md)] bg-[var(--color-interactive-brand)] px-3 text-[var(--text-sm)] font-[var(--weight-semibold)] text-[var(--color-text-inverse)] hover:bg-[var(--color-interactive-brand-hover)]"
+          >
+            {t("cta.startApplication")}
+          </Link>
+        ) : null}
         <Link
           href={`/discover/college/${result.collegeId}`}
           className="inline-flex h-10 items-center justify-center rounded-[var(--radius-md)] border border-[var(--color-border-strong)] bg-[var(--color-surface)] px-3 text-[var(--text-sm)] font-[var(--weight-medium)] text-[var(--color-text-primary)] hover:bg-[var(--color-background-subtle)]"

@@ -55,7 +55,17 @@
     "addPreferenceLater": "Add to preferences (coming soon)",
     "viewCollege": "View college",
     "viewCourse": "View course",
-    "exploreCourses": "Find eligible courses"
+    "exploreCourses": "Find eligible courses",
+    "add": "Add",
+    "added": "Added",
+    "remove": "Remove",
+    "moveUp": "Move up",
+    "moveDown": "Move down",
+    "continueToRanking": "Continue to ranking",
+    "saveRanking": "Save ranking",
+    "browseMore": "Browse more options",
+    "backToApply": "Back to applications",
+    "addMore": "Add more"
   },
   "status": {
     "registered": "Registered",
@@ -709,6 +719,69 @@
     "addPreference": {
       "title": "Preferences open next",
       "body": "Once preferences unlock, you'll drag and drop combinations into the order you want them."
+    }
+  },
+  "apply": {
+    "hub": {
+      "title": "Your applications",
+      "subtitle": "Each course type is a separate application with its own fee. Opt in to the ones you want, then pick your preferences.",
+      "fee": "Application fee: ₹{amount}",
+      "maxPreferences": "Up to {n} preferences",
+      "eligibleCount": "{n} options for you",
+      "noneEligible": "No eligible options",
+      "selectedCount": "{n} selected",
+      "browseMore": "Browse all courses",
+      "empty": {
+        "title": "Nothing to apply for yet",
+        "body": "Finish your profile and check your eligibility first — we'll list your application options here.",
+        "cta": "Check eligibility"
+      }
+    },
+    "select": {
+      "title": "Pick your {course} options",
+      "subtitle": "Tap to add. You can reorder on the next screen.",
+      "counter": "{n} of {max} selected",
+      "maxReached": "You've picked the maximum. Remove one to add another.",
+      "noneSelectedHint": "Add at least one option to continue.",
+      "empty": "No eligible options for this course right now.",
+      "browseDiscover": "See more on the eligibility screen"
+    },
+    "rank": {
+      "title": "Rank your {course} preferences",
+      "subtitle": "Your top choice is #1. We try to give you #1 first — if it's full, we move down your list.",
+      "empty": "You haven't added any preferences yet. Go back and pick some.",
+      "rankBadge": "#{n}",
+      "saveHint": "Saved automatically as you reorder. Submission opens later.",
+      "dragHandleLabel": "Drag (coming soon — use the arrows)"
+    },
+    "explain": {
+      "separateApps": {
+        "title": "One application per course type",
+        "body": "BA, BCom and BSc each need their own application and fee. You can apply to more than one — we'll show the fee up front when you submit."
+      },
+      "baCombinations": {
+        "title": "BA is combination-based",
+        "body": "In BA you apply for a two-subject combination, not just a college. Add the combinations you want in order of preference."
+      }
+    },
+    "maxGuidance": {
+      "title": "How many preferences?",
+      "limit": "{course} allows up to {max} preferences.",
+      "min": "At least 1 preference is needed to continue."
+    },
+    "fees": {
+      "note": "Fees are charged once per course type when you submit."
+    },
+    "step": {
+      "pickLabel": "Step 1 of 2",
+      "rankLabel": "Step 2 of 2",
+      "pickTitle": "Pick",
+      "rankTitle": "Rank"
+    },
+    "candidate": {
+      "combinationLabel": "{a} + {b}",
+      "bucketLabel": "Buckets {a} · {b}",
+      "seats": "{total} seats · {vacant} vacant"
     }
   }
 }
