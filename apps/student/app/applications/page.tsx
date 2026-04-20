@@ -9,7 +9,7 @@ import { BottomTabBar } from "../_components/bottom-tab-bar";
 import { useLocale } from "../_components/locale-provider";
 import { getCourse } from "../_components/discover/mock-data";
 import { useApplications } from "../_components/apply/applications-provider";
-import { formatTimestamp } from "../_components/documents/format";
+import { formatRelative, formatTimestamp } from "../_components/documents/format";
 import { feeFor, maxPreferencesFor } from "../_components/apply/rules";
 import { useScrutinyBridge } from "../_components/scrutiny-bridge/scrutiny-bridge-provider";
 
@@ -129,6 +129,20 @@ export default function ApplicationsListPage() {
                 : t("apply.myApps.viewCta")
               : t("apply.myApps.continueCta");
 
+            // Timeline hint: one-line sentence that gives the student context
+            // at a glance without having to decode the pill + metadata.
+            const relTimestamp = submitted
+              ? row.submittedAt
+                ? formatRelative(row.submittedAt)
+                : ""
+              : row.updatedAt
+                ? formatRelative(row.updatedAt)
+                : "";
+            const timelineKey = `apply.myApps.timeline.${richStatus}` as const;
+            const timeline = relTimestamp
+              ? t(timelineKey, { ago: relTimestamp })
+              : "";
+
             return (
               <article
                 key={row.courseId}
@@ -136,7 +150,9 @@ export default function ApplicationsListPage() {
                   "rounded-[var(--radius-lg)] border p-4",
                   richStatus === "discrepancy"
                     ? "border-[var(--color-text-danger)] bg-[var(--color-surface)]"
-                    : "border-[var(--color-border)] bg-[var(--color-surface)]",
+                    : richStatus === "verified"
+                      ? "border-[var(--color-interactive-success)] bg-[var(--color-surface)]"
+                      : "border-[var(--color-border)] bg-[var(--color-surface)]",
                 )}
               >
                 <div className="flex items-start justify-between gap-3">
@@ -158,26 +174,29 @@ export default function ApplicationsListPage() {
                   </span>
                 </div>
 
-                <dl className="mt-2 space-y-0.5 text-[var(--text-xs)] text-[var(--color-text-secondary)]">
+                {timeline ? (
+                  <p className="mt-2 text-[var(--text-sm)] text-[var(--color-text-secondary)]">
+                    {timeline}
+                  </p>
+                ) : null}
+
+                <dl className="mt-2 flex flex-wrap gap-x-4 gap-y-0.5 text-[var(--text-xs)] text-[var(--color-text-tertiary)]">
                   <div>
-                    {t("apply.myApps.preferencesCount", { n: row.itemIds.length })} ·{" "}
-                    {t("apply.hub.maxPreferences", { n: maxPreferencesFor(row.courseId) })}
+                    {t("apply.myApps.preferencesCount", { n: row.itemIds.length })}
                   </div>
                   <div>{t("apply.hub.fee", { amount: feeFor(row.courseId) })}</div>
                   {submitted && row.applicationNumber ? (
-                    <div className="text-[var(--color-text-primary)]">
-                      <span className="font-[var(--weight-semibold)]">
-                        {row.applicationNumber}
-                      </span>
-                      {row.submittedAt ? (
-                        <> · {formatTimestamp(row.submittedAt, locale)}</>
-                      ) : null}
+                    <div className="font-mono text-[var(--color-text-secondary)]">
+                      {row.applicationNumber}
                     </div>
+                  ) : null}
+                  {submitted && row.submittedAt ? (
+                    <div>{formatTimestamp(row.submittedAt, locale)}</div>
                   ) : null}
                 </dl>
 
                 {issueCount > 0 ? (
-                  <p className="mt-2 rounded-[var(--radius-md)] bg-[var(--color-status-danger-bg)] px-3 py-1.5 text-[var(--text-xs)] font-[var(--weight-medium)] text-[var(--color-status-danger-fg)]">
+                  <p className="mt-3 rounded-[var(--radius-md)] bg-[var(--color-status-danger-bg)] px-3 py-1.5 text-[var(--text-xs)] font-[var(--weight-medium)] text-[var(--color-status-danger-fg)]">
                     ⚠ {t("apply.myApps.issueCount", { n: issueCount })}
                   </p>
                 ) : null}

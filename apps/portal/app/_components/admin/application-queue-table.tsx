@@ -18,8 +18,11 @@ interface Props {
 }
 
 /**
- * Applications table: desktop renders rows with fixed columns; on tablet it
- * flows to a card-style stack so the operational feel survives on iPads.
+ * Operational queue table. Trimmed to six columns — student name is the
+ * anchor, the rest of the metadata flows into the same cell so each row
+ * scans as a single unit. Discrepancy count is merged into the status cell
+ * to reduce visual noise; the full id moves to a muted sub-line under the
+ * name so "what is this row" is answered in a single glance.
  */
 export function ApplicationQueueTable({ rows, emptyMessage }: Props) {
   if (rows.length === 0) {
@@ -35,46 +38,40 @@ export function ApplicationQueueTable({ rows, emptyMessage }: Props) {
       <table className="w-full min-w-[720px] border-collapse text-left text-[var(--text-sm)]">
         <thead className="bg-[var(--color-background-subtle)] text-[var(--text-xs)] uppercase tracking-wide text-[var(--color-text-tertiary)]">
           <tr>
-            <Th>Application</Th>
             <Th>Student</Th>
             <Th>Course · College</Th>
             <Th>Category</Th>
             <Th>Status</Th>
-            <Th>Discrepancy</Th>
             <Th>Submitted</Th>
-            <Th className="text-right">Actions</Th>
+            <Th className="text-right">&nbsp;</Th>
           </tr>
         </thead>
         <tbody>
           {rows.map(({ app, status, discrepancyCount }, idx) => {
             const isAsha = app.studentName === "Asha Sharma";
+            const needsAttention = status === "discrepancy_raised" || discrepancyCount > 0;
             return (
               <tr
                 key={app.id}
                 className={cn(
-                  "border-t border-[var(--color-border)]",
+                  "border-t border-[var(--color-border)] transition-colors hover:bg-[var(--color-background-subtle)]",
                   idx % 2 === 1 ? "bg-[var(--color-background-subtle)]/40" : "bg-[var(--color-surface)]",
+                  needsAttention ? "ring-1 ring-inset ring-[var(--color-status-warning-fg)]/30" : "",
                 )}
               >
                 <Td>
-                  <div className="flex items-center gap-2">
-                    <span className="font-mono text-[var(--text-xs)] text-[var(--color-text-primary)]">
-                      {app.id}
-                    </span>
+                  <div className="flex flex-wrap items-center gap-2">
+                    <p className="font-[var(--weight-semibold)] text-[var(--color-text-primary)]">
+                      {app.studentName}
+                    </p>
                     {isAsha ? (
                       <span className="rounded-[var(--radius-pill)] bg-[var(--color-background-brand-subtle)] px-1.5 py-0.5 text-[10px] font-[var(--weight-semibold)] uppercase tracking-wide text-[var(--color-text-brand)]">
                         Demo hero
                       </span>
                     ) : null}
                   </div>
-                  <div className="mt-0.5 text-[var(--text-xs)] text-[var(--color-text-tertiary)]">
-                    {app.preferences.length} preference
-                    {app.preferences.length === 1 ? "" : "s"}
-                  </div>
-                </Td>
-                <Td>
-                  <p className="font-[var(--weight-semibold)] text-[var(--color-text-primary)]">
-                    {app.studentName}
+                  <p className="font-mono text-[var(--text-xs)] text-[var(--color-text-tertiary)]">
+                    {app.id}
                   </p>
                   <p className="text-[var(--text-xs)] text-[var(--color-text-tertiary)]">
                     {app.studentEmail}
@@ -87,6 +84,10 @@ export function ApplicationQueueTable({ rows, emptyMessage }: Props) {
                   <p className="text-[var(--text-xs)] text-[var(--color-text-tertiary)]">
                     {app.collegeName}
                   </p>
+                  <p className="text-[var(--text-xs)] text-[var(--color-text-tertiary)]">
+                    {app.preferences.length} preference
+                    {app.preferences.length === 1 ? "" : "s"}
+                  </p>
                 </Td>
                 <Td>
                   <span className="inline-flex rounded-[var(--radius-pill)] border border-[var(--color-border)] bg-[var(--color-background-subtle)] px-2 py-0.5 text-[var(--text-xs)] uppercase tracking-wide text-[var(--color-text-secondary)]">
@@ -94,16 +95,14 @@ export function ApplicationQueueTable({ rows, emptyMessage }: Props) {
                   </span>
                 </Td>
                 <Td>
-                  <StatusPill status={status} />
-                </Td>
-                <Td>
-                  {discrepancyCount > 0 ? (
-                    <span className="inline-flex items-center gap-1 rounded-[var(--radius-pill)] bg-[var(--color-status-warning-bg)] px-2 py-0.5 text-[var(--text-xs)] font-[var(--weight-semibold)] text-[var(--color-status-warning-fg)]">
-                      ⚠ {discrepancyCount}
-                    </span>
-                  ) : (
-                    <span className="text-[var(--text-xs)] text-[var(--color-text-tertiary)]">—</span>
-                  )}
+                  <div className="flex flex-wrap items-center gap-1.5">
+                    <StatusPill status={status} />
+                    {discrepancyCount > 0 ? (
+                      <span className="inline-flex items-center gap-1 rounded-[var(--radius-pill)] bg-[var(--color-status-warning-bg)] px-2 py-0.5 text-[var(--text-xs)] font-[var(--weight-semibold)] text-[var(--color-status-warning-fg)]">
+                        ⚠ {discrepancyCount}
+                      </span>
+                    ) : null}
+                  </div>
                 </Td>
                 <Td>
                   <span className="text-[var(--text-xs)] text-[var(--color-text-secondary)]">
@@ -113,9 +112,9 @@ export function ApplicationQueueTable({ rows, emptyMessage }: Props) {
                 <Td className="text-right">
                   <Link
                     href={`/applications/${app.id}`}
-                    className="inline-flex h-9 items-center justify-center rounded-[var(--radius-md)] border border-[var(--color-border-strong)] bg-[var(--color-surface)] px-3 text-[var(--text-xs)] font-[var(--weight-semibold)] text-[var(--color-text-primary)] hover:bg-[var(--color-background-subtle)]"
+                    className="inline-flex h-9 items-center justify-center rounded-[var(--radius-md)] bg-[var(--color-interactive-brand)] px-3 text-[var(--text-xs)] font-[var(--weight-semibold)] text-[var(--color-text-inverse)] hover:bg-[var(--color-interactive-brand-hover)]"
                   >
-                    Open
+                    Open →
                   </Link>
                 </Td>
               </tr>

@@ -212,15 +212,30 @@
       "subGreeting": "Here's where your admission stands today.",
       "statusTitle": "Your admission status",
       "nextActionTitle": "What to do next",
-      "nextActionBody": "Complete your profile in {n} more steps. This unlocks document upload and eligibility checks.",
+      "nextActionBody": "Finish your profile in {n} more steps. Then you can upload documents and apply.",
       "nextActionCta": "Continue profile",
+      "underReview": {
+        "title": "Your application is with the college",
+        "body": "They'll check your details and documents. We'll send you an update on mobile and here.",
+        "cta": "View application"
+      },
+      "findCourses": {
+        "title": "Find courses that fit you",
+        "body": "Your profile is ready. Pick eligible courses and submit your first application.",
+        "cta": "Find courses"
+      },
+      "allDone": {
+        "title": "You're all set",
+        "body": "Track any updates right here. We'll tell you if anything changes.",
+        "cta": "View applications"
+      },
       "notificationsTitle": "Recent updates",
-      "viewAllNotifications": "View all notifications",
+      "viewAllNotifications": "View all",
       "quickLinksTitle": "Quick links",
       "mockNotifications": {
-        "welcome": "Welcome to HP Admissions. Complete your profile to apply.",
-        "dates": "Application window closes on 24 June 2026, 5:00 PM.",
-        "language": "Tip: you can switch language any time from the top of the screen."
+        "welcome": "Welcome to HP Admissions. Finish your profile to apply.",
+        "dates": "Applications close 24 June 2026, 5:00 PM.",
+        "language": "Tip: switch language any time from the top of the screen."
       }
     }
   },
@@ -895,7 +910,16 @@
         "conditional": "Conditional",
         "rejected": "Rejected"
       },
-      "issueCount": "{n} issue(s) flagged by the college"
+      "issueCount": "{n} small fix needed by the college",
+      "timeline": {
+        "draft": "Started {ago} · Keep filling",
+        "submitted": "Submitted {ago} · The college will pick this up soon",
+        "underReview": "Submitted {ago} · The college is checking your details",
+        "discrepancy": "Submitted {ago} · One small fix needed from you",
+        "verified": "Verified {ago} · Waiting for the merit list",
+        "conditional": "Conditional {ago} · Check the note before the deadline",
+        "rejected": "Rejected {ago} · Open the application to see why"
+      }
     }
   },
   "issue": {
@@ -906,23 +930,24 @@
       "document": "Document"
     },
     "banner": {
-      "title": "The college has flagged something on this section",
-      "reasonPrefix": "Reason",
-      "deadlinePrefix": "Fix by",
-      "actionHint": "Update the highlighted fields below, then tap Mark as updated so we can tell the college.",
+      "title": "One small fix on this section",
+      "reasonPrefix": "What to fix",
+      "deadlinePrefix": "Finish by",
+      "actionHint": "Update the fields below, then tap Mark as updated. We'll tell the college for you.",
+      "reassurance": "Your earlier details and fee are safe. Only this section needs a quick fix.",
       "awaitingReview": "Sent for re-check",
-      "awaitingReviewHint": "The college will look at your changes soon. No more action needed from you right now."
+      "awaitingReviewHint": "The college will review your changes soon. Nothing more to do right now."
     },
     "dashboard": {
-      "title": "Action needed on your application",
-      "subtitle": "The college has flagged something. Fix it soon so your admission isn't delayed.",
+      "title": "One small fix on your application",
+      "subtitle": "Don't worry — your fee and earlier work are safe. Fix this and your admission keeps moving.",
       "moreCount": "+{n} more — tap to see all",
       "fixCta": "Fix now",
       "viewAll": "See all issues"
     },
     "list": {
-      "title": "Issues on this application",
-      "subtitle": "The college has flagged these on your {course} application. Each link takes you straight to the screen where you can fix it.",
+      "title": "Items to fix",
+      "subtitle": "The college needs a small update on your {course} application. Each link opens the right screen to fix it.",
       "empty": "Nothing pending right now. We'll tell you if the college needs anything more.",
       "raisedAt": "Raised {ago}",
       "by": "by {actor}",

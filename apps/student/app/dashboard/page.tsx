@@ -8,8 +8,9 @@ import { NotificationItem } from "../_components/notification-item";
 import { BottomTabBar } from "../_components/bottom-tab-bar";
 import { useLocale } from "../_components/locale-provider";
 import { useApplications } from "../_components/apply/applications-provider";
+import { useProfile } from "../_components/profile/profile-provider";
+import { hasEnoughProfile } from "../_components/discover/evaluate";
 import { getCourse } from "../_components/discover/mock-data";
-import { formatTimestamp } from "../_components/documents/format";
 import { useScrutinyBridge } from "../_components/scrutiny-bridge/scrutiny-bridge-provider";
 import { DiscrepancySummaryCard } from "../_components/scrutiny-bridge/discrepancy-summary-card";
 
@@ -20,39 +21,54 @@ const QUICK_LINKS = [
   { key: "helpdesk", icon: "💬", href: "/help" },
 ] as const;
 
+// Two notifications on top is less noisy than three; show a third only when the
+// rest of the dashboard is quiet (no submissions, no discrepancies).
 const BASE_NOTIFICATIONS = [
   { key: "welcome", time: "2 min ago", unread: true },
   { key: "dates", time: "1 hr ago", unread: true },
-  { key: "language", time: "Today", unread: false },
 ] as const;
 
+type NextActionVariant =
+  | "finishProfile"
+  | "findCourses"
+  | "underReview"
+  | "allDone";
+
 export default function DashboardPage() {
-  const { t, locale } = useLocale();
+  const { t } = useLocale();
   const { applications, submittedCourseIds } = useApplications();
+  const { draft } = useProfile();
   const bridge = useScrutinyBridge();
 
   const submittedIds = submittedCourseIds();
   const hasSubmitted = submittedIds.length > 0;
 
-  // Any open discrepancies? Take the highest-priority one as the headline.
+  // Highest-priority discrepancy drives the alert card. Everything behind it
+  // de-escalates so the dashboard has a single, obvious focal point.
   const openDiscrepancies = bridge.all.filter((d) => !d.studentActionAt);
   const headlineDiscrepancy = openDiscrepancies[0] ?? bridge.all[0];
-  const headlineCourseId =
-    headlineDiscrepancy
-      ? (Object.values(applications).find(
-          (a) => a.applicationNumber === headlineDiscrepancy.applicationId,
-        )?.courseId ?? "")
-      : "";
+  const hasOpenDiscrepancy = openDiscrepancies.length > 0;
+  const headlineCourseId = headlineDiscrepancy
+    ? (Object.values(applications).find(
+        (a) => a.applicationNumber === headlineDiscrepancy.applicationId,
+      )?.courseId ?? "")
+    : "";
   const moreCount = Math.max(0, openDiscrepancies.length - 1);
 
-  // Advance the status tracker whenever the student has at least one
-  // submitted application — keeps the 7-step pipeline honest.
   const currentStep: StatusStep = hasSubmitted ? "submitted" : "profileComplete";
 
-  // Next-action flips from "finish profile" to "your application is being reviewed"
-  // as soon as there's a submission in flight.
   const firstSubmitted = hasSubmitted ? applications[submittedIds[0]!] : null;
   const firstSubmittedCourse = firstSubmitted ? getCourse(firstSubmitted.courseId) : null;
+
+  // Pick the smartest Next Action for the student's current state. Discrepancy
+  // is handled by the dedicated alert card above, so we don't duplicate it.
+  const nextActionVariant: NextActionVariant = hasOpenDiscrepancy
+    ? "allDone" // discrepancy card is the action; this variant stays hidden below
+    : hasSubmitted && firstSubmittedCourse
+      ? "underReview"
+      : !hasEnoughProfile(draft)
+        ? "finishProfile"
+        : "findCourses";
 
   return (
     <PageShell
@@ -91,65 +107,50 @@ export default function DashboardPage() {
         </div>
       </section>
 
-      {hasSubmitted ? (
-        <section className="mt-5 space-y-2">
-          <h3 className="text-[var(--text-sm)] font-[var(--weight-semibold)] uppercase tracking-wide text-[var(--color-text-tertiary)]">
-            {t("apply.myApps.title")}
+      {/* When there's no discrepancy, the Next Action card adapts to the student's
+          current state. When there IS a discrepancy, the alert card above is the
+          primary action — no need to compete for attention with a second card. */}
+      {!hasOpenDiscrepancy ? (
+        <section className="mt-5">
+          <h3 className="mb-2 text-[var(--text-sm)] font-[var(--weight-semibold)] uppercase tracking-wide text-[var(--color-text-tertiary)]">
+            {t("screen.dashboard.nextActionTitle")}
           </h3>
-          {submittedIds.map((cid) => {
-            const entry = applications[cid];
-            const course = getCourse(cid);
-            if (!entry || !course) return null;
-            return (
-              <Link
-                key={cid}
-                href={`/apply/${cid}/submitted`}
-                className="flex items-center justify-between gap-3 rounded-[var(--radius-lg)] border border-[var(--color-interactive-success)] bg-[var(--color-status-success-bg)] p-3"
-              >
-                <div className="min-w-0 flex-1">
-                  <p className="text-[var(--text-xs)] uppercase tracking-wide text-[var(--color-status-success-fg)]">
-                    {t("status.applicationSubmitted")} · {course.code}
-                  </p>
-                  <p className="mt-0.5 text-[var(--text-sm)] font-[var(--weight-semibold)] text-[var(--color-text-primary)]">
-                    {entry.applicationNumber}
-                  </p>
-                  {entry.submittedAt ? (
-                    <p className="text-[var(--text-xs)] text-[var(--color-text-secondary)]">
-                      {formatTimestamp(entry.submittedAt, locale)}
-                    </p>
-                  ) : null}
-                </div>
-                <span aria-hidden="true" className="text-[var(--color-text-secondary)]">
-                  →
-                </span>
-              </Link>
-            );
-          })}
+          {nextActionVariant === "underReview" && firstSubmitted && firstSubmittedCourse ? (
+            <NextActionCard
+              title={t("screen.dashboard.underReview.title")}
+              body={t("screen.dashboard.underReview.body")}
+              cta={t("screen.dashboard.underReview.cta")}
+              href="/applications"
+              deadline={firstSubmitted.applicationNumber}
+              icon="⏱"
+            />
+          ) : nextActionVariant === "findCourses" ? (
+            <NextActionCard
+              title={t("screen.dashboard.findCourses.title")}
+              body={t("screen.dashboard.findCourses.body")}
+              cta={t("screen.dashboard.findCourses.cta")}
+              href="/discover"
+              icon="🧭"
+            />
+          ) : nextActionVariant === "finishProfile" ? (
+            <NextActionCard
+              title={t("screen.dashboard.nextActionTitle")}
+              body={t("screen.dashboard.nextActionBody", { n: 3 })}
+              cta={t("screen.dashboard.nextActionCta")}
+              href="/profile/step/1"
+              deadline={t("screen.home.datesLine")}
+            />
+          ) : (
+            <NextActionCard
+              title={t("screen.dashboard.allDone.title")}
+              body={t("screen.dashboard.allDone.body")}
+              cta={t("screen.dashboard.allDone.cta")}
+              href="/applications"
+              icon="🎯"
+            />
+          )}
         </section>
       ) : null}
-
-      <section className="mt-5">
-        <h3 className="mb-2 text-[var(--text-sm)] font-[var(--weight-semibold)] uppercase tracking-wide text-[var(--color-text-tertiary)]">
-          {t("screen.dashboard.nextActionTitle")}
-        </h3>
-        {hasSubmitted && firstSubmitted && firstSubmittedCourse ? (
-          <NextActionCard
-            title={t("status.underReview")}
-            body={t("submitted.nextStepsBody")}
-            cta={t("cta.viewApplications")}
-            href="/applications"
-            deadline={firstSubmitted.applicationNumber}
-          />
-        ) : (
-          <NextActionCard
-            title={t("screen.dashboard.nextActionTitle")}
-            body={t("screen.dashboard.nextActionBody", { n: 3 })}
-            cta={t("screen.dashboard.nextActionCta")}
-            href="/profile/step/1"
-            deadline={t("screen.home.datesLine")}
-          />
-        )}
-      </section>
 
       <section className="mt-5">
         <div className="flex items-center justify-between">

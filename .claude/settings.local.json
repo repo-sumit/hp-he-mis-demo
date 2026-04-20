@@ -16,7 +16,9 @@
       "Bash(curl -s -o /dev/null -w \"rejection/bogus → HTTP %{http_code}\\\\n\" \"http://localhost:3001/documents/rejection/bogus\")",
       "Bash(curl -s -o /dev/null -w \"college/bogus → HTTP %{http_code}\\\\n\" \"http://localhost:3001/discover/college/bogus\")",
       "Bash(curl -s -o /dev/null -w \"course/bogus  → HTTP %{http_code}\\\\n\" \"http://localhost:3001/discover/course/bogus\")",
-      "Bash(pnpm --filter portal dev)"
+      "Bash(pnpm --filter portal dev)",
+      "Bash(pnpm --filter public-web dev)",
+      "Bash(curl -s -o /dev/null -w \"landing HTTP %{http_code}\\\\n\" \"http://localhost:3000/\")"
     ]
   }
 }

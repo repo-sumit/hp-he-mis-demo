@@ -126,10 +126,44 @@ export default function ScrutinyWorkbenchPage({ params }: { params: Promise<Para
         <ReviewerIdentityBlock hint="All verify / reject actions you take here are attached to your name in the audit log." />
       </div>
 
+      {/* Documents lead the workbench — they're the thing operators spend 80%
+          of scrutiny time on, and they unblock the admission decision. The
+          three field groups follow beneath in a compact 2-column grid. */}
+      <div className="mt-5">
+        <ReviewSectionCard
+          title="Documents"
+          description="Verify, reject, or raise a specific-doc discrepancy. The student sees the bilingual reason on their dashboard."
+        >
+          <div className="space-y-3">
+            {app.documents.map((doc) => (
+              <DocumentReviewCard
+                key={doc.code}
+                doc={doc}
+                currentStatus={effectiveDocStatus(applicationId, doc.code)}
+                onVerify={() => setDocOutcome(applicationId, doc.code, "verified")}
+                onReject={() =>
+                  setDocOutcome(
+                    applicationId,
+                    doc.code,
+                    "rejected",
+                    "Rejected during scrutiny.",
+                  )
+                }
+                onRaiseDiscrepancy={() =>
+                  router.push(
+                    `/applications/${applicationId}/discrepancy?scope=document&doc=${doc.code}`,
+                  )
+                }
+              />
+            ))}
+          </div>
+        </ReviewSectionCard>
+      </div>
+
       <div className="mt-5 grid gap-4 lg:grid-cols-2">
         <ReviewSectionCard
           title="Personal fields"
-          description="Verify each row as you go. Keyboard shortcuts land next sprint."
+          description="Verify each row as you go — Y / N / C shortcuts land next sprint."
         >
           <div className="space-y-2">
             {personalFields.map((f) => (
@@ -158,8 +192,8 @@ export default function ScrutinyWorkbenchPage({ params }: { params: Promise<Para
           </div>
         </ReviewSectionCard>
 
-        <ReviewSectionCard title="Reservation and claims">
-          <div className="space-y-2">
+        <ReviewSectionCard title="Reservation and claims" className="lg:col-span-2">
+          <div className="grid gap-2 md:grid-cols-2">
             {claimsFields.map((f) => (
               <FieldReviewRow
                 key={f.key}
@@ -167,35 +201,6 @@ export default function ScrutinyWorkbenchPage({ params }: { params: Promise<Para
                 value={f.value}
                 outcome={fieldOutcome(f.key)}
                 onSetOutcome={(o) => setField(f.key, o)}
-              />
-            ))}
-          </div>
-        </ReviewSectionCard>
-
-        <ReviewSectionCard
-          title="Documents"
-          description="Verify, reject, or jump to the discrepancy form for a specific doc."
-        >
-          <div className="space-y-3">
-            {app.documents.map((doc) => (
-              <DocumentReviewCard
-                key={doc.code}
-                doc={doc}
-                currentStatus={effectiveDocStatus(applicationId, doc.code)}
-                onVerify={() => setDocOutcome(applicationId, doc.code, "verified")}
-                onReject={() =>
-                  setDocOutcome(
-                    applicationId,
-                    doc.code,
-                    "rejected",
-                    "Rejected during scrutiny.",
-                  )
-                }
-                onRaiseDiscrepancy={() =>
-                  router.push(
-                    `/applications/${applicationId}/discrepancy?scope=document&doc=${doc.code}`,
-                  )
-                }
               />
             ))}
           </div>
@@ -217,11 +222,25 @@ export default function ScrutinyWorkbenchPage({ params }: { params: Promise<Para
         </ReviewSectionCard>
       </div>
 
+      {/* Three decisions (verify / reject / discrepancy) are the operator's
+          actual outcome set per §6.4. Mark conditional lives behind a tertiary
+          link so it doesn't compete with the three primary paths. */}
       <ActionFooter
         meta={
           <span>
-            Status: <strong>{status.replace(/_/g, " ")}</strong>
+            Status: <strong className="text-[var(--color-text-primary)]">{status.replace(/_/g, " ")}</strong>
             {discCount > 0 ? ` · ${discCount} open discrepancy` : ""}
+            {" · "}
+            <button
+              type="button"
+              onClick={() => {
+                setStatus(applicationId, "conditional", actionNote || undefined);
+                setActionNote("");
+              }}
+              className="underline decoration-dotted underline-offset-2 hover:text-[var(--color-text-primary)]"
+            >
+              Mark conditional instead
+            </button>
           </span>
         }
       >
@@ -236,19 +255,10 @@ export default function ScrutinyWorkbenchPage({ params }: { params: Promise<Para
           onClick={() =>
             router.push(`/applications/${applicationId}/discrepancy`)
           }
-          className="inline-flex h-10 items-center justify-center rounded-[var(--radius-md)] border border-[var(--color-status-warning-fg)] bg-[var(--color-status-warning-bg)] px-3 text-[var(--text-sm)] font-[var(--weight-semibold)] text-[var(--color-status-warning-fg)]"
+          className="inline-flex h-10 items-center justify-center gap-1 rounded-[var(--radius-md)] border border-[var(--color-status-warning-fg)] bg-[var(--color-status-warning-bg)] px-3 text-[var(--text-sm)] font-[var(--weight-semibold)] text-[var(--color-status-warning-fg)]"
         >
+          <span aria-hidden="true">⚠</span>
           Raise discrepancy
-        </button>
-        <button
-          type="button"
-          onClick={() => {
-            setStatus(applicationId, "conditional", actionNote || undefined);
-            setActionNote("");
-          }}
-          className="inline-flex h-10 items-center justify-center rounded-[var(--radius-md)] border border-[var(--color-border-strong)] bg-[var(--color-surface)] px-3 text-[var(--text-sm)] font-[var(--weight-medium)] text-[var(--color-text-primary)] hover:bg-[var(--color-background-subtle)]"
-        >
-          Mark conditional
         </button>
         <button
           type="button"
@@ -256,8 +266,9 @@ export default function ScrutinyWorkbenchPage({ params }: { params: Promise<Para
             setStatus(applicationId, "rejected", actionNote || undefined);
             setActionNote("");
           }}
-          className="inline-flex h-10 items-center justify-center rounded-[var(--radius-md)] border border-[var(--color-text-danger)] bg-[var(--color-status-danger-bg)] px-3 text-[var(--text-sm)] font-[var(--weight-semibold)] text-[var(--color-status-danger-fg)]"
+          className="inline-flex h-10 items-center justify-center gap-1 rounded-[var(--radius-md)] border border-[var(--color-text-danger)] bg-[var(--color-status-danger-bg)] px-3 text-[var(--text-sm)] font-[var(--weight-semibold)] text-[var(--color-status-danger-fg)]"
         >
+          <span aria-hidden="true">✕</span>
           Reject
         </button>
         <button
@@ -266,8 +277,9 @@ export default function ScrutinyWorkbenchPage({ params }: { params: Promise<Para
             setStatus(applicationId, "verified", actionNote || undefined);
             setActionNote("");
           }}
-          className="inline-flex h-10 items-center justify-center rounded-[var(--radius-md)] bg-[var(--color-interactive-success)] px-4 text-[var(--text-sm)] font-[var(--weight-semibold)] text-[var(--color-text-inverse)]"
+          className="inline-flex h-10 items-center justify-center gap-1 rounded-[var(--radius-md)] bg-[var(--color-interactive-success)] px-4 text-[var(--text-sm)] font-[var(--weight-semibold)] text-[var(--color-text-inverse)]"
         >
+          <span aria-hidden="true">✓</span>
           Verify application
         </button>
       </ActionFooter>
