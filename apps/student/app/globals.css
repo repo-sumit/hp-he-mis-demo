@@ -1,0 +1,40 @@
+@import "tailwindcss";
+@import "@hp-mis/design-tokens/tokens.css";
+@import "@hp-mis/design-tokens/fonts.css";
+
+@theme inline {
+  --color-background: var(--color-background);
+  --color-foreground: var(--color-text-primary);
+  --font-sans: var(--font-sans);
+  --font-devanagari: var(--font-devanagari);
+  --color-brand: var(--color-interactive-brand);
+  --color-brand-hover: var(--color-interactive-brand-hover);
+  --color-surface: var(--color-surface);
+  --color-border: var(--color-border);
+  --color-text-primary: var(--color-text-primary);
+  --color-text-secondary: var(--color-text-secondary);
+  --color-text-inverse: var(--color-text-inverse);
+}
+
+html,
+body {
+  background: var(--color-background);
+  color: var(--color-text-primary);
+  font-family: var(--font-sans);
+}
+
+html:lang(hi),
+html:lang(hi) body {
+  font-family: var(--font-devanagari);
+  line-height: var(--leading-devanagari);
+}
+
+body {
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+button,
+[role="button"] {
+  min-height: var(--tap-target-min);
+}

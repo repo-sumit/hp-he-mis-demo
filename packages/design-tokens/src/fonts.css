@@ -1,0 +1,11 @@
+/*
+ * Font loading is handled per-app via next/font so the fonts are self-hosted
+ * and exposed as CSS variables (--font-montserrat, --font-noto-devanagari).
+ * This file only declares the lang-based default so Devanagari text falls
+ * back cleanly.
+ */
+
+:lang(hi) {
+  font-family: var(--font-devanagari);
+  line-height: var(--leading-devanagari);
+}

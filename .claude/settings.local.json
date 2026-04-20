@@ -1,0 +1,19 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(pnpm install *)",
+      "Bash(pnpm --filter student typecheck)",
+      "Bash(pnpm --filter portal typecheck)",
+      "Bash(pnpm --filter public-web typecheck)",
+      "Bash(pnpm --filter student dev)",
+      "Bash(pnpm --filter '@hp-mis/*' typecheck)",
+      "Bash(netstat -ano)",
+      "Bash(npx next *)",
+      "Bash(taskkill //PID 34036 //F)",
+      "Bash(taskkill //PID 5268 //F)",
+      "Bash(taskkill //PID 20256 //F)",
+      "Bash(curl -s -o /dev/null -w \"upload/bogus → HTTP %{http_code}\\\\n\" \"http://localhost:3001/documents/upload/bogus\")",
+      "Bash(curl -s -o /dev/null -w \"rejection/bogus → HTTP %{http_code}\\\\n\" \"http://localhost:3001/documents/rejection/bogus\")"
+    ]
+  }
+}

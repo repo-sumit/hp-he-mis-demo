@@ -1,0 +1,175 @@
+/*
+ * HP MIS design tokens
+ * Derived from SwiftChat Color System + Typography System.
+ * Primitives drive the semantic layer; consumers should prefer semantic tokens.
+ */
+
+:root {
+  /* ---------- Primitive palette ---------- */
+  /* Primary (SwiftChat blue) */
+  --hp-primary-50: #eff4ff;
+  --hp-primary-100: #dbe5ff;
+  --hp-primary-200: #bacfff;
+  --hp-primary-300: #8aafff;
+  --hp-primary-400: #5a85ff;
+  --hp-primary-500: #3360f5;
+  --hp-primary-600: #1f45d8;
+  --hp-primary-700: #1b36ae;
+  --hp-primary-800: #1c2f88;
+  --hp-primary-900: #0b1d48;
+  --hp-primary-950: #070f2b;
+
+  /* Neutral */
+  --hp-neutral-0: #ffffff;
+  --hp-neutral-50: #f7f8fa;
+  --hp-neutral-100: #eef0f4;
+  --hp-neutral-200: #dfe3ea;
+  --hp-neutral-300: #c4cad4;
+  --hp-neutral-400: #9aa2b1;
+  --hp-neutral-500: #6d7686;
+  --hp-neutral-600: #4c5567;
+  --hp-neutral-700: #343c4f;
+  --hp-neutral-800: #212838;
+  --hp-neutral-900: #121826;
+  --hp-neutral-950: #080c16;
+
+  /* Status */
+  --hp-success-100: #dcfce7;
+  --hp-success-500: #22c55e;
+  --hp-success-700: #15803d;
+
+  --hp-warning-100: #fef3c7;
+  --hp-warning-500: #f59e0b;
+  --hp-warning-700: #b45309;
+
+  --hp-danger-100: #fee2e2;
+  --hp-danger-500: #ef4444;
+  --hp-danger-700: #b91c1c;
+
+  --hp-info-100: #dbeafe;
+  --hp-info-500: #3b82f6;
+  --hp-info-700: #1d4ed8;
+
+  /* ---------- Semantic tokens (light) ---------- */
+  --color-background: var(--hp-neutral-0);
+  --color-background-subtle: var(--hp-neutral-50);
+  --color-background-muted: var(--hp-neutral-100);
+  --color-background-inverse: var(--hp-neutral-900);
+  --color-background-brand: var(--hp-primary-600);
+  --color-background-brand-subtle: var(--hp-primary-50);
+
+  --color-surface: var(--hp-neutral-0);
+  --color-surface-raised: var(--hp-neutral-0);
+  --color-surface-overlay: rgba(18, 24, 38, 0.6);
+
+  --color-border: var(--hp-neutral-200);
+  --color-border-strong: var(--hp-neutral-300);
+  --color-border-brand: var(--hp-primary-600);
+  --color-border-focus: var(--hp-primary-500);
+
+  --color-text-primary: var(--hp-neutral-900);
+  --color-text-secondary: var(--hp-neutral-600);
+  --color-text-tertiary: var(--hp-neutral-500);
+  --color-text-inverse: var(--hp-neutral-0);
+  --color-text-brand: var(--hp-primary-700);
+  --color-text-link: var(--hp-primary-600);
+  --color-text-danger: var(--hp-danger-700);
+  --color-text-success: var(--hp-success-700);
+  --color-text-warning: var(--hp-warning-700);
+
+  --color-interactive-brand: var(--hp-primary-600);
+  --color-interactive-brand-hover: var(--hp-primary-700);
+  --color-interactive-brand-pressed: var(--hp-primary-800);
+  --color-interactive-danger: var(--hp-danger-500);
+  --color-interactive-success: var(--hp-success-500);
+  --color-interactive-disabled: var(--hp-neutral-200);
+
+  --color-status-success-bg: var(--hp-success-100);
+  --color-status-success-fg: var(--hp-success-700);
+  --color-status-warning-bg: var(--hp-warning-100);
+  --color-status-warning-fg: var(--hp-warning-700);
+  --color-status-danger-bg: var(--hp-danger-100);
+  --color-status-danger-fg: var(--hp-danger-700);
+  --color-status-info-bg: var(--hp-info-100);
+  --color-status-info-fg: var(--hp-info-700);
+
+  /* ---------- Typography ---------- */
+  --font-sans: var(--font-montserrat), "Segoe UI", system-ui, -apple-system, sans-serif;
+  --font-devanagari: var(--font-noto-devanagari), var(--font-montserrat), system-ui, sans-serif;
+
+  --text-xs: 0.75rem;      /* 12 */
+  --text-sm: 0.875rem;     /* 14 */
+  --text-base: 1rem;       /* 16 */
+  --text-lg: 1.125rem;     /* 18 */
+  --text-xl: 1.25rem;      /* 20 */
+  --text-2xl: 1.5rem;      /* 24 */
+  --text-3xl: 1.875rem;    /* 30 */
+  --text-4xl: 2.25rem;     /* 36 */
+  --text-display: 2.75rem; /* 44 */
+
+  --leading-tight: 1.2;
+  --leading-normal: 1.4;
+  --leading-relaxed: 1.6;
+  --leading-devanagari: 1.5;
+
+  --weight-regular: 400;
+  --weight-medium: 500;
+  --weight-semibold: 600;
+  --weight-bold: 700;
+
+  /* ---------- Spacing & radius ---------- */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.25rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-10: 2.5rem;
+  --space-12: 3rem;
+  --space-16: 4rem;
+
+  --radius-sm: 0.25rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
+  --radius-pill: 9999px;
+
+  /* ---------- Elevation ---------- */
+  --shadow-sm: 0 1px 2px rgba(16, 24, 40, 0.06);
+  --shadow-md: 0 4px 12px rgba(16, 24, 40, 0.08);
+  --shadow-lg: 0 12px 32px rgba(16, 24, 40, 0.12);
+
+  /* ---------- Layout constants ---------- */
+  --tap-target-min: 44px;
+  --button-height: 48px;
+  --input-height: 56px;
+  --mobile-max: 430px;
+
+  color-scheme: light;
+}
+
+/* ---------- Dark mode (opt-in via .dark on html) ---------- */
+.dark {
+  --color-background: var(--hp-neutral-950);
+  --color-background-subtle: var(--hp-neutral-900);
+  --color-background-muted: var(--hp-neutral-800);
+  --color-background-inverse: var(--hp-neutral-0);
+  --color-background-brand: var(--hp-primary-500);
+  --color-background-brand-subtle: rgba(51, 96, 245, 0.12);
+
+  --color-surface: var(--hp-neutral-900);
+  --color-surface-raised: var(--hp-neutral-800);
+
+  --color-border: var(--hp-neutral-800);
+  --color-border-strong: var(--hp-neutral-700);
+
+  --color-text-primary: var(--hp-neutral-50);
+  --color-text-secondary: var(--hp-neutral-300);
+  --color-text-tertiary: var(--hp-neutral-400);
+  --color-text-inverse: var(--hp-neutral-900);
+  --color-text-brand: var(--hp-primary-300);
+  --color-text-link: var(--hp-primary-300);
+
+  color-scheme: dark;
+}

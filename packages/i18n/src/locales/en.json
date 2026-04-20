@@ -1,0 +1,714 @@
+{
+  "app": {
+    "name": "HP Admissions",
+    "tagline": "Unified higher-education admissions for Himachal Pradesh."
+  },
+  "nav": {
+    "home": "Home",
+    "myApplications": "My Applications",
+    "help": "Help",
+    "profile": "My profile",
+    "logout": "Log out",
+    "changeLanguage": "Change language"
+  },
+  "cta": {
+    "register": "Register",
+    "login": "Log in",
+    "continue": "Continue",
+    "back": "Back",
+    "saveAndContinue": "Save and continue",
+    "submit": "Submit application",
+    "payNow": "Pay now",
+    "upload": "Upload document",
+    "takePhoto": "Take photo",
+    "confirm": "Confirm",
+    "freezeSeat": "Freeze seat",
+    "floatSeat": "Float for higher preference",
+    "declineSeat": "Decline seat",
+    "viewDetails": "View details",
+    "startApplication": "Start application",
+    "checkEligibility": "Check eligibility",
+    "importantDates": "Important dates",
+    "sendOtp": "Send OTP",
+    "loginWithOtp": "Log in with OTP",
+    "sendResetLink": "Send reset link",
+    "backToLogin": "Back to log in",
+    "openCalculator": "Open calculator",
+    "openConverter": "Open converter",
+    "edit": "Edit",
+    "backToProfile": "Back to profile",
+    "finishLater": "Finish later",
+    "chooseFromGallery": "Choose from gallery",
+    "uploadPdf": "Upload a PDF",
+    "confirmUpload": "Confirm upload",
+    "retakePhoto": "Retake photo",
+    "replaceDocument": "Replace document",
+    "reUpload": "Re-upload",
+    "viewUpload": "View upload",
+    "backToChecklist": "Back to documents",
+    "getHelp": "Get help",
+    "filter": "Filter",
+    "sort": "Sort",
+    "clearAll": "Clear all",
+    "apply": "Apply",
+    "close": "Close",
+    "addPreferenceLater": "Add to preferences (coming soon)",
+    "viewCollege": "View college",
+    "viewCourse": "View course",
+    "exploreCourses": "Find eligible courses"
+  },
+  "status": {
+    "registered": "Registered",
+    "profileComplete": "Profile complete",
+    "applicationSubmitted": "Application submitted",
+    "underReview": "Under review",
+    "actionNeeded": "Action needed",
+    "verified": "Verified",
+    "meritPublished": "Merit published",
+    "seatAllotted": "Seat allotted",
+    "paymentPending": "Payment pending",
+    "admissionConfirmed": "Admission confirmed",
+    "applicationRejected": "Application rejected",
+    "withdrawn": "Withdrawn",
+    "submitted": "Submitted",
+    "underScrutiny": "Under scrutiny",
+    "allotted": "Allotted"
+  },
+  "landing": {
+    "heading": "One admission, every government college in Himachal.",
+    "subheading": "Apply once. Track across colleges. Get seats faster.",
+    "openPortal": "Open admission portal",
+    "studentApp": "Open in SwiftChat",
+    "forAdmins": "College and state admin login"
+  },
+  "student": {
+    "splash": {
+      "title": "HP Admissions",
+      "subtitle": "A SwiftChat mini app for government college admissions"
+    },
+    "home": {
+      "welcomeTitle": "Welcome",
+      "welcomeBody": "Check your eligibility, apply to the courses that fit, and track your admission in one place.",
+      "importantDates": "Important dates",
+      "seatMatrix": "Explore seats",
+      "eligibilityCheck": "Check eligibility"
+    },
+    "dashboard": {
+      "nextAction": "What to do next",
+      "notifications": "Recent updates"
+    }
+  },
+  "portal": {
+    "loginTitle": "Official portal login",
+    "loginHint": "For college and state admin users.",
+    "dashboardTitle": "Dashboard",
+    "sidebar": {
+      "overview": "Overview",
+      "applications": "Applications",
+      "colleges": "Colleges",
+      "courses": "Courses",
+      "seats": "Seat matrix",
+      "merit": "Merit",
+      "allocation": "Allocation",
+      "reports": "Reports",
+      "users": "Users",
+      "settings": "Settings"
+    }
+  },
+  "common": {
+    "yes": "Yes",
+    "no": "No",
+    "loading": "Loading…",
+    "comingSoon": "Coming soon",
+    "languageSwitch": "हिन्दी",
+    "backToHome": "Back to home",
+    "or": "or",
+    "optional": "optional",
+    "saved": "Saved",
+    "autosaving": "Saving…",
+    "justNow": "just now",
+    "secondsAgo": "{n} sec ago",
+    "minutesAgo": "{n} min ago"
+  },
+  "error": {
+    "required": "This field is required.",
+    "invalidMobile": "Mobile must be 10 digits, starting with 6-9.",
+    "invalidEmail": "Please enter a valid email address.",
+    "invalidAadhaar": "Aadhaar must be exactly 12 digits.",
+    "invalidApaar": "APAAR ID should be 12 characters.",
+    "invalidPincode": "PIN must be 6 digits.",
+    "invalidYear": "Enter a 4-digit year, e.g. 2025.",
+    "invalidPercentage": "Enter a percentage between 0 and 100.",
+    "invalidIfsc": "IFSC must be 11 characters (e.g. SBIN0001234).",
+    "invalidAccount": "Account number looks too short.",
+    "passwordTooShort": "Password must be at least 6 characters.",
+    "passwordsDontMatch": "Passwords don't match.",
+    "mustAcceptDeclaration": "Please accept the declaration to continue.",
+    "fixBeforeContinue": "Please fix the highlighted fields before continuing.",
+    "network": "Slow network. We're still trying."
+  },
+  "screen": {
+    "language": {
+      "title": "Choose your language",
+      "subtitle": "You can change this later from the top of any screen.",
+      "englishCardTitle": "English",
+      "englishCardSubtitle": "Continue in English",
+      "hindiCardTitle": "हिन्दी",
+      "hindiCardSubtitle": "हिन्दी में जारी रखें"
+    },
+    "home": {
+      "cycleTag": "Admissions · Cycle 2026-27",
+      "heading": "Apply to every HP government college in one place.",
+      "body": "Register once, check what you're eligible for, and track your admission from your phone.",
+      "datesLine": "Applications open 15 June · Close 24 June 2026, 5:00 PM",
+      "assistedMode": "Applying with help from family or a cyber café? Use your own email and mobile — the OTP will come to you.",
+      "trustLine": "A Government of Himachal Pradesh service"
+    },
+    "register": {
+      "title": "Create your account",
+      "subtitle": "One account works across every HP government college.",
+      "haveAccount": "Already registered?",
+      "loginLink": "Log in",
+      "declaration": "I confirm the details I have entered are my own. I will use my own email and mobile, and I understand that if this information is wrong my application may be cancelled."
+    },
+    "login": {
+      "title": "Welcome back",
+      "subtitle": "Log in to continue your application.",
+      "orDivider": "or",
+      "forgotPassword": "Forgot password?",
+      "newUser": "New here?",
+      "registerLink": "Create an account",
+      "otpHelper": "We'll send a one-time code to your mobile."
+    },
+    "forgot": {
+      "title": "Reset your password",
+      "subtitle": "Enter the email or mobile you registered with. We'll send you a reset link.",
+      "confirmation": "If the account exists, a reset link will arrive within a minute."
+    },
+    "dashboard": {
+      "greeting": "Hello, {name}",
+      "subGreeting": "Here's where your admission stands today.",
+      "statusTitle": "Your admission status",
+      "nextActionTitle": "What to do next",
+      "nextActionBody": "Complete your profile in {n} more steps. This unlocks document upload and eligibility checks.",
+      "nextActionCta": "Continue profile",
+      "notificationsTitle": "Recent updates",
+      "viewAllNotifications": "View all notifications",
+      "quickLinksTitle": "Quick links",
+      "mockNotifications": {
+        "welcome": "Welcome to HP Admissions. Complete your profile to apply.",
+        "dates": "Application window closes on 24 June 2026, 5:00 PM.",
+        "language": "Tip: you can switch language any time from the top of the screen."
+      }
+    }
+  },
+  "profile": {
+    "header": {
+      "title": "Build your profile",
+      "progress": "Step {step} of 5",
+      "autosaveIdle": "Auto-saves as you go",
+      "autosaveSaving": "Saving…",
+      "autosaveSaved": "Saved {ago}"
+    },
+    "step1": {
+      "title": "Personal information",
+      "subtitle": "This is you — make sure the details match your marksheet and Aadhaar.",
+      "personalSection": "You",
+      "contactSection": "How we reach you",
+      "identitySection": "Identity (optional)",
+      "reservationSection": "Reservation and special claims"
+    },
+    "step2": {
+      "title": "Where you live",
+      "subtitle": "Where should we send letters? Your district decides your domicile quota.",
+      "permanentSection": "Permanent address",
+      "correspondenceSection": "Where to send letters"
+    },
+    "step3": {
+      "title": "Your Class 12 details",
+      "subtitle": "We'll use this to check eligibility and build the merit list.",
+      "boardSection": "Board and year",
+      "subjectsSection": "Subjects and marks",
+      "resultSection": "Result"
+    },
+    "step4": {
+      "title": "Reservation and special claims",
+      "subtitle": "Only claim what you have a certificate for. You can add the certificate later.",
+      "claimsSection": "Which claims apply?",
+      "certificatesSection": "Certificate details"
+    },
+    "step5": {
+      "title": "Bank details",
+      "subtitle": "We only use this for refunds and scholarship transfers.",
+      "warningTitle": "Use your own bank account",
+      "warningBody": "Refunds only go to this account. Do not give a cyber-café operator's or a relative's bank details — refund returns can fail.",
+      "reviewSection": "Your profile so far"
+    },
+    "summary": {
+      "title": "Your profile so far",
+      "edit": "Edit",
+      "notProvided": "Not provided yet",
+      "step1Title": "Personal",
+      "step2Title": "Address",
+      "step3Title": "Class 12",
+      "step4Title": "Claims"
+    }
+  },
+  "calculator": {
+    "bof": {
+      "title": "Best-of-Five calculator",
+      "subtitle": "Enter your Class 12 subject marks. We'll pick the best 5 and compute your percentage."
+    },
+    "cgpa": {
+      "title": "CGPA → Percentage",
+      "subtitle": "CBSE reports CGPA. Most colleges expect a percentage — we multiply by 9.5."
+    },
+    "placeholder": "We'll plug in the interactive tool in the next sprint. For now, enter your best-of-five percentage manually on Step 3."
+  },
+  "field": {
+    "email": {
+      "label": "Email",
+      "helper": "Use your own email, not your father's.",
+      "placeholder": "name@example.com"
+    },
+    "mobile": {
+      "label": "Mobile number",
+      "helper": "10 digits, starting with 6-9.",
+      "placeholder": "98765 43210"
+    },
+    "emailOrMobile": {
+      "label": "Email or mobile",
+      "helper": "Use the details you registered with.",
+      "placeholder": "name@example.com or 98765 43210"
+    },
+    "password": {
+      "label": "Password",
+      "helper": "At least 6 characters.",
+      "placeholder": "Create a password"
+    },
+    "confirmPassword": {
+      "label": "Confirm password",
+      "helper": "Type the same password again.",
+      "placeholder": "Re-enter password"
+    },
+    "fullName": {
+      "label": "Full name (as on marksheet)",
+      "helper": "Exactly as it is printed on your Class 12 marksheet.",
+      "placeholder": "e.g. Asha Sharma"
+    },
+    "fatherName": {
+      "label": "Father's name",
+      "placeholder": "e.g. Rakesh Sharma"
+    },
+    "motherName": {
+      "label": "Mother's name",
+      "placeholder": "e.g. Geeta Sharma"
+    },
+    "dob": {
+      "label": "Date of birth",
+      "helper": "Format DD/MM/YYYY, e.g. 12/08/2007."
+    },
+    "gender": {
+      "label": "Gender",
+      "female": "Female",
+      "male": "Male",
+      "other": "Other"
+    },
+    "aadhaar": {
+      "label": "Aadhaar number",
+      "helper": "12 digits, no spaces. Optional — you can add this later.",
+      "placeholder": "1234 5678 9012"
+    },
+    "apaar": {
+      "label": "APAAR ID",
+      "helper": "Optional. Find your APAAR ID in DigiLocker.",
+      "whatIsThis": "What is APAAR?",
+      "placeholder": "12-character ID"
+    },
+    "category": {
+      "label": "Reservation category",
+      "helper": "Pick the category you have a certificate for.",
+      "options": {
+        "general": "General",
+        "ews": "EWS (Economically Weaker Sections)",
+        "obc": "OBC",
+        "sc": "SC",
+        "st": "ST"
+      }
+    },
+    "singleGirlChild": {
+      "label": "Are you the only daughter in your family?",
+      "helper": "Single Girl Child is a supernumerary seat — an extra seat over and above the regular count."
+    },
+    "pwd": {
+      "label": "Do you have a disability certificate?",
+      "helper": "A PwD certificate with 40% or more disability is required."
+    },
+    "permanentAddress": {
+      "label": "Permanent address",
+      "helper": "House number, street, village or town.",
+      "placeholder": "House no., street, village/town"
+    },
+    "district": {
+      "label": "District",
+      "helper": "HP districts appear first."
+    },
+    "state": {
+      "label": "State",
+      "default": "Himachal Pradesh"
+    },
+    "pincode": {
+      "label": "PIN code",
+      "helper": "6 digits.",
+      "finder": "Don't know your PIN?",
+      "placeholder": "171001"
+    },
+    "correspondenceSame": {
+      "label": "Correspondence address is the same as permanent",
+      "helper": "We'll skip re-entering it."
+    },
+    "correspondenceAddress": {
+      "label": "Correspondence address",
+      "helper": "Where we should send letters if it's different from your permanent address.",
+      "placeholder": "House no., street, village/town"
+    },
+    "board": {
+      "label": "Board",
+      "helper": "The board that issued your Class 12 marksheet.",
+      "options": {
+        "hpbose": "HPBOSE",
+        "cbse": "CBSE",
+        "icse": "ICSE",
+        "nios": "NIOS",
+        "other": "Other"
+      }
+    },
+    "yearOfPassing": {
+      "label": "Year of passing",
+      "helper": "The year printed on your marksheet. Example: 2025.",
+      "placeholder": "2025"
+    },
+    "rollNumber": {
+      "label": "Roll number",
+      "helper": "Exactly as printed on your Class 12 marksheet.",
+      "placeholder": "e.g. 1234567"
+    },
+    "stream": {
+      "label": "Stream",
+      "helper": "Cannot be changed after submission. Pick carefully.",
+      "options": {
+        "arts": "Arts / Humanities",
+        "pcm": "Science (PCM)",
+        "pcb": "Science (PCB)",
+        "commerce": "Commerce"
+      }
+    },
+    "subjects": {
+      "label": "Subjects in Class 12",
+      "helper": "Comma-separated, exactly as printed on the marksheet.",
+      "placeholder": "e.g. English, Hindi, History, Political Science, Economics"
+    },
+    "bofPercentage": {
+      "label": "Best-of-five percentage",
+      "helper": "Average of your top 5 subjects. Use the calculator if you're not sure.",
+      "placeholder": "e.g. 62.4"
+    },
+    "cgpa": {
+      "converterLink": "CBSE CGPA? Open the converter"
+    },
+    "resultStatus": {
+      "label": "Result status",
+      "options": {
+        "pass": "Passed",
+        "compartment": "Compartment / Re-appearing",
+        "fail": "Failed"
+      }
+    },
+    "gapYears": {
+      "label": "Gap years (if any)",
+      "helper": "0 if you are applying right after Class 12.",
+      "placeholder": "0"
+    },
+    "claims": {
+      "label": "Which claims apply to you?",
+      "helper": "Tick only what you can support with a certificate.",
+      "options": {
+        "sc": "SC",
+        "st": "ST",
+        "obc": "OBC",
+        "ews": "EWS",
+        "pwd": "PwD (Disability)",
+        "sports": "Sports",
+        "cultural": "Cultural activities",
+        "exServiceman": "Ex-serviceman's ward"
+      }
+    },
+    "bank": {
+      "accountHolder": {
+        "label": "Account holder name",
+        "helper": "Must match the name printed on the passbook."
+      },
+      "accountNumber": {
+        "label": "Account number",
+        "placeholder": "e.g. 1234 5678 9012"
+      },
+      "ifsc": {
+        "label": "IFSC code",
+        "helper": "11-character bank code on the passbook. Example: SBIN0001234.",
+        "placeholder": "e.g. SBIN0001234"
+      },
+      "bankName": {
+        "label": "Bank name",
+        "placeholder": "e.g. State Bank of India"
+      }
+    }
+  },
+  "certificate": {
+    "number": "Certificate number",
+    "authority": "Issuing authority",
+    "issueDate": "Issue date",
+    "willUploadLater": "I don't have this right now, will upload later",
+    "uploadLaterBadge": "Will upload later",
+    "addNowCta": "Add details now"
+  },
+  "quickLink": {
+    "documents": "Documents",
+    "eligibility": "Eligibility",
+    "notifications": "Notifications",
+    "helpdesk": "Help desk"
+  },
+  "document": {
+    "status": {
+      "notUploaded": "Not uploaded",
+      "uploaded": "Uploaded",
+      "underReview": "Under review",
+      "verified": "Verified",
+      "rejected": "Rejected",
+      "reUploadRequired": "Re-upload needed"
+    },
+    "badge": {
+      "required": "Required",
+      "conditional": "If applicable",
+      "recommended": "Recommended"
+    },
+    "meta": {
+      "formats": "Accepted: {list}",
+      "maxSize": "Max size: {mb} MB",
+      "conditionalFor": "Required because: {reason}"
+    },
+    "condition": {
+      "claim": {
+        "sc": "you've claimed SC reservation",
+        "st": "you've claimed ST reservation",
+        "obc": "you've claimed OBC reservation",
+        "ews": "you've claimed EWS reservation",
+        "pwd": "you've claimed a disability"
+      },
+      "hpDomicile": "your state is Himachal Pradesh",
+      "gapYears": "you have {n} gap year(s)",
+      "nonHpBoard": "your board is not HPBOSE"
+    },
+    "checklist": {
+      "title": "Your documents",
+      "subtitle": "This checklist updates as your profile changes. Upload once, we'll route it to the college.",
+      "profileHint": "Complete your profile first — we use it to show the right documents.",
+      "summary": "{done} of {total} uploaded · {verified} verified",
+      "sections": {
+        "actionNeeded": "Action needed",
+        "pending": "Still to upload",
+        "done": "Already uploaded"
+      },
+      "emptyPending": "All required documents are uploaded. You can still add optional ones below.",
+      "emptyDone": "Nothing uploaded yet. Start with your Class 12 marksheet."
+    },
+    "upload": {
+      "title": "Upload {name}",
+      "chooseSource": "How would you like to upload?",
+      "sources": {
+        "cameraTitle": "Take a photo",
+        "cameraHint": "Built-in camera with a corner guide",
+        "galleryTitle": "Choose from gallery",
+        "galleryHint": "Pick a photo you've already taken",
+        "fileTitle": "Upload a PDF",
+        "fileHint": "For scanned documents"
+      },
+      "tips": {
+        "title": "How to get it right the first time",
+        "clear": "All details (name, marks, seal) must be crisp and readable.",
+        "lighting": "Take the photo in bright, even light — no shadows.",
+        "align": "Place the document inside the corner marks.",
+        "seal": "Official seal and signature should be clearly visible.",
+        "size": "Keep the file under {mb} MB. We compress bigger files automatically."
+      },
+      "preview": {
+        "empty": "No file picked yet",
+        "selectedTitle": "Ready to upload",
+        "selectedHint": "This is a mock file for the demo — real camera and gallery picker land next sprint.",
+        "confirmHint": "You can replace this file any time before final submission."
+      },
+      "alreadyUploaded": "You've already uploaded this. Replacing will send the new file for review.",
+      "replaceCtaHint": "Replacing resets the review status to \"Under review\"."
+    },
+    "rejection": {
+      "title": "Why this was rejected",
+      "subtitle": "Fix the issue below and upload a new copy. Your fee and earlier data are safe.",
+      "reasonLabel": "Reason",
+      "reviewerLabel": "Reviewed by",
+      "reviewedAtLabel": "Reviewed on",
+      "nextStepsTitle": "How to fix this",
+      "nextStepsBody": "Follow the upload tips on the next screen. Scan or re-photograph the document in good light, and check the seal and signature are visible."
+    },
+    "preview": {
+      "title": "Your upload",
+      "subtitle": "Here's what's with the college right now.",
+      "fileLabel": "File",
+      "sizeLabel": "Size",
+      "uploadedAtLabel": "Uploaded on",
+      "reviewedAtLabel": "Reviewed on",
+      "reviewerLabel": "Reviewed by",
+      "noPreview": "File preview appears here in the full build."
+    },
+    "mock": {
+      "reviewerName": "Sanjauli Govt College · Scrutiny",
+      "rejectionReason": "Official seal is not clearly visible. Re-upload a brighter, fuller scan of the same page."
+    },
+    "name": {
+      "marksheet_12": "Class 12 marksheet",
+      "photo": "Passport-size photo",
+      "signature": "Your signature",
+      "character_cert": "Character certificate",
+      "caste_cert": "Caste certificate (SC/ST/OBC)",
+      "ews_cert": "EWS certificate",
+      "pwd_cert": "Disability certificate",
+      "domicile_cert": "HP domicile certificate",
+      "gap_affidavit": "Gap year affidavit",
+      "migration_cert": "Migration certificate"
+    },
+    "description": {
+      "marksheet_12": "Both sides of your HPBOSE / CBSE / ICSE Class 12 marksheet.",
+      "photo": "A clear passport-size colour photo with a plain background.",
+      "signature": "Your signature on a plain white sheet, scanned or photographed.",
+      "character_cert": "Issued by your Class 12 school principal.",
+      "caste_cert": "Issued by the Tehsildar or SDM in HP.",
+      "ews_cert": "Income and asset certificate in the Government of India format.",
+      "pwd_cert": "Certificate showing at least 40% disability.",
+      "domicile_cert": "Bona fide / Himachali certificate issued by the SDM.",
+      "gap_affidavit": "Notarised affidavit explaining your gap year(s).",
+      "migration_cert": "Issued by the board that gave your Class 12 marksheet."
+    }
+  },
+  "discover": {
+    "title": "Find your courses",
+    "subtitle": "Courses you can apply for, based on the profile you've entered.",
+    "searchPlaceholder": "Search by college, course, or subject",
+    "filter": {
+      "title": "Filter results",
+      "state": "Eligibility",
+      "district": "District",
+      "college": "College",
+      "course": "Course",
+      "empty": "Nothing to filter yet."
+    },
+    "sort": {
+      "label": "Sort",
+      "bestMatch": "Best match",
+      "mostSeats": "Most seats"
+    },
+    "summary": {
+      "total": "{n} results",
+      "eligible": "{n} eligible",
+      "conditional": "{n} conditional",
+      "notEligible": "{n} not eligible"
+    },
+    "sections": {
+      "eligible": "Eligible",
+      "conditional": "Conditionally eligible",
+      "notEligible": "Not eligible",
+      "eligibleHint": "You meet the basic rules for these.",
+      "conditionalHint": "You can apply, but the college will review the flagged item before admission.",
+      "notEligibleHint": "Your Class 12 details don't match the rules for these right now."
+    },
+    "state": {
+      "eligible": "Eligible",
+      "conditional": "Conditional",
+      "notEligible": "Not eligible"
+    },
+    "reason": {
+      "streamMismatch": "Needs stream: {required}. You studied: {yours}.",
+      "belowMinMarks": "Needs at least {min}% best-of-five. Your marks: {yours}%.",
+      "failedClass12": "You have marked Class 12 as failed — you can't apply this cycle.",
+      "compartment": "You're marked as compartment. Clear the subject and update your profile to unlock admission.",
+      "gapYears": "You have {n} gap year(s). Upload a notarised gap-year affidavit before scrutiny.",
+      "outsideHpDomicile": "Your state is outside Himachal Pradesh. HP quota seats need a domicile certificate.",
+      "teacherCountReview": "Seats are being reviewed against teacher strength — the college will confirm after scrutiny.",
+      "profileIncomplete": "Complete your Class 12 details to see accurate results."
+    },
+    "card": {
+      "combinationsCount": "{n} combinations",
+      "totalSeats": "{total} seats · {vacant} vacant",
+      "noSeats": "Seat matrix loading…",
+      "atCollege": "at {college}",
+      "district": "{district} district"
+    },
+    "combinationsExplainer": {
+      "title": "What is a BA combination?",
+      "body": "In BA you pick two main subjects from different subject buckets — for example History + Political Science, or Hindi + Economics. The seat you get depends on the combination, not just the college."
+    },
+    "college": {
+      "aisheCode": "AISHE {code}",
+      "type": {
+        "government_degree": "Government degree college",
+        "sanskrit": "Government Sanskrit college"
+      },
+      "coursesHere": "Courses at this college",
+      "combinationsHere": "BA combinations available here",
+      "departments": "Departments",
+      "combinationsHint": "Pick any one combination when you apply for BA."
+    },
+    "course": {
+      "names": {
+        "ba": "Bachelor of Arts (BA)",
+        "bcom": "Bachelor of Commerce (BCom)",
+        "bsc_nonmed": "BSc Non-Medical",
+        "bsc_med": "BSc Medical",
+        "bca": "Bachelor of Computer Applications (BCA)",
+        "bba": "Bachelor of Business Administration (BBA)",
+        "bvoc": "Bachelor of Vocation (BVoc)"
+      },
+      "descriptions": {
+        "ba": "Three-year undergraduate degree with two main subjects chosen as a combination. Best for students who studied Arts in Class 12 — BA combinations are also open to some Commerce students.",
+        "bcom": "Three-year commerce degree covering accounting, business studies, and economics. Open to Arts, Commerce, and Science streams at most colleges.",
+        "bsc_nonmed": "Three-year science degree with Physics, Chemistry, Maths. Requires PCM in Class 12.",
+        "bsc_med": "Three-year science degree with Physics, Chemistry, Biology. Requires PCB in Class 12.",
+        "bca": "Three-year degree focused on computing and software. Open to all streams with 55% minimum marks.",
+        "bba": "Three-year management-focused degree. Open to all streams with 50% minimum marks.",
+        "bvoc": "Three-year vocational degree combining classroom learning with industry skills."
+      },
+      "streamRequired": "Stream required",
+      "minMarks": "Minimum marks",
+      "duration": "Duration",
+      "durationYears": "{n} years",
+      "collegesOffering": "Colleges offering this course",
+      "combinationBasedNote": "BA is combination-based — seats are allotted against your chosen two-subject combination.",
+      "anyStream": "Any"
+    },
+    "stream": {
+      "arts": "Arts",
+      "pcm": "Science (PCM)",
+      "pcb": "Science (PCB)",
+      "commerce": "Commerce",
+      "any": "Any stream"
+    },
+    "empty": {
+      "profileTitle": "Finish your profile first",
+      "profileBody": "We use your stream, marks, and domicile to show the courses you can apply for. Complete at least Step 3 of your profile.",
+      "profileCta": "Continue profile",
+      "noMatches": "No courses match your filters.",
+      "noMatchesCta": "Clear filters"
+    },
+    "addPreference": {
+      "title": "Preferences open next",
+      "body": "Once preferences unlock, you'll drag and drop combinations into the order you want them."
+    }
+  }
+}
