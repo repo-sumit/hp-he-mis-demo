@@ -3,7 +3,13 @@
  * the layer is compatible with the real mock API when it lands. Everything is
  * static — per-reviewer state (verifications, discrepancies, status overrides)
  * lives on top in ScrutinyProvider.
+ *
+ * College names are stitched in from the HPU-167 fixture at module init, so
+ * the portal always shows the canonical institution name (no drift between
+ * the seed dataset and these sample applications).
  */
+
+import { getCollegeById } from "@hp-mis/fixtures";
 
 export type AppBaseStatus =
   | "submitted"
@@ -101,7 +107,9 @@ function appId(n: number): string {
 export const REVIEWER_ID = "op-priya";
 export const REVIEWER_NAME = "Priya Negi";
 export const REVIEWER_ROLE = "College Operator";
-export const REVIEWER_COLLEGE = "GC Sanjauli";
+export const REVIEWER_COLLEGE_ID = "gc_sanjauli";
+export const REVIEWER_COLLEGE =
+  getCollegeById(REVIEWER_COLLEGE_ID)?.shortName ?? "GC Sanjauli";
 
 /**
  * Eleven seeded applications. Application #1 is Asha Sharma — the demo-day
@@ -109,7 +117,7 @@ export const REVIEWER_COLLEGE = "GC Sanjauli";
  * are a cross-section of courses, colleges, and statuses so the queue view,
  * filters, and scrutiny actions all have something to chew on.
  */
-export const MOCK_APPLICATIONS: readonly MockApplication[] = [
+const SEED_APPLICATIONS: readonly MockApplication[] = [
   {
     id: appId(147),
     studentName: "Asha Sharma",
@@ -921,6 +929,22 @@ function baseDocs(at: number, codes: string[]): AppDocument[] {
 function allVerified(at: number, codes: string[]): AppDocument[] {
   return baseDocs(at, codes).map((d) => ({ ...d, baseStatus: "verified" as DocScrutinyStatus }));
 }
+
+/** Canonical display name for a college id, sourced from the HPU-167 seed. */
+function resolveCollegeName(id: string, fallback: string): string {
+  return getCollegeById(id)?.shortName ?? fallback;
+}
+
+export const MOCK_APPLICATIONS: readonly MockApplication[] = SEED_APPLICATIONS.map(
+  (app) => ({
+    ...app,
+    collegeName: resolveCollegeName(app.collegeId, app.collegeName),
+    preferences: app.preferences.map((p) => ({
+      ...p,
+      collegeName: resolveCollegeName(p.collegeId, p.collegeName),
+    })),
+  }),
+);
 
 const APPS_BY_ID = Object.fromEntries(MOCK_APPLICATIONS.map((a) => [a.id, a]));
 

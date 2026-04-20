@@ -65,6 +65,24 @@ export default function CollegeDetailPage({ params }: { params: Promise<Params> 
             </dt>
           </div>
         </dl>
+        <ul className="mt-3 flex flex-wrap gap-1.5">
+          <li className="rounded-[var(--radius-pill)] border border-[var(--color-border)] bg-[var(--color-background-subtle)] px-2 py-0.5 text-[var(--text-xs)] text-[var(--color-text-secondary)]">
+            {t(`discover.college.coEd.${college.coEdStatus}`)}
+          </li>
+          <li className="rounded-[var(--radius-pill)] border border-[var(--color-border)] bg-[var(--color-background-subtle)] px-2 py-0.5 text-[var(--text-xs)] text-[var(--color-text-secondary)]">
+            {t(`discover.college.hostel.${college.hostelAvailable}`)}
+          </li>
+        </ul>
+        {college.website ? (
+          <a
+            href={college.website}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mt-2 inline-flex text-[var(--text-xs)] font-[var(--weight-medium)] text-[var(--color-text-link)] underline-offset-2 hover:underline"
+          >
+            {t("discover.college.website")}
+          </a>
+        ) : null}
       </section>
 
       <section className="mt-4 rounded-[var(--radius-lg)] border border-[var(--color-border)] bg-[var(--color-surface)] p-3">

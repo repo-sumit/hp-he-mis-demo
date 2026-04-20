@@ -11,7 +11,13 @@ export type HPCollegeType =
   | "government_aided"
   | "private"
   | "sanskrit"
-  | "autonomous";
+  | "autonomous"
+  | "medical"
+  | "pharmacy"
+  | "engineering"
+  | "teacher_education"
+  | "university"
+  | "institute";
 
 export type CoEdStatus = "co_ed" | "women_only" | "men_only";
 
@@ -44,11 +50,18 @@ export interface HPCollege {
   /** Baseline total sanctioned seats across all courses. */
   totalSanctionedSeats: number;
   isActive: boolean;
+  /** Official college website, when published in the HPU dataset. */
+  website?: string;
 }
 
+import { HP_COLLEGES } from "./generated/colleges-hpu";
+
+/** Full HPU-167 dataset — 167 colleges across 12 districts. */
+export const COLLEGES: readonly HPCollege[] = HP_COLLEGES;
+
 /**
- * Minimal seed covering the colleges the demo currently references. The
- * import script replaces this array wholesale once the xlsx is available.
+ * Minimal hand-curated seed kept for backward compatibility and fast unit
+ * tests. Prefer {@link COLLEGES} for real data.
  */
 export const COLLEGES_SEED: readonly HPCollege[] = [
   {
@@ -155,11 +168,11 @@ export const COLLEGES_SEED: readonly HPCollege[] = [
 ];
 
 const BY_AISHE: Record<string, HPCollege> = Object.fromEntries(
-  COLLEGES_SEED.map((c) => [c.aisheCode, c]),
+  COLLEGES.map((c) => [c.aisheCode, c]),
 );
 
 const BY_ID: Record<string, HPCollege> = Object.fromEntries(
-  COLLEGES_SEED.map((c) => [c.id, c]),
+  COLLEGES.map((c) => [c.id, c]),
 );
 
 export function getCollegeByAishe(code: string): HPCollege | undefined {
@@ -171,5 +184,19 @@ export function getCollegeById(id: string): HPCollege | undefined {
 }
 
 export function collegesByDistrict(districtId: string): HPCollege[] {
-  return COLLEGES_SEED.filter((c) => c.district === districtId);
+  return COLLEGES.filter((c) => c.district === districtId);
+}
+
+/** Count of colleges per district — handy for dashboards. Computed once. */
+export const COLLEGE_COUNT_BY_DISTRICT: Record<string, number> = (() => {
+  const map: Record<string, number> = {};
+  for (const c of COLLEGES) {
+    map[c.district] = (map[c.district] || 0) + 1;
+  }
+  return map;
+})();
+
+/** Colleges that offer a given course code (e.g. "BA", "BCom"). */
+export function collegesOffering(courseCode: string): HPCollege[] {
+  return COLLEGES.filter((c) => c.coursesOffered.includes(courseCode));
 }

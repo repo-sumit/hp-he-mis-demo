@@ -20,6 +20,9 @@ importers:
       '@hp-mis/design-tokens':
         specifier: workspace:*
         version: link:../../packages/design-tokens
+      '@hp-mis/fixtures':
+        specifier: workspace:*
+        version: link:../../packages/fixtures
       '@hp-mis/i18n':
         specifier: workspace:*
         version: link:../../packages/i18n
@@ -108,7 +111,7 @@ importers:
         version: 9.39.4(jiti@2.6.1)
       eslint-config-next:
         specifier: 16.2.4
-        version: 16.2.4(@typescript-eslint/parser@8.58.2(eslint@9.39.4(jiti@2.6.1))(typescript@5.9.3))(eslint@9.39.4(jiti@2.6.1))(typescript@5.9.3)
+        version: 16.2.4(eslint@9.39.4(jiti@2.6.1))(typescript@5.9.3)
       tailwindcss:
         specifier: ^4
         version: 4.2.2
@@ -121,6 +124,9 @@ importers:
       '@hp-mis/design-tokens':
         specifier: workspace:*
         version: link:../../packages/design-tokens
+      '@hp-mis/fixtures':
+        specifier: workspace:*
+        version: link:../../packages/fixtures
       '@hp-mis/i18n':
         specifier: workspace:*
         version: link:../../packages/i18n
@@ -160,7 +166,7 @@ importers:
         version: 9.39.4(jiti@2.6.1)
       eslint-config-next:
         specifier: 16.2.4
-        version: 16.2.4(eslint@9.39.4(jiti@2.6.1))(typescript@5.9.3)
+        version: 16.2.4(@typescript-eslint/parser@8.58.2(eslint@9.39.4(jiti@2.6.1))(typescript@5.9.3))(eslint@9.39.4(jiti@2.6.1))(typescript@5.9.3)
       tailwindcss:
         specifier: ^4
         version: 4.2.2

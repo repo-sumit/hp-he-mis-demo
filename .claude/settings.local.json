@@ -18,7 +18,22 @@
       "Bash(curl -s -o /dev/null -w \"course/bogus  → HTTP %{http_code}\\\\n\" \"http://localhost:3001/discover/course/bogus\")",
       "Bash(pnpm --filter portal dev)",
       "Bash(pnpm --filter public-web dev)",
-      "Bash(curl -s -o /dev/null -w \"landing HTTP %{http_code}\\\\n\" \"http://localhost:3000/\")"
+      "Bash(curl -s -o /dev/null -w \"landing HTTP %{http_code}\\\\n\" \"http://localhost:3000/\")",
+      "Bash(mkdir -p /tmp/xlsx_extract)",
+      "Bash(tar -xf \"c:/Users/sumit/Downloads/HP MIS/docs/HPU_167_Colleges_Data.xlsx\")",
+      "Bash(cp \"c:/Users/sumit/Downloads/HP MIS/docs/HPU_167_Colleges_Data.xlsx\" /tmp/hpu.xlsx)",
+      "Bash(tar -xf /tmp/hpu.xlsx)",
+      "Bash(unzip -o /tmp/hpu.xlsx)",
+      "Bash(node scripts/parse-hpu.mjs)",
+      "Bash(mkdir -p .tmp/xlsx_extract)",
+      "Bash(unzip -o docs/HPU_167_Colleges_Data.xlsx -d .tmp/xlsx_extract)",
+      "Bash(node -e \"const d=JSON.parse\\(require\\('fs'\\).readFileSync\\('.tmp/hpu_colleges.json','utf8'\\)\\); console.log\\(JSON.stringify\\(d[0],null,2\\)\\); console.log\\('---'\\); console.log\\(JSON.stringify\\(d[1],null,2\\)\\);\")",
+      "Bash(node scripts/generate-hpu-seed.mjs)",
+      "Bash(grep -iE \"sanjauli|rkmv|solan$|sanjauli\")",
+      "Bash(pnpm -r typecheck)",
+      "Bash(pnpm --filter portal lint)",
+      "Bash(pnpm --filter student lint)",
+      "Bash(pnpm --filter portal build)"
     ]
   }
 }

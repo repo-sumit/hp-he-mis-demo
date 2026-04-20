@@ -1,6 +1,11 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import {
+  getCollegeById,
+  HP_DISTRICTS,
+  type HPCollegeType,
+} from "@hp-mis/fixtures";
 import { PortalFrame } from "../_components/portal-frame";
 import {
   MOCK_APPLICATIONS,
@@ -19,6 +24,20 @@ import {
   ApplicationQueueTable,
   type QueueRow,
 } from "../_components/admin/application-queue-table";
+
+const COLLEGE_TYPE_LABEL: Record<HPCollegeType, string> = {
+  government_degree: "Govt degree college",
+  government_aided: "Govt-aided",
+  private: "Private",
+  sanskrit: "Sanskrit",
+  autonomous: "Autonomous",
+  medical: "Medical",
+  pharmacy: "Pharmacy",
+  engineering: "Engineering",
+  teacher_education: "Teacher education",
+  university: "University",
+  institute: "Institute",
+};
 
 function matches(app: MockApplication, query: string): boolean {
   if (!query) return true;
@@ -40,6 +59,11 @@ function passesFilters(
   filters: QueueFilters,
 ): boolean {
   if (filters.status !== "all" && status !== filters.status) return false;
+  if (filters.districtId !== "all" || filters.collegeType !== "all") {
+    const college = getCollegeById(app.collegeId);
+    if (filters.districtId !== "all" && college?.district !== filters.districtId) return false;
+    if (filters.collegeType !== "all" && college?.type !== filters.collegeType) return false;
+  }
   if (filters.collegeId !== "all" && app.collegeId !== filters.collegeId) return false;
   if (filters.courseId !== "all" && app.courseId !== filters.courseId) return false;
   if (filters.category !== "all" && app.studentCategory !== filters.category) return false;
@@ -131,15 +155,43 @@ export default function ApplicationsQueuePage() {
 
   const collegeOptions = useMemo(() => {
     const pairs = new Map<string, string>();
-    for (const app of MOCK_APPLICATIONS) pairs.set(app.collegeId, app.collegeName);
-    return Array.from(pairs.entries()).map(([value, label]) => ({ value, label }));
-  }, []);
+    for (const app of visible) pairs.set(app.collegeId, app.collegeName);
+    return Array.from(pairs.entries())
+      .map(([value, label]) => ({ value, label }))
+      .sort((a, b) => a.label.localeCompare(b.label));
+  }, [visible]);
 
   const courseOptions = useMemo(() => {
     const pairs = new Map<string, string>();
-    for (const app of MOCK_APPLICATIONS) pairs.set(app.courseId, app.courseCode);
+    for (const app of visible) pairs.set(app.courseId, app.courseCode);
     return Array.from(pairs.entries()).map(([value, label]) => ({ value, label }));
-  }, []);
+  }, [visible]);
+
+  const districtOptions = useMemo(() => {
+    const present = new Set<string>();
+    for (const app of visible) {
+      const c = getCollegeById(app.collegeId);
+      if (c) present.add(c.district);
+    }
+    return HP_DISTRICTS.filter((d) => present.has(d.id)).map((d) => ({
+      value: d.id,
+      label: d.name,
+    }));
+  }, [visible]);
+
+  const typeOptions = useMemo(() => {
+    const present = new Set<HPCollegeType>();
+    for (const app of visible) {
+      const c = getCollegeById(app.collegeId);
+      if (c) present.add(c.type);
+    }
+    return Array.from(present)
+      .map((t) => ({ value: t, label: COLLEGE_TYPE_LABEL[t] ?? t }))
+      .sort((a, b) => a.label.localeCompare(b.label));
+  }, [visible]);
+
+  const singleCollegeScope =
+    session.role === "college_admin" || session.role === "college_operator";
 
   const categoryOptions = [
     { value: "general", label: "General" },
@@ -174,9 +226,12 @@ export default function ApplicationsQueuePage() {
           onChange={setFilters}
           search={search}
           onSearchChange={setSearch}
+          districtOptions={districtOptions}
+          typeOptions={typeOptions}
           collegeOptions={collegeOptions}
           courseOptions={courseOptions}
           categoryOptions={categoryOptions}
+          hideScopeFilters={singleCollegeScope}
         />
       </div>
 

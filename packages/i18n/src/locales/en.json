@@ -704,7 +704,20 @@
       "coursesHere": "Courses at this college",
       "combinationsHere": "BA combinations available here",
       "departments": "Departments",
-      "combinationsHint": "Pick any one combination when you apply for BA."
+      "combinationsHint": "Pick any one combination when you apply for BA.",
+      "coEd": {
+        "co_ed": "Co-educational",
+        "women_only": "Girls only",
+        "men_only": "Boys only"
+      },
+      "hostel": {
+        "none": "No hostel",
+        "boys": "Boys hostel available",
+        "girls": "Girls hostel available",
+        "both": "Boys & girls hostels"
+      },
+      "offered": "Courses offered",
+      "website": "Visit college website"
     },
     "course": {
       "names": {

@@ -5,6 +5,8 @@ import type { AppBaseStatus } from "../data/mock-applications";
 
 export interface QueueFilters {
   status: AppBaseStatus | "all";
+  districtId: string | "all";
+  collegeType: string | "all";
   collegeId: string | "all";
   courseId: string | "all";
   category: string | "all";
@@ -13,6 +15,8 @@ export interface QueueFilters {
 
 export const EMPTY_FILTERS: QueueFilters = {
   status: "all",
+  districtId: "all",
+  collegeType: "all",
   collegeId: "all",
   courseId: "all",
   category: "all",
@@ -29,9 +33,13 @@ interface Props {
   onChange: (next: QueueFilters) => void;
   search: string;
   onSearchChange: (next: string) => void;
+  districtOptions?: Option[];
+  typeOptions?: Option[];
   collegeOptions: Option[];
   courseOptions: Option[];
   categoryOptions: Option[];
+  /** Hide the district + type filters (e.g. for single-college scopes). */
+  hideScopeFilters?: boolean;
   className?: string;
 }
 
@@ -50,9 +58,12 @@ export function FilterBar({
   onChange,
   search,
   onSearchChange,
+  districtOptions = [],
+  typeOptions = [],
   collegeOptions,
   courseOptions,
   categoryOptions,
+  hideScopeFilters,
   className,
 }: Props) {
   const update = <K extends keyof QueueFilters>(key: K, value: QueueFilters[K]) => {
@@ -94,13 +105,29 @@ export function FilterBar({
         </label>
       </div>
 
-      <div className="mt-3 grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="mt-3 grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
         <SelectBox
           label="Status"
           value={filters.status}
           onChange={(v) => update("status", v as QueueFilters["status"])}
           options={STATUS_OPTIONS}
         />
+        {!hideScopeFilters ? (
+          <SelectBox
+            label="District"
+            value={filters.districtId}
+            onChange={(v) => update("districtId", v)}
+            options={[{ value: "all", label: "All districts" }, ...districtOptions]}
+          />
+        ) : null}
+        {!hideScopeFilters ? (
+          <SelectBox
+            label="College type"
+            value={filters.collegeType}
+            onChange={(v) => update("collegeType", v)}
+            options={[{ value: "all", label: "All types" }, ...typeOptions]}
+          />
+        ) : null}
         <SelectBox
           label="College"
           value={filters.collegeId}
