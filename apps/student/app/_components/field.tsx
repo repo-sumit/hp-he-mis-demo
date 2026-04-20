@@ -35,9 +35,9 @@ export function Field({ label, helper, error, adornment, ...inputProps }: FieldP
         aria-invalid={Boolean(error) || undefined}
         aria-describedby={describedBy || undefined}
         className={cn(
-          "h-[var(--input-height)] w-full rounded-[var(--radius-md)] border bg-[var(--color-surface)] px-3.5 text-[var(--text-base)] text-[var(--color-text-primary)] outline-none transition-colors placeholder:text-[var(--color-text-tertiary)] focus:border-[var(--color-border-focus)] focus:ring-4 focus:ring-[var(--color-border-focus)]/15 read-only:bg-[var(--color-background-subtle)] read-only:text-[var(--color-text-secondary)]",
+          "h-[var(--input-height)] w-full rounded-[var(--radius-md)] border bg-[var(--color-surface)] px-3.5 text-[var(--text-base)] text-[var(--color-text-primary)] outline-none transition-[border-color,box-shadow] placeholder:text-[var(--color-text-tertiary)] focus:border-[var(--color-border-focus)] focus:shadow-[var(--focus-ring)] read-only:bg-[var(--color-background-subtle)] read-only:text-[var(--color-text-secondary)]",
           error
-            ? "border-[var(--color-text-danger)] focus:border-[var(--color-text-danger)] focus:ring-[var(--color-text-danger)]/15"
+            ? "border-[var(--color-text-danger)] focus:border-[var(--color-text-danger)] focus:shadow-[var(--focus-ring-danger)]"
             : "border-[var(--color-border-strong)]",
         )}
         {...inputProps}

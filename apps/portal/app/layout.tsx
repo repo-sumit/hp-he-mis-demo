@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
-import { Montserrat, Noto_Sans_Devanagari } from "next/font/google";
+import { Noto_Sans, Noto_Sans_Devanagari } from "next/font/google";
 import { SessionProvider } from "./_components/data/session-provider";
 import "./globals.css";
 
-const montserrat = Montserrat({
+// Noto Sans matches UX4G reference fonts; Devanagari fallback covers Hindi
+// strings rendered on the admin side.
+const notoSans = Noto_Sans({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
   variable: "--font-montserrat",
@@ -27,7 +29,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html
       lang="en"
-      className={`${montserrat.variable} ${notoDevanagari.variable} h-full antialiased`}
+      className={`${notoSans.variable} ${notoDevanagari.variable} h-full antialiased`}
     >
       <body className="min-h-full">
         <SessionProvider>{children}</SessionProvider>

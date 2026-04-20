@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Montserrat, Noto_Sans_Devanagari } from "next/font/google";
+import { Noto_Sans, Noto_Sans_Devanagari } from "next/font/google";
 import { LocaleProvider } from "./_components/locale-provider";
 import { ProfileProvider } from "./_components/profile/profile-provider";
 import { DocumentsProvider } from "./_components/documents/documents-provider";
@@ -7,7 +7,9 @@ import { ApplicationsProvider } from "./_components/apply/applications-provider"
 import { ScrutinyBridgeProvider } from "./_components/scrutiny-bridge/scrutiny-bridge-provider";
 import "./globals.css";
 
-const montserrat = Montserrat({
+// Noto Sans matches the UX4G reference system and pairs naturally with the
+// Devanagari fallback already used for Hindi.
+const notoSans = Noto_Sans({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
   variable: "--font-montserrat",
@@ -38,7 +40,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html
       lang="en"
-      className={`${montserrat.variable} ${notoDevanagari.variable} h-full antialiased`}
+      className={`${notoSans.variable} ${notoDevanagari.variable} h-full antialiased`}
     >
       <body className="min-h-full bg-[var(--color-background)]">
         <LocaleProvider>

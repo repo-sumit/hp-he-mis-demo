@@ -5,7 +5,7 @@ import type { ComponentProps, ReactNode } from "react";
 import { cn } from "@hp-mis/ui";
 
 const base =
-  "inline-flex h-[var(--button-height)] w-full items-center justify-center rounded-[var(--radius-md)] px-5 text-[var(--text-sm)] font-[var(--weight-semibold)] tracking-[var(--tracking-snug)] transition-all duration-150 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50";
+  "inline-flex h-[var(--button-height)] w-full items-center justify-center rounded-[var(--radius-md)] px-5 text-[var(--text-sm)] font-[var(--weight-semibold)] tracking-[var(--tracking-snug)] transition-all duration-150 focus-visible:outline-none focus-visible:shadow-[var(--focus-ring)] disabled:cursor-not-allowed disabled:opacity-50";
 
 const variants = {
   primary:

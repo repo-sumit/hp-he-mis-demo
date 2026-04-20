@@ -34,9 +34,9 @@ export function ApplicationQueueTable({ rows, emptyMessage }: Props) {
   }
 
   return (
-    <section className="overflow-x-auto rounded-[var(--radius-lg)] border border-[var(--color-border)] bg-[var(--color-surface)]">
+    <section className="overflow-x-auto rounded-[var(--radius-md)] border border-[var(--color-border)] bg-[var(--color-surface)]">
       <table className="w-full min-w-[720px] border-collapse text-left text-[var(--text-sm)]">
-        <thead className="bg-[var(--color-background-subtle)] text-[var(--text-xs)] uppercase tracking-wide text-[var(--color-text-tertiary)]">
+        <thead className="border-b border-[var(--color-border)] bg-[var(--color-background-subtle)] text-[11px] font-[var(--weight-semibold)] uppercase tracking-[var(--tracking-wide)] text-[var(--color-text-tertiary)]">
           <tr>
             <Th>Student</Th>
             <Th>Course · College</Th>
@@ -54,9 +54,13 @@ export function ApplicationQueueTable({ rows, emptyMessage }: Props) {
               <tr
                 key={app.id}
                 className={cn(
-                  "border-t border-[var(--color-border)] transition-colors hover:bg-[var(--color-background-subtle)]",
-                  idx % 2 === 1 ? "bg-[var(--color-background-subtle)]/40" : "bg-[var(--color-surface)]",
-                  needsAttention ? "ring-1 ring-inset ring-[var(--color-status-warning-fg)]/30" : "",
+                  "border-t border-[var(--color-border-subtle)] transition-colors hover:bg-[var(--color-background-brand-softer)]",
+                  idx % 2 === 1
+                    ? "bg-[var(--color-background-subtle)]/50"
+                    : "bg-[var(--color-surface)]",
+                  needsAttention
+                    ? "shadow-[inset_2px_0_0_var(--color-status-warning-fg)]"
+                    : "",
                 )}
               >
                 <Td>
@@ -139,7 +143,7 @@ function Th({ children, className }: { children: React.ReactNode; className?: st
 
 function Td({ children, className }: { children: React.ReactNode; className?: string }) {
   return (
-    <td className={cn("px-4 py-3 align-top text-[var(--color-text-primary)]", className)}>
+    <td className={cn("px-4 py-3 align-top text-[var(--text-sm)] text-[var(--color-text-primary)]", className)}>
       {children}
     </td>
   );

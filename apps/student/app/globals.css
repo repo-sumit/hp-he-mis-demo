@@ -44,8 +44,23 @@ button,
   min-height: var(--tap-target-min);
 }
 
+/*
+ * Default focus ring. Components that need a different shape (buttons,
+ * inputs) set their own `focus-visible:shadow-[var(--focus-ring)]` and this
+ * global `outline` is still useful for links and other focusable elements.
+ */
 :focus-visible {
   outline: 2px solid var(--color-border-focus);
   outline-offset: 2px;
   border-radius: var(--radius-sm);
+}
+
+/* Buttons and form inputs set their own box-shadow ring — suppress the
+ * outline so there isn't a double focus artifact. */
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+[role="button"]:focus-visible {
+  outline: none;
 }
