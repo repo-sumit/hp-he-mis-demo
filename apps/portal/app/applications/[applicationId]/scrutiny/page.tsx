@@ -222,25 +222,17 @@ export default function ScrutinyWorkbenchPage({ params }: { params: Promise<Para
         </ReviewSectionCard>
       </div>
 
-      {/* Three decisions (verify / reject / discrepancy) are the operator's
-          actual outcome set per §6.4. Mark conditional lives behind a tertiary
-          link so it doesn't compete with the three primary paths. */}
+      {/* Four outcomes per project context §2.3: Accept (Verify), Conditional
+          Accept, Reject, Raise discrepancy. They sit left → right from cautious
+          to decisive so the operator's eye flows naturally when making the call. */}
       <ActionFooter
         meta={
           <span>
-            Status: <strong className="text-[var(--color-text-primary)]">{status.replace(/_/g, " ")}</strong>
+            Status:{" "}
+            <strong className="text-[var(--color-text-primary)]">
+              {status.replace(/_/g, " ")}
+            </strong>
             {discCount > 0 ? ` · ${discCount} open discrepancy` : ""}
-            {" · "}
-            <button
-              type="button"
-              onClick={() => {
-                setStatus(applicationId, "conditional", actionNote || undefined);
-                setActionNote("");
-              }}
-              className="underline decoration-dotted underline-offset-2 hover:text-[var(--color-text-primary)]"
-            >
-              Mark conditional instead
-            </button>
           </span>
         }
       >
@@ -270,6 +262,17 @@ export default function ScrutinyWorkbenchPage({ params }: { params: Promise<Para
         >
           <span aria-hidden="true">✕</span>
           Reject
+        </button>
+        <button
+          type="button"
+          onClick={() => {
+            setStatus(applicationId, "conditional", actionNote || undefined);
+            setActionNote("");
+          }}
+          className="inline-flex h-10 items-center justify-center gap-1 rounded-[var(--radius-md)] border border-[var(--color-status-warning-fg)] bg-[var(--color-surface)] px-3 text-[var(--text-sm)] font-[var(--weight-semibold)] text-[var(--color-status-warning-fg)] hover:bg-[var(--color-status-warning-bg)]"
+        >
+          <span aria-hidden="true">~</span>
+          Conditional accept
         </button>
         <button
           type="button"

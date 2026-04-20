@@ -9,7 +9,7 @@ import { BottomTabBar } from "../_components/bottom-tab-bar";
 import { useLocale } from "../_components/locale-provider";
 import { useApplications } from "../_components/apply/applications-provider";
 import { useProfile } from "../_components/profile/profile-provider";
-import { hasEnoughProfile } from "../_components/discover/evaluate";
+import { hasEnoughProfile, remainingProfileSteps } from "../_components/discover/evaluate";
 import { getCourse } from "../_components/discover/mock-data";
 import { useScrutinyBridge } from "../_components/scrutiny-bridge/scrutiny-bridge-provider";
 import { DiscrepancySummaryCard } from "../_components/scrutiny-bridge/discrepancy-summary-card";
@@ -17,7 +17,6 @@ import { DiscrepancySummaryCard } from "../_components/scrutiny-bridge/discrepan
 const QUICK_LINKS = [
   { key: "documents", icon: "📄", href: "/documents" },
   { key: "eligibility", icon: "✓", href: "/discover" },
-  { key: "notifications", icon: "🔔", href: "/dashboard" },
   { key: "helpdesk", icon: "💬", href: "/help" },
 ] as const;
 
@@ -28,11 +27,7 @@ const BASE_NOTIFICATIONS = [
   { key: "dates", time: "1 hr ago", unread: true },
 ] as const;
 
-type NextActionVariant =
-  | "finishProfile"
-  | "findCourses"
-  | "underReview"
-  | "allDone";
+type NextActionVariant = "finishProfile" | "findCourses" | "underReview";
 
 export default function DashboardPage() {
   const { t } = useLocale();
@@ -60,15 +55,17 @@ export default function DashboardPage() {
   const firstSubmitted = hasSubmitted ? applications[submittedIds[0]!] : null;
   const firstSubmittedCourse = firstSubmitted ? getCourse(firstSubmitted.courseId) : null;
 
-  // Pick the smartest Next Action for the student's current state. Discrepancy
-  // is handled by the dedicated alert card above, so we don't duplicate it.
-  const nextActionVariant: NextActionVariant = hasOpenDiscrepancy
-    ? "allDone" // discrepancy card is the action; this variant stays hidden below
-    : hasSubmitted && firstSubmittedCourse
-      ? "underReview"
-      : !hasEnoughProfile(draft)
-        ? "finishProfile"
-        : "findCourses";
+  const stepsLeft = remainingProfileSteps(draft);
+
+  // When there's an open discrepancy, the dedicated alert card above owns
+  // the primary action — we don't render a next-action card at all to keep
+  // a single focal point. Otherwise we pick the variant that matches the
+  // student's current state.
+  const nextActionVariant: NextActionVariant = hasSubmitted && firstSubmittedCourse
+    ? "underReview"
+    : !hasEnoughProfile(draft)
+      ? "finishProfile"
+      : "findCourses";
 
   return (
     <PageShell
@@ -121,7 +118,7 @@ export default function DashboardPage() {
               body={t("screen.dashboard.underReview.body")}
               cta={t("screen.dashboard.underReview.cta")}
               href="/applications"
-              deadline={firstSubmitted.applicationNumber}
+              meta={firstSubmitted.applicationNumber}
               icon="⏱"
             />
           ) : nextActionVariant === "findCourses" ? (
@@ -132,38 +129,22 @@ export default function DashboardPage() {
               href="/discover"
               icon="🧭"
             />
-          ) : nextActionVariant === "finishProfile" ? (
+          ) : (
             <NextActionCard
               title={t("screen.dashboard.nextActionTitle")}
-              body={t("screen.dashboard.nextActionBody", { n: 3 })}
+              body={t("screen.dashboard.nextActionBody", { n: stepsLeft })}
               cta={t("screen.dashboard.nextActionCta")}
               href="/profile/step/1"
               deadline={t("screen.home.datesLine")}
-            />
-          ) : (
-            <NextActionCard
-              title={t("screen.dashboard.allDone.title")}
-              body={t("screen.dashboard.allDone.body")}
-              cta={t("screen.dashboard.allDone.cta")}
-              href="/applications"
-              icon="🎯"
             />
           )}
         </section>
       ) : null}
 
       <section className="mt-5">
-        <div className="flex items-center justify-between">
-          <h3 className="text-[var(--text-sm)] font-[var(--weight-semibold)] uppercase tracking-wide text-[var(--color-text-tertiary)]">
-            {t("screen.dashboard.notificationsTitle")}
-          </h3>
-          <Link
-            href="/dashboard"
-            className="text-[var(--text-xs)] font-[var(--weight-medium)] text-[var(--color-text-link)]"
-          >
-            {t("screen.dashboard.viewAllNotifications")}
-          </Link>
-        </div>
+        <h3 className="text-[var(--text-sm)] font-[var(--weight-semibold)] uppercase tracking-wide text-[var(--color-text-tertiary)]">
+          {t("screen.dashboard.notificationsTitle")}
+        </h3>
         <ul className="mt-2 rounded-[var(--radius-lg)] border border-[var(--color-border)] bg-[var(--color-surface)] px-4">
           {BASE_NOTIFICATIONS.map((item) => (
             <NotificationItem

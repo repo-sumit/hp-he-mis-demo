@@ -956,5 +956,28 @@
     "toast": {
       "reCheckNote": "Saved. We'll let you know after the college re-checks."
     }
+  },
+  "help": {
+    "title": "Help and support",
+    "subtitle": "A few places to start. If you're still stuck, reach out — we usually reply the same day.",
+    "faqTitle": "Common questions",
+    "faqs": {
+      "q1": "I didn't get my OTP. What do I do?",
+      "a1": "Wait one minute and tap Resend. If it still doesn't come, check that your mobile number is correct and that you have network. Some BSNL / Jio users in the hills get OTPs up to 3 minutes late.",
+      "q2": "Can I change my stream after submitting?",
+      "a2": "Stream cannot be changed once your application is submitted. Please double-check before you submit.",
+      "q3": "The college rejected my document. What should I do?",
+      "a3": "Open the issue on your dashboard, read the reason, take a clearer photo or scan, and re-upload. Your application stays in place — you don't lose your fee.",
+      "q4": "I paid twice by mistake. Will I get a refund?",
+      "a4": "Yes. The extra payment is auto-detected within 24 hours and refunded to the bank account on your profile. Contact the helpdesk if you don't see it after 3 working days."
+    },
+    "contactTitle": "Still need help?",
+    "contactBody": "We answer between 10:00 AM and 6:00 PM, Monday to Saturday.",
+    "helplineLabel": "Helpline",
+    "helplineNumber": "1800-180-8070",
+    "emailLabel": "Email",
+    "emailAddress": "admissions-help@hp.gov.in",
+    "officeLabel": "Office",
+    "officeAddress": "Directorate of Higher Education, Shimla — 171001"
   }
 }

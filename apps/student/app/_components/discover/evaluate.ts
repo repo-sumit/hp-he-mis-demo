@@ -36,6 +36,24 @@ export function hasEnoughProfile(draft: ProfileDraft | null | undefined): boolea
   return Boolean(draft.stream && draft.bofPercentage && draft.board);
 }
 
+/**
+ * Count of profile wizard steps still to be completed (1..5).
+ * Returns 0 once every step has at least one signalling field filled.
+ * Used by the dashboard's "Finish profile" next-action card so the copy
+ * says "2 more steps" instead of a hard-coded 3.
+ */
+export function remainingProfileSteps(draft: ProfileDraft | null | undefined): number {
+  if (!draft) return 5;
+  const step1Done = Boolean(draft.fullName && draft.dob && draft.mobile && draft.email);
+  const step2Done = Boolean(draft.permanentAddress && draft.district && draft.pincode);
+  const step3Done = Boolean(draft.board && draft.stream && draft.bofPercentage && draft.resultStatus);
+  // Step 4 is only "needed" if there are claims to resolve. An empty claims
+  // list is a valid completed state (e.g. General with no special claims).
+  const step4Done = Array.isArray(draft.claims);
+  const step5Done = Boolean(draft.accountHolder && draft.accountNumber && draft.ifsc);
+  return [step1Done, step2Done, step3Done, step4Done, step5Done].filter((d) => !d).length;
+}
+
 function matchesStream(
   studentStream: ProfileDraft["stream"],
   required: StreamRequirement,

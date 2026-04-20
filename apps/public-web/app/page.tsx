@@ -66,6 +66,11 @@ const HIGHLIGHTS = [
 ];
 
 export default function LandingPage() {
+  // Resolve sibling app URLs from env so the landing page isn't hard-pinned
+  // to localhost ports. Defaults match the dev setup in package.json scripts.
+  const studentAppUrl = process.env.NEXT_PUBLIC_STUDENT_APP_URL ?? "http://localhost:3001";
+  const portalUrl = process.env.NEXT_PUBLIC_PORTAL_URL ?? "http://localhost:3002";
+
   return (
     <div className="min-h-dvh bg-gradient-to-b from-[var(--color-background-brand-subtle)] to-[var(--color-background)]">
       <header className="border-b border-[var(--color-border)] bg-[var(--color-surface)]/80 backdrop-blur">
@@ -98,7 +103,7 @@ export default function LandingPage() {
               Who should apply
             </a>
             <a
-              href="http://localhost:3002"
+              href={portalUrl}
               className="rounded-[var(--radius-md)] border border-[var(--color-border-strong)] px-3 py-2 text-[var(--color-text-primary)] hover:bg-[var(--color-background-subtle)]"
             >
               {t("en", "landing.forAdmins")}
@@ -123,7 +128,7 @@ export default function LandingPage() {
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
               <a
-                href="#how-it-works"
+                href={studentAppUrl}
                 className="inline-flex h-[var(--button-height)] items-center justify-center rounded-[var(--radius-md)] bg-[var(--color-interactive-brand)] px-6 text-[var(--text-base)] font-[var(--weight-semibold)] text-[var(--color-text-inverse)] hover:bg-[var(--color-interactive-brand-hover)]"
               >
                 <span aria-hidden="true" className="mr-1">💬</span>
@@ -279,7 +284,7 @@ export default function LandingPage() {
           </p>
           <div className="mt-6 flex flex-wrap justify-center gap-3">
             <a
-              href="#how-it-works"
+              href={studentAppUrl}
               className="inline-flex h-[var(--button-height)] items-center justify-center rounded-[var(--radius-md)] bg-[var(--color-surface)] px-6 text-[var(--text-base)] font-[var(--weight-semibold)] text-[var(--color-text-brand)] hover:bg-[var(--color-background-subtle)]"
             >
               <span aria-hidden="true" className="mr-1">💬</span>

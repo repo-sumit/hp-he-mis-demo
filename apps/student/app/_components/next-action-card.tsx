@@ -9,12 +9,24 @@ type Props = {
   body: string;
   cta: string;
   href: string;
+  /** Emphasised deadline line — rendered in brand colour under the body. */
   deadline?: string;
+  /** Neutral secondary metadata (e.g. application number). Rendered muted. */
+  meta?: string;
   icon?: ReactNode;
   className?: string;
 };
 
-export function NextActionCard({ title, body, cta, href, deadline, icon, className }: Props) {
+export function NextActionCard({
+  title,
+  body,
+  cta,
+  href,
+  deadline,
+  meta,
+  icon,
+  className,
+}: Props) {
   return (
     <Card
       className={cn(
@@ -37,6 +49,11 @@ export function NextActionCard({ title, body, cta, href, deadline, icon, classNa
           {deadline ? (
             <p className="mt-2 text-[var(--text-xs)] font-[var(--weight-medium)] text-[var(--color-text-brand)]">
               {deadline}
+            </p>
+          ) : null}
+          {meta ? (
+            <p className="mt-1 font-mono text-[var(--text-xs)] text-[var(--color-text-tertiary)]">
+              {meta}
             </p>
           ) : null}
           <Link

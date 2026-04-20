@@ -17,17 +17,27 @@ export type PortalNavKey =
   | "users"
   | "settings";
 
-const NAV_ITEMS: ReadonlyArray<{ key: PortalNavKey; href: string; icon: string }> = [
+type NavItem = {
+  key: PortalNavKey;
+  href: string;
+  icon: string;
+  /** True when the destination route hasn't been built in this V1 shell.
+   *  Disabled items render as non-clickable with a "Soon" label instead of
+   *  routing to a 404. */
+  disabled?: boolean;
+};
+
+const NAV_ITEMS: readonly NavItem[] = [
   { key: "overview", href: "/", icon: "📊" },
   { key: "applications", href: "/applications", icon: "📝" },
-  { key: "colleges", href: "/colleges", icon: "🏛️" },
-  { key: "courses", href: "/courses", icon: "📚" },
-  { key: "seats", href: "/seats", icon: "🎫" },
-  { key: "merit", href: "/merit", icon: "🏅" },
-  { key: "allocation", href: "/allocation", icon: "🎯" },
-  { key: "reports", href: "/reports", icon: "📈" },
-  { key: "users", href: "/users", icon: "👥" },
-  { key: "settings", href: "/settings", icon: "⚙️" },
+  { key: "colleges", href: "/colleges", icon: "🏛️", disabled: true },
+  { key: "courses", href: "/courses", icon: "📚", disabled: true },
+  { key: "seats", href: "/seats", icon: "🎫", disabled: true },
+  { key: "merit", href: "/merit", icon: "🏅", disabled: true },
+  { key: "allocation", href: "/allocation", icon: "🎯", disabled: true },
+  { key: "reports", href: "/reports", icon: "📈", disabled: true },
+  { key: "users", href: "/users", icon: "👥", disabled: true },
+  { key: "settings", href: "/settings", icon: "⚙️", disabled: true },
 ];
 
 interface Props {
@@ -73,6 +83,27 @@ export function PortalFrame({
           <ul className="space-y-1">
             {NAV_ITEMS.map((item) => {
               const isActive = item.key === active;
+              if (item.disabled) {
+                return (
+                  <li key={item.key}>
+                    <div
+                      aria-disabled="true"
+                      title="Coming soon"
+                      className={cn(
+                        "flex cursor-not-allowed items-center gap-3 rounded-[var(--radius-md)] px-3 py-2 text-[var(--text-sm)] text-[var(--color-text-tertiary)] opacity-70",
+                      )}
+                    >
+                      <span aria-hidden="true">{item.icon}</span>
+                      <span className="flex-1">
+                        {t("en", `portal.sidebar.${item.key}`)}
+                      </span>
+                      <span className="rounded-[var(--radius-pill)] bg-[var(--color-background-muted)] px-2 py-0.5 text-[10px] font-[var(--weight-semibold)] uppercase tracking-wide text-[var(--color-text-tertiary)]">
+                        Soon
+                      </span>
+                    </div>
+                  </li>
+                );
+              }
               return (
                 <li key={item.key}>
                   <Link

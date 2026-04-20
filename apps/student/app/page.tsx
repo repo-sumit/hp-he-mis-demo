@@ -1,17 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { cn } from "@hp-mis/ui";
 import { PageShell } from "./_components/page-shell";
 import { PrimaryLink } from "./_components/primary-button";
 import { useLocale } from "./_components/locale-provider";
-
-type Quick = { key: "checkEligibility" | "importantDates"; icon: string; href: string };
-
-const QUICK: Quick[] = [
-  { key: "checkEligibility", icon: "✓", href: "/dashboard" },
-  { key: "importantDates", icon: "🗓", href: "/dashboard" },
-];
 
 export default function HomePage() {
   const { t } = useLocale();
@@ -39,28 +31,6 @@ export default function HomePage() {
         <PrimaryLink href="/login" variant="secondary">
           {t("cta.login")}
         </PrimaryLink>
-      </section>
-
-      <section className="mt-6 grid grid-cols-2 gap-3">
-        {QUICK.map((item) => (
-          <Link
-            key={item.key}
-            href={item.href}
-            className={cn(
-              "flex flex-col items-start gap-2 rounded-[var(--radius-lg)] border border-[var(--color-border)] bg-[var(--color-surface)] p-4 text-left hover:bg-[var(--color-background-subtle)]",
-            )}
-          >
-            <span
-              aria-hidden="true"
-              className="flex h-10 w-10 items-center justify-center rounded-[var(--radius-md)] bg-[var(--color-background-brand-subtle)] text-[var(--color-text-brand)]"
-            >
-              {item.icon}
-            </span>
-            <span className="text-[var(--text-sm)] font-[var(--weight-semibold)] text-[var(--color-text-primary)]">
-              {t(`cta.${item.key}`)}
-            </span>
-          </Link>
-        ))}
       </section>
 
       <section className="mt-6 rounded-[var(--radius-lg)] border border-[var(--color-border)] bg-[var(--color-background-subtle)] p-4">
