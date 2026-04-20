@@ -6,18 +6,18 @@
 
 :root {
   /* ---------- Primitive palette ---------- */
-  /* Primary (SwiftChat blue) */
-  --hp-primary-50: #eff4ff;
-  --hp-primary-100: #dbe5ff;
-  --hp-primary-200: #bacfff;
-  --hp-primary-300: #8aafff;
-  --hp-primary-400: #5a85ff;
-  --hp-primary-500: #3360f5;
-  --hp-primary-600: #1f45d8;
-  --hp-primary-700: #1b36ae;
-  --hp-primary-800: #1c2f88;
-  --hp-primary-900: #0b1d48;
-  --hp-primary-950: #070f2b;
+  /* Primary (HPU brand — lighter, modern indigo/blue) */
+  --hp-primary-50: #eef4ff;
+  --hp-primary-100: #dde7ff;
+  --hp-primary-200: #c3d4ff;
+  --hp-primary-300: #97b3ff;
+  --hp-primary-400: #6989ff;
+  --hp-primary-500: #4a6dfa;
+  --hp-primary-600: #2f5fea;
+  --hp-primary-700: #2a4ec2;
+  --hp-primary-800: #2a4299;
+  --hp-primary-900: #1b2e6a;
+  --hp-primary-950: #0f1a3d;
 
   /* Neutral */
   --hp-neutral-0: #ffffff;

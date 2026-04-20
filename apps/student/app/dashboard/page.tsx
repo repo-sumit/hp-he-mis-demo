@@ -56,6 +56,7 @@ export default function DashboardPage() {
   const firstSubmittedCourse = firstSubmitted ? getCourse(firstSubmitted.courseId) : null;
 
   const stepsLeft = remainingProfileSteps(draft);
+  const firstName = draft.fullName.trim().split(/\s+/)[0] ?? "";
 
   // When there's an open discrepancy, the dedicated alert card above owns
   // the primary action — we don't render a next-action card at all to keep
@@ -78,7 +79,9 @@ export default function DashboardPage() {
           {t("nav.home")}
         </p>
         <h2 className="mt-1 text-[var(--text-2xl)] font-[var(--weight-bold)] text-[var(--color-text-primary)]">
-          {t("screen.dashboard.greeting", { name: "Asha" })}
+          {firstName
+            ? t("screen.dashboard.greeting", { name: firstName })
+            : t("screen.dashboard.greetingGeneric")}
         </h2>
         <p className="mt-1 text-[var(--text-sm)] text-[var(--color-text-secondary)]">
           {t("screen.dashboard.subGreeting")}

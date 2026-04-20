@@ -1,7 +1,8 @@
 {
   "app": {
-    "name": "HP Admissions",
-    "tagline": "Unified higher-education admissions for Himachal Pradesh."
+    "name": "HPU Admission",
+    "fullName": "Himachal Pradesh University Admission",
+    "tagline": "All colleges affiliated to Himachal Pradesh University in one place."
   },
   "nav": {
     "home": "Home",
@@ -105,8 +106,8 @@
   },
   "student": {
     "splash": {
-      "title": "HP Admissions",
-      "subtitle": "A SwiftChat mini app for government college admissions"
+      "title": "HPU Admission",
+      "subtitle": "A SwiftChat mini app for Himachal Pradesh University admissions"
     },
     "home": {
       "welcomeTitle": "Welcome",
@@ -213,6 +214,7 @@
     },
     "dashboard": {
       "greeting": "Hello, {name}",
+      "greetingGeneric": "Welcome back",
       "subGreeting": "Here's where your admission stands today.",
       "statusTitle": "Your admission status",
       "nextActionTitle": "What to do next",
@@ -237,7 +239,7 @@
       "viewAllNotifications": "View all",
       "quickLinksTitle": "Quick links",
       "mockNotifications": {
-        "welcome": "Welcome to HP Admissions. Finish your profile to apply.",
+        "welcome": "Welcome to HPU Admission. Finish your profile to apply.",
         "dates": "Applications close 24 June 2026, 5:00 PM.",
         "language": "Tip: switch language any time from the top of the screen."
       }
@@ -270,7 +272,19 @@
       "subtitle": "We'll use this to check eligibility and build the merit list.",
       "boardSection": "Board and year",
       "subjectsSection": "Subjects and marks",
-      "resultSection": "Result"
+      "subjectsHint": "Enter at least five subjects with marks obtained and the subject's maximum marks. Your best-of-five is calculated automatically.",
+      "subjectsMinFive": "Enter marks for at least five subjects.",
+      "table": {
+        "subject": "Subject",
+        "obtained": "Marks obtained",
+        "total": "Total marks",
+        "subjectPlaceholder": "e.g. English"
+      },
+      "bofAutoHint": "Calculated from your top five subjects.",
+      "resultSection": "Result",
+      "resultPass": "Pass — you can continue.",
+      "resultFail": "Below the 35% pass mark. You can't apply this cycle.",
+      "gapSection": "Gap since Class 12"
     },
     "step4": {
       "title": "Reservation and special claims",
@@ -310,6 +324,7 @@
     "email": {
       "label": "Email",
       "helper": "Use your own email, not your father's.",
+      "fromAccount": "This is the email you registered with. Change it from Account settings.",
       "placeholder": "name@example.com"
     },
     "mobile": {
@@ -566,12 +581,10 @@
       "title": "Upload {name}",
       "chooseSource": "How would you like to upload?",
       "sources": {
-        "cameraTitle": "Take a photo",
-        "cameraHint": "Built-in camera with a corner guide",
-        "galleryTitle": "Choose from gallery",
-        "galleryHint": "Pick a photo you've already taken",
-        "fileTitle": "Upload a PDF",
-        "fileHint": "For scanned documents"
+        "digilockerTitle": "Upload via DigiLocker",
+        "digilockerHint": "Fetch a verified copy from your DigiLocker account.",
+        "fileTitle": "Upload a file",
+        "fileHint": "Choose a PDF or image from your device."
       },
       "tips": {
         "title": "How to get it right the first time",
@@ -591,13 +604,13 @@
       "replaceCtaHint": "Replacing resets the review status to \"Under review\"."
     },
     "rejection": {
-      "title": "Why this was rejected",
-      "subtitle": "Fix the issue below and upload a new copy. Your fee and earlier data are safe.",
-      "reasonLabel": "Reason",
+      "title": "Please upload again",
+      "subtitle": "The reviewer found an issue with this document. Fix it using the note below and upload a fresh copy — your earlier application data is safe.",
+      "reasonLabel": "What to fix",
       "reviewerLabel": "Reviewed by",
       "reviewedAtLabel": "Reviewed on",
       "nextStepsTitle": "How to fix this",
-      "nextStepsBody": "Follow the upload tips on the next screen. Scan or re-photograph the document in good light, and check the seal and signature are visible."
+      "nextStepsBody": "Follow the upload tips on the next screen. Scan or re-photograph the document in good light, and check that the seal and signature are visible."
     },
     "preview": {
       "title": "Your upload",
@@ -614,6 +627,7 @@
       "rejectionReason": "Official seal is not clearly visible. Re-upload a brighter, fuller scan of the same page."
     },
     "name": {
+      "aadhaar": "Aadhaar card",
       "marksheet_12": "Class 12 marksheet",
       "photo": "Passport-size photo",
       "signature": "Your signature",
@@ -626,6 +640,7 @@
       "migration_cert": "Migration certificate"
     },
     "description": {
+      "aadhaar": "Front side of your Aadhaar card. You can fetch it from DigiLocker in one tap.",
       "marksheet_12": "Both sides of your HPBOSE / CBSE / ICSE Class 12 marksheet.",
       "photo": "A clear passport-size colour photo with a plain background.",
       "signature": "Your signature on a plain white sheet, scanned or photographed.",
@@ -648,7 +663,15 @@
       "district": "District",
       "college": "College",
       "course": "Course",
-      "empty": "Nothing to filter yet."
+      "empty": "Nothing to filter yet.",
+      "distanceTitle": "Distance from you",
+      "distanceHint": "Approximate distance from your home district. 0 km means the college is in your own district.",
+      "distance": {
+        "any": "Any distance",
+        "within25": "Within 25 km",
+        "within50": "Within 50 km",
+        "within100": "Within 100 km"
+      }
     },
     "sort": {
       "label": "Sort",
@@ -689,7 +712,8 @@
       "totalSeats": "{total} seats · {vacant} vacant",
       "noSeats": "Seat matrix loading…",
       "atCollege": "at {college}",
-      "district": "{district} district"
+      "district": "{district} district",
+      "distanceKm": "≈ {km} km from you"
     },
     "combinationsExplainer": {
       "title": "What is a BA combination?",
@@ -918,6 +942,7 @@
       "continueCta": "Continue",
       "viewCta": "View",
       "preferencesCount": "{n} preference(s)",
+      "feePaid": "Fee paid · ₹{amount}",
       "status": {
         "draft": "Draft",
         "submitted": "Submitted",

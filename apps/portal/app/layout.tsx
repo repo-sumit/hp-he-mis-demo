@@ -18,8 +18,9 @@ const notoDevanagari = Noto_Sans_Devanagari({
 });
 
 export const metadata: Metadata = {
-  title: "HP Admissions — Admin Portal",
-  description: "Official admin portal for HP higher-education admissions.",
+  title: "HPU Admission — Admin Portal",
+  description:
+    "Official admin portal for undergraduate admissions to colleges affiliated to Himachal Pradesh University.",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

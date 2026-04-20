@@ -31,6 +31,13 @@ export interface ChecklistItem {
 
 export const DOCUMENT_RULES: readonly DocumentRule[] = [
   {
+    code: "aadhaar",
+    category: "identity",
+    acceptedFormats: ["PDF", "JPG", "PNG"],
+    maxSizeMb: 2,
+    baseRequired: true,
+  },
+  {
     code: "marksheet_12",
     category: "academic",
     acceptedFormats: ["PDF", "JPG", "PNG"],

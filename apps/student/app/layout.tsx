@@ -22,16 +22,16 @@ const notoDevanagari = Noto_Sans_Devanagari({
 });
 
 export const metadata: Metadata = {
-  title: "HP Admissions — Student",
+  title: "HPU Admission — Student",
   description:
-    "SwiftChat mini app for undergraduate admissions to Himachal Pradesh government colleges.",
+    "SwiftChat mini app for undergraduate admissions to colleges affiliated to Himachal Pradesh University.",
 };
 
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   maximumScale: 1,
-  themeColor: "#1f45d8",
+  themeColor: "#2f5fea",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

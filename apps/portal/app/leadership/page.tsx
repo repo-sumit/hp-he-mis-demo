@@ -67,7 +67,7 @@ export default function LeadershipDashboardPage() {
   return (
     <PortalFrame
       active="leadership"
-      eyebrow="Department of Higher Education · Cycle 2026-27"
+      eyebrow="HPU Admission · Department of Higher Education · Cycle 2026-27"
       title="Leadership dashboard"
     >
       <div className="mb-4 rounded-[var(--radius-md)] border border-[var(--color-border)] bg-[var(--color-background-subtle)] px-4 py-3 text-[var(--text-xs)] text-[var(--color-text-secondary)]">

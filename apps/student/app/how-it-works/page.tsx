@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { PageShell } from "../_components/page-shell";
 import { PrimaryLink } from "../_components/primary-button";
 import { useLocale } from "../_components/locale-provider";
@@ -64,12 +63,6 @@ export default function HowItWorksPage() {
 
       <div className="mt-6 flex flex-col gap-2">
         <PrimaryLink href="/register">{t("preLogin.howItWorks.readyCta")}</PrimaryLink>
-        <Link
-          href="/eligibility-check"
-          className="text-center text-[var(--text-sm)] font-[var(--weight-medium)] text-[var(--color-text-link)]"
-        >
-          {t("preLogin.cards.eligibilityCheck.title")}
-        </Link>
       </div>
     </PageShell>
   );

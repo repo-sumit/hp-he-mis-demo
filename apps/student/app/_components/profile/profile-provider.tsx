@@ -18,6 +18,47 @@ export interface CertificateEntry {
   willUploadLater: boolean;
 }
 
+export interface SubjectMark {
+  name: string;
+  obtained: string;
+  total: string;
+}
+
+export const DEFAULT_SUBJECT_ROWS = 5;
+
+export function emptySubjectMarks(n: number = DEFAULT_SUBJECT_ROWS): SubjectMark[] {
+  return Array.from({ length: n }, () => ({ name: "", obtained: "", total: "100" }));
+}
+
+/**
+ * Compute best-of-five from the subject table. Takes up to 5 rows with valid
+ * obtained/total, picks the five best per-subject percentages, and returns
+ * their average (0-100, rounded to 2 decimals). Returns null when fewer than
+ * five valid rows are present.
+ */
+export function computeBestOfFive(rows: SubjectMark[]): number | null {
+  const percentages: number[] = [];
+  for (const row of rows) {
+    const obtained = Number(row.obtained);
+    const total = Number(row.total);
+    if (!row.name.trim()) continue;
+    if (!Number.isFinite(obtained) || !Number.isFinite(total) || total <= 0) continue;
+    if (obtained < 0 || obtained > total) continue;
+    percentages.push((obtained / total) * 100);
+  }
+  if (percentages.length < 5) return null;
+  percentages.sort((a, b) => b - a);
+  const top5 = percentages.slice(0, 5);
+  const avg = top5.reduce((acc, n) => acc + n, 0) / 5;
+  return Math.round(avg * 100) / 100;
+}
+
+/** Derive result status from a computed percentage — ≥35 ⇒ pass, else fail. */
+export function deriveResultStatus(pct: number | null): "" | "pass" | "fail" {
+  if (pct == null) return "";
+  return pct >= 35 ? "pass" : "fail";
+}
+
 export interface ProfileDraft {
   // Step 1 — personal
   fullName: string;
@@ -46,8 +87,13 @@ export interface ProfileDraft {
   yearOfPassing: string;
   rollNumber: string;
   stream: "" | "arts" | "pcm" | "pcb" | "commerce";
+  /** Legacy free-text list (kept for backwards-compat with older drafts). */
   subjects: string;
+  /** New structured rows — subject name + marks obtained + total. */
+  subjectMarks: SubjectMark[];
+  /** Derived from subjectMarks — top 5 average, 0-100, string to preserve existing consumers. */
   bofPercentage: string;
+  /** Derived from bofPercentage — ≥35 ⇒ pass, <35 ⇒ fail. */
   resultStatus: "" | "pass" | "compartment" | "fail";
   gapYears: string;
 
@@ -86,6 +132,7 @@ const initialDraft: ProfileDraft = {
   rollNumber: "",
   stream: "",
   subjects: "",
+  subjectMarks: emptySubjectMarks(),
   bofPercentage: "",
   resultStatus: "",
   gapYears: "0",
@@ -122,7 +169,14 @@ export function ProfileProvider({ children }: { children: ReactNode }) {
       const raw = window.localStorage.getItem(STORAGE_KEY);
       if (raw) {
         const parsed = JSON.parse(raw) as Partial<ProfileDraft>;
-        setDraft((prev) => ({ ...prev, ...parsed }));
+        setDraft((prev) => ({
+          ...prev,
+          ...parsed,
+          subjectMarks:
+            Array.isArray(parsed.subjectMarks) && parsed.subjectMarks.length > 0
+              ? parsed.subjectMarks
+              : prev.subjectMarks,
+        }));
         setLastSavedAt(Date.now());
         setAutosaveState("saved");
       }

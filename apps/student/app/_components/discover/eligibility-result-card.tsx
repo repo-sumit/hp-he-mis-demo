@@ -6,7 +6,9 @@ import { useLocale } from "../locale-provider";
 import { EligibilityStateBadge } from "./eligibility-state-badge";
 import { NotEligibleReasonBlock } from "./not-eligible-reason-block";
 import type { EligibilityResult } from "./evaluate";
-import { combinationsFor, getCollege, type Course } from "./mock-data";
+import { combinationsFor, getCollege, mockDistanceKm, type Course } from "./mock-data";
+import { useProfile } from "../profile/profile-provider";
+import { HP_DISTRICTS } from "@hp-mis/fixtures";
 
 interface Props {
   result: EligibilityResult;
@@ -18,11 +20,17 @@ interface Props {
 
 export function EligibilityResultCard({ result, hideDistrict, hideCollege }: Props) {
   const { t } = useLocale();
+  const { draft } = useProfile();
   const college = getCollege(result.collegeId)!;
   const course: Course = result.course;
   const combos = course.combinationBased
     ? combinationsFor(result.collegeId, result.courseId).length
     : 0;
+  const studentDistrictName =
+    HP_DISTRICTS.find((d) => d.id === draft.district)?.name ?? "";
+  const distanceKm = studentDistrictName
+    ? mockDistanceKm(result.collegeId, studentDistrictName)
+    : null;
 
   const disabled = result.state === "not_eligible";
 
@@ -70,6 +78,13 @@ export function EligibilityResultCard({ result, hideDistrict, hideCollege }: Pro
           <div>
             <dt className="inline text-[var(--color-text-tertiary)]">
               {t("discover.card.combinationsCount", { n: combos })}
+            </dt>
+          </div>
+        ) : null}
+        {distanceKm != null ? (
+          <div>
+            <dt className="inline text-[var(--color-text-tertiary)]">
+              {t("discover.card.distanceKm", { km: distanceKm })}
             </dt>
           </div>
         ) : null}

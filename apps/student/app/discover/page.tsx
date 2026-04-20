@@ -16,11 +16,23 @@ import {
   type Filters,
 } from "../_components/discover/filter-sheet";
 import { evaluateAll, hasEnoughProfile, type EligibilityResult } from "../_components/discover/evaluate";
-import { getCollege, getCourse } from "../_components/discover/mock-data";
+import { getCollege, getCourse, mockDistanceKm } from "../_components/discover/mock-data";
+import { HP_DISTRICTS } from "@hp-mis/fixtures";
 
 type SortOption = "bestMatch" | "mostSeats";
 
-function applyFilters(results: EligibilityResult[], filters: Filters): EligibilityResult[] {
+const DISTANCE_BANDS: Record<string, number> = {
+  within25: 25,
+  within50: 50,
+  within100: 100,
+};
+
+function applyFilters(
+  results: EligibilityResult[],
+  filters: Filters,
+  studentDistrictName: string,
+): EligibilityResult[] {
+  const bandLimit = DISTANCE_BANDS[filters.distance];
   return results.filter((r) => {
     const college = getCollege(r.collegeId);
     if (!college) return false;
@@ -28,6 +40,9 @@ function applyFilters(results: EligibilityResult[], filters: Filters): Eligibili
     if (filters.districts.length > 0 && !filters.districts.includes(college.district)) return false;
     if (filters.collegeIds.length > 0 && !filters.collegeIds.includes(r.collegeId)) return false;
     if (filters.courseIds.length > 0 && !filters.courseIds.includes(r.courseId)) return false;
+    if (bandLimit != null) {
+      if (mockDistanceKm(r.collegeId, studentDistrictName) > bandLimit) return false;
+    }
     return true;
   });
 }
@@ -79,9 +94,18 @@ export default function DiscoverPage() {
     ready,
   ]);
 
+  const studentDistrictName = useMemo(() => {
+    const d = HP_DISTRICTS.find((d) => d.id === draft.district);
+    return d?.name ?? "";
+  }, [draft.district]);
+
   const filtered = useMemo(
-    () => sortResults(applySearch(applyFilters(allResults, filters), search), sort),
-    [allResults, filters, search, sort],
+    () =>
+      sortResults(
+        applySearch(applyFilters(allResults, filters, studentDistrictName), search),
+        sort,
+      ),
+    [allResults, filters, search, sort, studentDistrictName],
   );
 
   const counts = useMemo(() => {
@@ -100,7 +124,8 @@ export default function DiscoverPage() {
     filters.states.length +
     filters.districts.length +
     filters.collegeIds.length +
-    filters.courseIds.length;
+    filters.courseIds.length +
+    (filters.distance !== "any" ? 1 : 0);
 
   if (!ready) {
     return (

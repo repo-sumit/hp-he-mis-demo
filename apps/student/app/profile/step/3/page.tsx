@@ -1,18 +1,21 @@
 "use client";
 
-import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState, type FormEvent } from "react";
+import { useEffect, useMemo, useState, type FormEvent } from "react";
 import { PageShell } from "../../../_components/page-shell";
 import { Field } from "../../../_components/field";
 import { PrimaryButton } from "../../../_components/primary-button";
 import { useLocale } from "../../../_components/locale-provider";
 import { ProfileProgress } from "../../../_components/profile/profile-progress";
 import { AutosaveHint } from "../../../_components/profile/autosave-hint";
-import { useProfile } from "../../../_components/profile/profile-provider";
+import {
+  useProfile,
+  computeBestOfFive,
+  deriveResultStatus,
+  type SubjectMark,
+} from "../../../_components/profile/profile-provider";
 import { IssueBanner } from "../../../_components/scrutiny-bridge/issue-banner";
 import { Select } from "../../../_components/form/select";
-import { Textarea } from "../../../_components/form/textarea";
 import { RadioCards } from "../../../_components/form/radio-cards";
 
 type Errors = Record<string, string>;
@@ -23,6 +26,16 @@ export default function Step3Page() {
   const { draft, update } = useProfile();
   const [errors, setErrors] = useState<Errors>({});
 
+  const bof = useMemo(() => computeBestOfFive(draft.subjectMarks), [draft.subjectMarks]);
+  const derivedResult = deriveResultStatus(bof);
+
+  // Keep derived fields synced whenever the table changes.
+  const bofString = bof == null ? "" : bof.toFixed(2);
+  useEffect(() => {
+    if (draft.bofPercentage !== bofString) update("bofPercentage", bofString);
+    if (draft.resultStatus !== derivedResult) update("resultStatus", derivedResult);
+  }, [bofString, derivedResult, draft.bofPercentage, draft.resultStatus, update]);
+
   function validate(): Errors {
     const e: Errors = {};
     if (!draft.board) e.board = t("error.required");
@@ -30,13 +43,21 @@ export default function Step3Page() {
     else if (!/^\d{4}$/.test(draft.yearOfPassing)) e.yearOfPassing = t("error.invalidYear");
     if (!draft.rollNumber.trim()) e.rollNumber = t("error.required");
     if (!draft.stream) e.stream = t("error.required");
-    if (!draft.subjects.trim()) e.subjects = t("error.required");
-    if (!draft.bofPercentage) e.bofPercentage = t("error.required");
-    else {
-      const n = Number(draft.bofPercentage);
-      if (Number.isNaN(n) || n < 0 || n > 100) e.bofPercentage = t("error.invalidPercentage");
-    }
-    if (!draft.resultStatus) e.resultStatus = t("error.required");
+
+    const validRows = draft.subjectMarks.filter((r) => {
+      const o = Number(r.obtained);
+      const tt = Number(r.total);
+      return (
+        r.name.trim() &&
+        Number.isFinite(o) &&
+        Number.isFinite(tt) &&
+        tt > 0 &&
+        o >= 0 &&
+        o <= tt
+      );
+    });
+    if (validRows.length < 5) e.subjectMarks = t("profile.step3.subjectsMinFive");
+
     return e;
   }
 
@@ -59,11 +80,12 @@ export default function Step3Page() {
     { value: "commerce", label: t("field.stream.options.commerce") },
   ];
 
-  const resultOptions = [
-    { value: "pass", label: t("field.resultStatus.options.pass") },
-    { value: "compartment", label: t("field.resultStatus.options.compartment") },
-    { value: "fail", label: t("field.resultStatus.options.fail") },
-  ];
+  function updateRow(index: number, patch: Partial<SubjectMark>) {
+    const next = draft.subjectMarks.map((row, i) =>
+      i === index ? { ...row, ...patch } : row,
+    );
+    update("subjectMarks", next);
+  }
 
   return (
     <PageShell
@@ -121,63 +143,95 @@ export default function Step3Page() {
           />
         </section>
 
-        <section className="space-y-4">
-          <h3 className="text-[var(--text-xs)] font-[var(--weight-semibold)] uppercase tracking-wide text-[var(--color-text-tertiary)]">
-            {t("profile.step3.subjectsSection")}
-          </h3>
-          <Textarea
-            name="subjects"
-            rows={3}
-            label={t("field.subjects.label")}
-            helper={t("field.subjects.helper")}
-            placeholder={t("field.subjects.placeholder")}
-            value={draft.subjects}
-            onChange={(event) => update("subjects", event.target.value)}
-            error={errors.subjects}
-          />
+        <section className="space-y-3">
+          <div>
+            <h3 className="text-[var(--text-xs)] font-[var(--weight-semibold)] uppercase tracking-wide text-[var(--color-text-tertiary)]">
+              {t("profile.step3.subjectsSection")}
+            </h3>
+            <p className="mt-1 text-[var(--text-xs)] text-[var(--color-text-secondary)]">
+              {t("profile.step3.subjectsHint")}
+            </p>
+          </div>
 
-          <Field
-            name="bofPercentage"
-            inputMode="decimal"
-            label={t("field.bofPercentage.label")}
-            helper={t("field.bofPercentage.helper")}
-            placeholder={t("field.bofPercentage.placeholder")}
-            value={draft.bofPercentage}
-            onChange={(event) => update("bofPercentage", event.target.value)}
-            error={errors.bofPercentage}
-            adornment={
-              <div className="flex flex-wrap gap-3">
-                <Link
-                  href="/profile/tools/bof-calculator"
-                  className="inline-flex items-center gap-1 text-[var(--text-xs)] font-[var(--weight-medium)] text-[var(--color-text-link)]"
+          <div className="overflow-hidden rounded-[var(--radius-lg)] border border-[var(--color-border)] bg-[var(--color-surface)]">
+            <div className="grid grid-cols-[1.4fr_0.9fr_0.9fr] gap-2 border-b border-[var(--color-border)] bg-[var(--color-background-subtle)] px-3 py-2 text-[10px] font-[var(--weight-semibold)] uppercase tracking-wide text-[var(--color-text-tertiary)] sm:text-[var(--text-xs)]">
+              <span>{t("profile.step3.table.subject")}</span>
+              <span>{t("profile.step3.table.obtained")}</span>
+              <span>{t("profile.step3.table.total")}</span>
+            </div>
+            <ul>
+              {draft.subjectMarks.map((row, index) => (
+                <li
+                  key={index}
+                  className="grid grid-cols-[1.4fr_0.9fr_0.9fr] gap-2 border-b border-[var(--color-border)] px-3 py-2 last:border-b-0"
                 >
-                  <span aria-hidden="true">🧮</span>
-                  {t("cta.openCalculator")}
-                </Link>
-                <Link
-                  href="/profile/tools/cgpa-converter"
-                  className="inline-flex items-center gap-1 text-[var(--text-xs)] font-[var(--weight-medium)] text-[var(--color-text-link)]"
-                >
-                  <span aria-hidden="true">🔁</span>
-                  {t("field.cgpa.converterLink")}
-                </Link>
-              </div>
-            }
-          />
+                  <input
+                    aria-label={t("profile.step3.table.subject")}
+                    className="h-10 rounded-[var(--radius-md)] border border-[var(--color-border-strong)] bg-[var(--color-surface)] px-2 text-[var(--text-sm)] text-[var(--color-text-primary)] outline-none focus:border-[var(--color-border-focus)]"
+                    value={row.name}
+                    onChange={(event) => updateRow(index, { name: event.target.value })}
+                    placeholder={t("profile.step3.table.subjectPlaceholder")}
+                  />
+                  <input
+                    aria-label={t("profile.step3.table.obtained")}
+                    inputMode="numeric"
+                    className="h-10 rounded-[var(--radius-md)] border border-[var(--color-border-strong)] bg-[var(--color-surface)] px-2 text-[var(--text-sm)] text-[var(--color-text-primary)] outline-none focus:border-[var(--color-border-focus)]"
+                    value={row.obtained}
+                    onChange={(event) =>
+                      updateRow(index, { obtained: event.target.value.replace(/[^\d.]/g, "") })
+                    }
+                  />
+                  <input
+                    aria-label={t("profile.step3.table.total")}
+                    inputMode="numeric"
+                    className="h-10 rounded-[var(--radius-md)] border border-[var(--color-border-strong)] bg-[var(--color-surface)] px-2 text-[var(--text-sm)] text-[var(--color-text-primary)] outline-none focus:border-[var(--color-border-focus)]"
+                    value={row.total}
+                    onChange={(event) =>
+                      updateRow(index, { total: event.target.value.replace(/[^\d.]/g, "") })
+                    }
+                  />
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {errors.subjectMarks ? (
+            <p className="text-[var(--text-xs)] text-[var(--color-text-danger)]">
+              ⚠ {errors.subjectMarks}
+            </p>
+          ) : null}
+
+          <div className="rounded-[var(--radius-lg)] border border-[var(--color-border)] bg-[var(--color-background-subtle)] p-3">
+            <p className="text-[var(--text-xs)] font-[var(--weight-semibold)] uppercase tracking-wide text-[var(--color-text-tertiary)]">
+              {t("field.bofPercentage.label")}
+            </p>
+            <p className="mt-1 text-[var(--text-2xl)] font-[var(--weight-bold)] text-[var(--color-text-primary)]">
+              {bof != null ? `${bof.toFixed(2)}%` : "—"}
+            </p>
+            <p className="mt-1 text-[var(--text-xs)] text-[var(--color-text-secondary)]">
+              {t("profile.step3.bofAutoHint")}
+            </p>
+          </div>
+
+          {derivedResult ? (
+            <div
+              className={
+                derivedResult === "pass"
+                  ? "rounded-[var(--radius-md)] border border-[var(--color-interactive-success)] bg-[var(--color-status-success-bg)] px-3 py-2 text-[var(--text-sm)] text-[var(--color-status-success-fg)]"
+                  : "rounded-[var(--radius-md)] border border-[var(--color-text-danger)] bg-[var(--color-status-danger-bg)] px-3 py-2 text-[var(--text-sm)] text-[var(--color-status-danger-fg)]"
+              }
+            >
+              {derivedResult === "pass"
+                ? t("profile.step3.resultPass")
+                : t("profile.step3.resultFail")}
+            </div>
+          ) : null}
         </section>
 
         <section className="space-y-4">
           <h3 className="text-[var(--text-xs)] font-[var(--weight-semibold)] uppercase tracking-wide text-[var(--color-text-tertiary)]">
-            {t("profile.step3.resultSection")}
+            {t("profile.step3.gapSection")}
           </h3>
-          <RadioCards
-            name="resultStatus"
-            label={t("field.resultStatus.label")}
-            options={resultOptions}
-            value={draft.resultStatus}
-            onChange={(v) => update("resultStatus", v as typeof draft.resultStatus)}
-            error={errors.resultStatus}
-          />
           <Field
             name="gapYears"
             inputMode="numeric"
@@ -195,7 +249,7 @@ export default function Step3Page() {
           </p>
         ) : null}
 
-        <div className="sticky bottom-0 -mx-4 border-t border-[var(--color-border)] bg-[var(--color-surface)] px-4 py-3">
+        <div className="sticky bottom-0 -mx-3 border-t border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-3 sm:-mx-4 sm:px-4">
           <PrimaryButton type="submit">{t("cta.saveAndContinue")}</PrimaryButton>
         </div>
       </form>

@@ -29,9 +29,6 @@ export default function Step1Page() {
     if (!draft.mobile) e.mobile = t("error.required");
     else if (!/^[6-9]\d{9}$/.test(draft.mobile.replace(/\s+/g, "")))
       e.mobile = t("error.invalidMobile");
-    if (!draft.email) e.email = t("error.required");
-    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(draft.email))
-      e.email = t("error.invalidEmail");
     if (draft.aadhaar && !/^\d{12}$/.test(draft.aadhaar.replace(/\s+/g, "")))
       e.aadhaar = t("error.invalidAadhaar");
     if (!draft.category) e.category = t("error.required");
@@ -111,7 +108,13 @@ export default function Step1Page() {
             label={t("field.gender.label")}
             options={genderOptions}
             value={draft.gender}
-            onChange={(v) => update("gender", v as typeof draft.gender)}
+            onChange={(v) => {
+              const next = v as typeof draft.gender;
+              update("gender", next);
+              if (next !== "female" && draft.isSingleGirlChild) {
+                update("isSingleGirlChild", false);
+              }
+            }}
             error={errors.gender}
             columns={2}
           />
@@ -138,10 +141,11 @@ export default function Step1Page() {
             type="email"
             inputMode="email"
             autoComplete="email"
+            readOnly
             label={t("field.email.label")}
-            helper={t("field.email.helper")}
+            helper={t("field.email.fromAccount")}
             placeholder={t("field.email.placeholder")}
-            value={draft.email}
+            value={draft.email || "demo.student@example.com"}
             onChange={(event) => update("email", event.target.value)}
             error={errors.email}
           />
@@ -193,12 +197,14 @@ export default function Step1Page() {
             onChange={(v) => update("category", v as typeof draft.category)}
             error={errors.category}
           />
-          <Toggle
-            label={t("field.singleGirlChild.label")}
-            helper={t("field.singleGirlChild.helper")}
-            value={draft.isSingleGirlChild}
-            onChange={(v) => update("isSingleGirlChild", v)}
-          />
+          {draft.gender === "female" ? (
+            <Toggle
+              label={t("field.singleGirlChild.label")}
+              helper={t("field.singleGirlChild.helper")}
+              value={draft.isSingleGirlChild}
+              onChange={(v) => update("isSingleGirlChild", v)}
+            />
+          ) : null}
           <Toggle
             label={t("field.pwd.label")}
             helper={t("field.pwd.helper")}

@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { t } from "@hp-mis/i18n";
@@ -209,13 +210,23 @@ export function PortalFrame({
   return (
     <div className="flex min-h-dvh flex-col md:grid md:grid-cols-[240px_1fr]">
       <aside className="hidden flex-col border-r border-[var(--color-border)] bg-[var(--color-surface)] md:flex">
-        <div className="border-b border-[var(--color-border)] px-5 py-4">
-          <p className="text-[var(--text-xs)] uppercase tracking-wide text-[var(--color-text-tertiary)]">
-            Admin portal
-          </p>
-          <p className="text-[var(--text-base)] font-[var(--weight-semibold)] text-[var(--color-text-primary)]">
-            {t("en", "app.name")}
-          </p>
+        <div className="flex items-center gap-3 border-b border-[var(--color-border)] px-5 py-4">
+          <Image
+            src="/hpu-logo.png"
+            alt="HPU"
+            width={36}
+            height={36}
+            priority
+            className="h-9 w-9 flex-none rounded-[var(--radius-sm)]"
+          />
+          <div className="min-w-0">
+            <p className="text-[var(--text-xs)] uppercase tracking-wide text-[var(--color-text-tertiary)]">
+              Admin portal
+            </p>
+            <p className="truncate text-[var(--text-base)] font-[var(--weight-semibold)] text-[var(--color-text-primary)]">
+              {t("en", "app.name")}
+            </p>
+          </div>
         </div>
         <nav className="flex-1 px-2 py-3">
           <ul className="space-y-1">
@@ -265,19 +276,29 @@ export function PortalFrame({
           </ul>
         </nav>
         <div className="border-t border-[var(--color-border)] px-5 py-3 text-[var(--text-xs)] text-[var(--color-text-tertiary)]">
-          Demo build · V1 shell
+          Demo build · HPU Admission V1
         </div>
       </aside>
 
       <div className="flex min-w-0 flex-col">
         <header className="flex items-center justify-between gap-4 border-b border-[var(--color-border)] bg-[var(--color-surface)] px-4 py-3 md:px-6">
-          <div className="min-w-0">
-            <p className="text-[var(--text-xs)] uppercase tracking-wide text-[var(--color-text-tertiary)]">
-              {eyebrow ?? "Cycle 2026-27 · Application window"}
-            </p>
-            <h1 className="truncate text-[var(--text-xl)] font-[var(--weight-semibold)] text-[var(--color-text-primary)]">
-              {title}
-            </h1>
+          <div className="flex min-w-0 items-center gap-3">
+            <Image
+              src="/hpu-logo.png"
+              alt="HPU"
+              width={32}
+              height={32}
+              priority
+              className="h-8 w-8 flex-none rounded-[var(--radius-sm)] md:hidden"
+            />
+            <div className="min-w-0">
+              <p className="text-[var(--text-xs)] uppercase tracking-wide text-[var(--color-text-tertiary)]">
+                {eyebrow ?? "HPU Admission · Cycle 2026-27"}
+              </p>
+              <h1 className="truncate text-[var(--text-lg)] font-[var(--weight-semibold)] text-[var(--color-text-primary)] md:text-[var(--text-xl)]">
+                {title}
+              </h1>
+            </div>
           </div>
           <div className="flex shrink-0 items-center gap-3 text-[var(--text-sm)] text-[var(--color-text-secondary)]">
             {headerRight ?? <RoleSwitcher />}

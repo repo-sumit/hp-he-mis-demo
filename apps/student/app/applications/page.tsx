@@ -195,6 +195,15 @@ export default function ApplicationsListPage() {
                   ) : null}
                 </dl>
 
+                {submitted ? (
+                  <div className="mt-2 inline-flex items-center gap-1.5 rounded-[var(--radius-pill)] bg-[var(--color-status-success-bg)] px-2.5 py-0.5 text-[var(--text-xs)] font-[var(--weight-semibold)] text-[var(--color-status-success-fg)]">
+                    <span aria-hidden="true">✓</span>
+                    {t("apply.myApps.feePaid", {
+                      amount: feeFor(row.courseId),
+                    })}
+                  </div>
+                ) : null}
+
                 {issueCount > 0 ? (
                   <p className="mt-3 rounded-[var(--radius-md)] bg-[var(--color-status-danger-bg)] px-3 py-1.5 text-[var(--text-xs)] font-[var(--weight-medium)] text-[var(--color-status-danger-fg)]">
                     ⚠ {t("apply.myApps.issueCount", { n: issueCount })}

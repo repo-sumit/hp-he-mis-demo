@@ -16,7 +16,7 @@ import { useScrutinyBridge } from "../../../_components/scrutiny-bridge/scrutiny
 
 type Params = { docType: string };
 
-type Source = "camera" | "gallery" | "file";
+type Source = "digilocker" | "file";
 
 interface PickedFile {
   source: Source;
@@ -26,19 +26,11 @@ interface PickedFile {
 }
 
 function mockPick(source: Source, code: string): PickedFile {
-  if (source === "file") {
-    return {
-      source,
-      fileName: `${code}_scan.pdf`,
-      mimeType: "application/pdf",
-      sizeKb: 380,
-    };
-  }
   return {
     source,
-    fileName: `${code}_${source}.jpg`,
-    mimeType: "image/jpeg",
-    sizeKb: source === "camera" ? 310 : 240,
+    fileName: `${code}_scan.pdf`,
+    mimeType: "application/pdf",
+    sizeKb: 380,
   };
 }
 
@@ -59,9 +51,8 @@ export default function UploadPage({ params }: { params: Promise<Params> }) {
   const name = t(`document.name.${rule.code}`);
   const alreadyUploaded = entry.status !== "not_uploaded" && !picked;
 
-  const sources: { key: Source; icon: string }[] = [
-    { key: "camera", icon: "📷" },
-    { key: "gallery", icon: "🖼" },
+  const sources: { key: Source; icon: string; disabled?: boolean }[] = [
+    { key: "digilocker", icon: "🏛", disabled: true },
     { key: "file", icon: "📄" },
   ];
 
@@ -119,18 +110,24 @@ export default function UploadPage({ params }: { params: Promise<Params> }) {
           {t("document.upload.chooseSource")}
         </p>
         <div className="grid grid-cols-1 gap-2">
-          {sources.map(({ key, icon }) => {
+          {sources.map(({ key, icon, disabled }) => {
             const active = picked?.source === key;
             return (
               <button
                 key={key}
                 type="button"
-                onClick={() => setPicked(mockPick(key, rule.code))}
+                onClick={() => {
+                  if (disabled) return;
+                  setPicked(mockPick(key, rule.code));
+                }}
+                aria-disabled={disabled || undefined}
                 className={cn(
                   "flex items-center gap-3 rounded-[var(--radius-md)] border px-3 py-3 text-left transition-colors",
-                  active
-                    ? "border-[var(--color-border-brand)] bg-[var(--color-background-brand-subtle)]"
-                    : "border-[var(--color-border-strong)] bg-[var(--color-surface)] hover:bg-[var(--color-background-subtle)]",
+                  disabled
+                    ? "cursor-not-allowed border-[var(--color-border)] bg-[var(--color-background-subtle)] opacity-70"
+                    : active
+                      ? "border-[var(--color-border-brand)] bg-[var(--color-background-brand-subtle)]"
+                      : "border-[var(--color-border-strong)] bg-[var(--color-surface)] hover:bg-[var(--color-background-subtle)]",
                 )}
               >
                 <span
@@ -140,36 +137,31 @@ export default function UploadPage({ params }: { params: Promise<Params> }) {
                   {icon}
                 </span>
                 <span className="min-w-0 flex-1">
-                  <span className="block text-[var(--text-sm)] font-[var(--weight-medium)] text-[var(--color-text-primary)]">
-                    {t(
-                      key === "camera"
-                        ? "document.upload.sources.cameraTitle"
-                        : key === "gallery"
-                          ? "document.upload.sources.galleryTitle"
-                          : "document.upload.sources.fileTitle",
-                    )}
+                  <span className="flex items-center gap-2 text-[var(--text-sm)] font-[var(--weight-medium)] text-[var(--color-text-primary)]">
+                    {t(`document.upload.sources.${key}Title`)}
+                    {disabled ? (
+                      <span className="rounded-[var(--radius-pill)] bg-[var(--color-background-muted)] px-2 py-0.5 text-[10px] font-[var(--weight-semibold)] uppercase tracking-wide text-[var(--color-text-tertiary)]">
+                        {t("common.comingSoon")}
+                      </span>
+                    ) : null}
                   </span>
-                  <span className="block text-[var(--text-xs)] text-[var(--color-text-secondary)]">
-                    {t(
-                      key === "camera"
-                        ? "document.upload.sources.cameraHint"
-                        : key === "gallery"
-                          ? "document.upload.sources.galleryHint"
-                          : "document.upload.sources.fileHint",
-                    )}
+                  <span className="mt-0.5 block text-[var(--text-xs)] text-[var(--color-text-secondary)]">
+                    {t(`document.upload.sources.${key}Hint`)}
                   </span>
                 </span>
-                <span
-                  aria-hidden="true"
-                  className={cn(
-                    "flex h-6 w-6 flex-none items-center justify-center rounded-full border-2",
-                    active
-                      ? "border-[var(--color-interactive-brand)] bg-[var(--color-interactive-brand)] text-[var(--color-text-inverse)]"
-                      : "border-[var(--color-border-strong)]",
-                  )}
-                >
-                  {active ? "✓" : ""}
-                </span>
+                {!disabled ? (
+                  <span
+                    aria-hidden="true"
+                    className={cn(
+                      "flex h-6 w-6 flex-none items-center justify-center rounded-full border-2",
+                      active
+                        ? "border-[var(--color-interactive-brand)] bg-[var(--color-interactive-brand)] text-[var(--color-text-inverse)]"
+                        : "border-[var(--color-border-strong)]",
+                    )}
+                  >
+                    {active ? "✓" : ""}
+                  </span>
+                ) : null}
               </button>
             );
           })}

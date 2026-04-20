@@ -34,7 +34,7 @@ export function ApplicationQueueTable({ rows, emptyMessage }: Props) {
   }
 
   return (
-    <section className="overflow-hidden rounded-[var(--radius-lg)] border border-[var(--color-border)] bg-[var(--color-surface)]">
+    <section className="overflow-x-auto rounded-[var(--radius-lg)] border border-[var(--color-border)] bg-[var(--color-surface)]">
       <table className="w-full min-w-[720px] border-collapse text-left text-[var(--text-sm)]">
         <thead className="bg-[var(--color-background-subtle)] text-[var(--text-xs)] uppercase tracking-wide text-[var(--color-text-tertiary)]">
           <tr>

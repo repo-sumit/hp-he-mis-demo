@@ -47,7 +47,6 @@ export default function HomePage() {
             [
               { href: "/dates", key: "dates", icon: "🗓" },
               { href: "/how-it-works", key: "howItWorks", icon: "🧭" },
-              { href: "/eligibility-check", key: "eligibilityCheck", icon: "✓" },
               { href: "/merit-lookup", key: "meritLookup", icon: "🏅" },
             ] as const
           ).map((item) => (

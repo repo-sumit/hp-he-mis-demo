@@ -6,11 +6,14 @@ import { useLocale } from "../locale-provider";
 import type { EligibilityState } from "./evaluate";
 import { COLLEGES, COURSES, uniqueDistricts } from "./mock-data";
 
+export type DistanceBand = "any" | "within25" | "within50" | "within100";
+
 export interface Filters {
   states: EligibilityState[];
   districts: string[];
   collegeIds: string[];
   courseIds: string[];
+  distance: DistanceBand;
 }
 
 export const EMPTY_FILTERS: Filters = {
@@ -18,6 +21,7 @@ export const EMPTY_FILTERS: Filters = {
   districts: [],
   collegeIds: [],
   courseIds: [],
+  distance: "any",
 };
 
 export function filtersAreEmpty(f: Filters): boolean {
@@ -25,9 +29,16 @@ export function filtersAreEmpty(f: Filters): boolean {
     f.states.length === 0 &&
     f.districts.length === 0 &&
     f.collegeIds.length === 0 &&
-    f.courseIds.length === 0
+    f.courseIds.length === 0 &&
+    f.distance === "any"
   );
 }
+
+const DISTANCE_OPTIONS: { value: DistanceBand; key: string }[] = [
+  { value: "within25", key: "discover.filter.distance.within25" },
+  { value: "within50", key: "discover.filter.distance.within50" },
+  { value: "within100", key: "discover.filter.distance.within100" },
+];
 
 interface Props {
   open: boolean;
@@ -118,6 +129,25 @@ export function FilterSheet({ open, value, onChange, onClose, onApply, onClear }
                 active={value.states.includes(opt.value)}
                 label={t(opt.key)}
                 onToggle={() => onChange({ ...value, states: toggle(value.states, opt.value) })}
+              />
+            ))}
+          </Section>
+
+          <Section title={t("discover.filter.distanceTitle")}>
+            <p className="mb-2 w-full text-[var(--text-xs)] text-[var(--color-text-tertiary)]">
+              {t("discover.filter.distanceHint")}
+            </p>
+            <ChipOption
+              active={value.distance === "any"}
+              label={t("discover.filter.distance.any")}
+              onToggle={() => onChange({ ...value, distance: "any" })}
+            />
+            {DISTANCE_OPTIONS.map((opt) => (
+              <ChipOption
+                key={opt.value}
+                active={value.distance === opt.value}
+                label={t(opt.key)}
+                onToggle={() => onChange({ ...value, distance: opt.value })}
               />
             ))}
           </Section>

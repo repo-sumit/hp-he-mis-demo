@@ -313,3 +313,24 @@ export function offeringsFor(collegeId?: string, courseId?: string): Offering[] 
 export function uniqueDistricts(): string[] {
   return Array.from(new Set(COLLEGES.map((c) => c.district))).sort();
 }
+
+/**
+ * Deterministic mock distance (km) between the student's saved district and
+ * a given college id. No real geolocation — purely a stable, per-college hash
+ * so the UI feels like a real "distance from you" filter. When the student's
+ * district matches the college's district the value is small (<= 15 km).
+ */
+export function mockDistanceKm(collegeId: string, studentDistrict: string): number {
+  const college = COLLEGE_BY_ID[collegeId];
+  if (!college) return 999;
+  const sameDistrict =
+    studentDistrict && college.district.toLowerCase() === studentDistrict.toLowerCase();
+  // Stable hash on the college id.
+  let h = 0;
+  for (let i = 0; i < collegeId.length; i++) {
+    h = (h * 31 + collegeId.charCodeAt(i)) | 0;
+  }
+  const base = ((h >>> 0) % 180) + 5; // 5 – 184 km
+  if (sameDistrict) return Math.max(1, base % 16); // 1 – 15 km
+  return base;
+}

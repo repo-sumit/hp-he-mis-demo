@@ -17,9 +17,9 @@ const notoDevanagari = Noto_Sans_Devanagari({
 });
 
 export const metadata: Metadata = {
-  title: "HP Admissions — Unified admission to Himachal's government colleges",
+  title: "HPU Admission — Unified admission to HP University colleges",
   description:
-    "Apply once to undergraduate admission across every HP government degree and Sanskrit college.",
+    "Apply once for undergraduate admission across every college affiliated to Himachal Pradesh University.",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
