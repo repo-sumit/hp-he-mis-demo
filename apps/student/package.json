@@ -12,6 +12,7 @@
   "dependencies": {
     "@hp-mis/design-tokens": "workspace:*",
     "@hp-mis/i18n": "workspace:*",
+    "@hp-mis/shared-mock": "workspace:*",
     "@hp-mis/types": "workspace:*",
     "@hp-mis/ui": "workspace:*",
     "next": "16.2.4",

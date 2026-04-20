@@ -11,6 +11,8 @@ import { getRule } from "../../../_components/documents/document-rules";
 import { useDocuments } from "../../../_components/documents/documents-provider";
 import { DocumentStatusBadge } from "../../../_components/documents/document-status-badge";
 import { UploadGuidanceCard } from "../../../_components/documents/upload-guidance-card";
+import { useApplications } from "../../../_components/apply/applications-provider";
+import { useScrutinyBridge } from "../../../_components/scrutiny-bridge/scrutiny-bridge-provider";
 
 type Params = { docType: string };
 
@@ -45,6 +47,8 @@ export default function UploadPage({ params }: { params: Promise<Params> }) {
   const router = useRouter();
   const { t } = useLocale();
   const { getEntry, markUploaded } = useDocuments();
+  const { applications, submittedCourseIds } = useApplications();
+  const bridge = useScrutinyBridge();
 
   const rule = getRule(docType);
   if (!rule) notFound();
@@ -68,6 +72,12 @@ export default function UploadPage({ params }: { params: Promise<Params> }) {
       mimeType: picked.mimeType,
       sizeKb: picked.sizeKb,
     });
+    // Tell the bridge this doc was just re-uploaded so any open document
+    // discrepancy on any submitted application flips into "sent for re-check".
+    for (const cid of submittedCourseIds()) {
+      const appNumber = applications[cid]?.applicationNumber;
+      if (appNumber) bridge.markDocResubmitted(appNumber, rule!.code);
+    }
     router.push(`/documents/preview/${rule!.code}`);
   }
 

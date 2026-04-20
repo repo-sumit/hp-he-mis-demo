@@ -10,18 +10,43 @@ import { getRule } from "../../../_components/documents/document-rules";
 import { useDocuments } from "../../../_components/documents/documents-provider";
 import { RejectionCard } from "../../../_components/documents/rejection-card";
 import { UploadGuidanceCard } from "../../../_components/documents/upload-guidance-card";
+import { useApplications } from "../../../_components/apply/applications-provider";
+import { useScrutinyBridge } from "../../../_components/scrutiny-bridge/scrutiny-bridge-provider";
 
 type Params = { docType: string };
 
 export default function RejectionPage({ params }: { params: Promise<Params> }) {
   const { docType } = use(params);
-  const { t } = useLocale();
+  const { t, locale } = useLocale();
   const { getEntry } = useDocuments();
+  const { applications, submittedCourseIds } = useApplications();
+  const bridge = useScrutinyBridge();
 
   const rule = getRule(docType);
   if (!rule) notFound();
 
-  const entry = getEntry(docType);
+  const baseEntry = getEntry(docType);
+
+  // Look for a bridge doc discrepancy against any submitted application for this
+  // student. If present, let it drive the rejection copy so the student sees
+  // exactly what the college flagged (in the language they prefer).
+  const bridgeDoc = submittedCourseIds()
+    .map((cid) => applications[cid]?.applicationNumber)
+    .filter((n): n is string => Boolean(n))
+    .flatMap((appNumber) => bridge.byDocCode(appNumber, docType))[0];
+
+  const entry = bridgeDoc
+    ? {
+        ...baseEntry,
+        status: bridgeDoc.studentActionAt ? baseEntry.status : "rejected",
+        rejectionReason:
+          (locale === "hi" ? bridgeDoc.reasonHi : bridgeDoc.reasonEn) ??
+          baseEntry.rejectionReason,
+        reviewedBy: bridgeDoc.createdBy,
+        reviewedAt: bridgeDoc.createdAt,
+      }
+    : baseEntry;
+
   const name = t(`document.name.${rule.code}`);
 
   return (

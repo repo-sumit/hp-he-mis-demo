@@ -4,6 +4,7 @@ import { LocaleProvider } from "./_components/locale-provider";
 import { ProfileProvider } from "./_components/profile/profile-provider";
 import { DocumentsProvider } from "./_components/documents/documents-provider";
 import { ApplicationsProvider } from "./_components/apply/applications-provider";
+import { ScrutinyBridgeProvider } from "./_components/scrutiny-bridge/scrutiny-bridge-provider";
 import "./globals.css";
 
 const montserrat = Montserrat({
@@ -43,7 +44,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <LocaleProvider>
           <ProfileProvider>
             <DocumentsProvider>
-              <ApplicationsProvider>{children}</ApplicationsProvider>
+              <ApplicationsProvider>
+                <ScrutinyBridgeProvider>{children}</ScrutinyBridgeProvider>
+              </ApplicationsProvider>
             </DocumentsProvider>
           </ProfileProvider>
         </LocaleProvider>

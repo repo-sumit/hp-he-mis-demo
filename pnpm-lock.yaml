@@ -23,6 +23,9 @@ importers:
       '@hp-mis/i18n':
         specifier: workspace:*
         version: link:../../packages/i18n
+      '@hp-mis/shared-mock':
+        specifier: workspace:*
+        version: link:../../packages/shared-mock
       '@hp-mis/types':
         specifier: workspace:*
         version: link:../../packages/types
@@ -56,7 +59,7 @@ importers:
         version: 9.39.4(jiti@2.6.1)
       eslint-config-next:
         specifier: 16.2.4
-        version: 16.2.4(@typescript-eslint/parser@8.58.2(eslint@9.39.4(jiti@2.6.1))(typescript@5.9.3))(eslint@9.39.4(jiti@2.6.1))(typescript@5.9.3)
+        version: 16.2.4(eslint@9.39.4(jiti@2.6.1))(typescript@5.9.3)
       tailwindcss:
         specifier: ^4
         version: 4.2.2
@@ -105,7 +108,7 @@ importers:
         version: 9.39.4(jiti@2.6.1)
       eslint-config-next:
         specifier: 16.2.4
-        version: 16.2.4(eslint@9.39.4(jiti@2.6.1))(typescript@5.9.3)
+        version: 16.2.4(@typescript-eslint/parser@8.58.2(eslint@9.39.4(jiti@2.6.1))(typescript@5.9.3))(eslint@9.39.4(jiti@2.6.1))(typescript@5.9.3)
       tailwindcss:
         specifier: ^4
         version: 4.2.2
@@ -121,6 +124,9 @@ importers:
       '@hp-mis/i18n':
         specifier: workspace:*
         version: link:../../packages/i18n
+      '@hp-mis/shared-mock':
+        specifier: workspace:*
+        version: link:../../packages/shared-mock
       '@hp-mis/types':
         specifier: workspace:*
         version: link:../../packages/types
@@ -179,6 +185,12 @@ importers:
         version: 5.9.3
 
   packages/i18n:
+    devDependencies:
+      typescript:
+        specifier: ^5.6.3
+        version: 5.9.3
+
+  packages/shared-mock:
     devDependencies:
       typescript:
         specifier: ^5.6.3

@@ -11,42 +11,26 @@ import {
   type ReactNode,
 } from "react";
 import {
+  SCRUTINY_STORAGE_KEY,
+  emptyOverlay,
+  generateDiscrepancyId,
+  type AppBaseStatus,
+  type DiscrepancyScope,
+  type DocOutcome,
+  type FieldOutcome,
+  type ScrutinyDiscrepancy,
+  type ScrutinyOverlay,
+  type ScrutinyOverlayMap as OverlayMap,
+} from "@hp-mis/shared-mock";
+import {
   MOCK_APPLICATIONS,
   REVIEWER_NAME,
   getApplication,
-  type AppBaseStatus,
-  type AppHistoryEntry,
   type DocScrutinyStatus,
   type MockApplication,
 } from "./mock-applications";
 
-export type FieldOutcome = "verified" | "flagged" | "rejected";
-
-export type DocOutcome = "verified" | "rejected" | "under_review";
-
-export type DiscrepancyScope = "personal" | "academic" | "reservation" | "document";
-
-export interface ScrutinyDiscrepancy {
-  id: string;
-  scope: DiscrepancyScope;
-  targetRef?: string;
-  reasonEn: string;
-  reasonHi: string;
-  deadline: string;
-  createdAt: number;
-  createdBy: string;
-}
-
-export interface ScrutinyOverlay {
-  fieldOutcomes: Record<string, FieldOutcome>;
-  docOutcomes: Record<string, { outcome: DocOutcome; reason?: string; at: number }>;
-  discrepancies: ScrutinyDiscrepancy[];
-  statusOverride?: AppBaseStatus;
-  history: AppHistoryEntry[];
-  lastTouchedAt?: number;
-}
-
-type OverlayMap = Record<string, ScrutinyOverlay>;
+export type { FieldOutcome, DocOutcome, DiscrepancyScope, ScrutinyDiscrepancy, ScrutinyOverlay };
 
 interface Ctx {
   hydrated: boolean;
@@ -66,21 +50,8 @@ interface Ctx {
   logOpened: (id: string) => void;
 }
 
-const STORAGE_KEY = "hp-mis:portal-scrutiny";
+const STORAGE_KEY = SCRUTINY_STORAGE_KEY;
 const ScrutinyContext = createContext<Ctx | null>(null);
-
-function emptyOverlay(): ScrutinyOverlay {
-  return {
-    fieldOutcomes: {},
-    docOutcomes: {},
-    discrepancies: [],
-    history: [],
-  };
-}
-
-function newId(prefix: string): string {
-  return `${prefix}-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 6)}`;
-}
 
 export function ScrutinyProvider({ children }: { children: ReactNode }) {
   const [overlayMap, setOverlayMap] = useState<OverlayMap>({});
@@ -219,7 +190,7 @@ export function ScrutinyProvider({ children }: { children: ReactNode }) {
     (id, input) => {
       const full: ScrutinyDiscrepancy = {
         ...input,
-        id: newId("disc"),
+        id: generateDiscrepancyId(),
         createdAt: Date.now(),
         createdBy: REVIEWER_NAME,
       };

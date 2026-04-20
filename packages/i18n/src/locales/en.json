@@ -73,7 +73,11 @@
     "viewApplications": "View my applications",
     "downloadReceipt": "Download receipt",
     "downloadLetter": "Download provisional letter",
-    "continueApplication": "Continue application"
+    "continueApplication": "Continue application",
+    "fixNow": "Fix now",
+    "seeAllIssues": "See all issues",
+    "awaitingReview": "Sent for re-check",
+    "markAsUpdated": "Mark as updated"
   },
   "status": {
     "registered": "Registered",
@@ -881,7 +885,51 @@
       },
       "continueCta": "Continue",
       "viewCta": "View",
-      "preferencesCount": "{n} preference(s)"
+      "preferencesCount": "{n} preference(s)",
+      "status": {
+        "draft": "Draft",
+        "submitted": "Submitted",
+        "underReview": "Under review",
+        "discrepancy": "Action needed",
+        "verified": "Verified",
+        "conditional": "Conditional",
+        "rejected": "Rejected"
+      },
+      "issueCount": "{n} issue(s) flagged by the college"
+    }
+  },
+  "issue": {
+    "scope": {
+      "personal": "Personal details",
+      "academic": "Class 12 details",
+      "reservation": "Reservation and claims",
+      "document": "Document"
+    },
+    "banner": {
+      "title": "The college has flagged something on this section",
+      "reasonPrefix": "Reason",
+      "deadlinePrefix": "Fix by",
+      "actionHint": "Update the highlighted fields below, then tap Mark as updated so we can tell the college.",
+      "awaitingReview": "Sent for re-check",
+      "awaitingReviewHint": "The college will look at your changes soon. No more action needed from you right now."
+    },
+    "dashboard": {
+      "title": "Action needed on your application",
+      "subtitle": "The college has flagged something. Fix it soon so your admission isn't delayed.",
+      "moreCount": "+{n} more — tap to see all",
+      "fixCta": "Fix now",
+      "viewAll": "See all issues"
+    },
+    "list": {
+      "title": "Issues on this application",
+      "subtitle": "The college has flagged these on your {course} application. Each link takes you straight to the screen where you can fix it.",
+      "empty": "Nothing pending right now. We'll tell you if the college needs anything more.",
+      "raisedAt": "Raised {ago}",
+      "by": "by {actor}",
+      "awaiting": "Sent for re-check — waiting for the college."
+    },
+    "toast": {
+      "reCheckNote": "Saved. We'll let you know after the college re-checks."
     }
   }
 }

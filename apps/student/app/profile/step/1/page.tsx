@@ -8,6 +8,7 @@ import { PrimaryButton } from "../../../_components/primary-button";
 import { useLocale } from "../../../_components/locale-provider";
 import { ProfileProgress } from "../../../_components/profile/profile-progress";
 import { AutosaveHint } from "../../../_components/profile/autosave-hint";
+import { IssueBanner } from "../../../_components/scrutiny-bridge/issue-banner";
 import { useProfile } from "../../../_components/profile/profile-provider";
 import { RadioCards } from "../../../_components/form/radio-cards";
 import { Toggle } from "../../../_components/form/toggle";
@@ -62,6 +63,8 @@ export default function Step1Page() {
     <PageShell backHref="/dashboard" eyebrow={t("profile.header.title")} title={t("app.name")}>
       <ProfileProgress step={1} />
       <AutosaveHint className="mb-4" />
+
+      <IssueBanner scope="personal" />
 
       <form onSubmit={handleSubmit} noValidate className="space-y-6">
         <section className="space-y-4">

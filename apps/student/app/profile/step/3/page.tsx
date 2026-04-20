@@ -10,6 +10,7 @@ import { useLocale } from "../../../_components/locale-provider";
 import { ProfileProgress } from "../../../_components/profile/profile-progress";
 import { AutosaveHint } from "../../../_components/profile/autosave-hint";
 import { useProfile } from "../../../_components/profile/profile-provider";
+import { IssueBanner } from "../../../_components/scrutiny-bridge/issue-banner";
 import { Select } from "../../../_components/form/select";
 import { Textarea } from "../../../_components/form/textarea";
 import { RadioCards } from "../../../_components/form/radio-cards";
@@ -72,6 +73,8 @@ export default function Step3Page() {
     >
       <ProfileProgress step={3} />
       <AutosaveHint className="mb-4" />
+
+      <IssueBanner scope="academic" />
 
       <form onSubmit={handleSubmit} noValidate className="space-y-6">
         <section className="space-y-4">

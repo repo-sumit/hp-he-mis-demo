@@ -13,6 +13,9 @@ import {
   useDocuments,
   type DocumentEntry,
 } from "../_components/documents/documents-provider";
+import { useApplications } from "../_components/apply/applications-provider";
+import { useScrutinyBridge } from "../_components/scrutiny-bridge/scrutiny-bridge-provider";
+import { resolveEffectiveDoc } from "../_components/scrutiny-bridge/effective-doc";
 
 type Bucket = "action" | "pending" | "done";
 
@@ -26,29 +29,63 @@ export default function DocumentsPage() {
   const { t } = useLocale();
   const { draft } = useProfile();
   const { getEntry, documents } = useDocuments();
+  const { submittedCourseIds, applications } = useApplications();
+  const bridge = useScrutinyBridge();
+
+  // The student can only have discrepancies on a submitted application. If
+  // there are several, merge all doc-scoped discrepancies into one lookup.
+  const docDiscrepancyByCode = useMemo(() => {
+    const map: Record<string, ReturnType<typeof bridge.byDocCode>[number][]> = {};
+    for (const cid of submittedCourseIds()) {
+      const app = applications[cid];
+      if (!app?.applicationNumber) continue;
+      for (const disc of bridge.byApplication(app.applicationNumber)) {
+        if (disc.scope !== "document" || !disc.targetRef) continue;
+        (map[disc.targetRef] = map[disc.targetRef] ?? []).push(disc);
+      }
+    }
+    return map;
+  }, [bridge, applications, submittedCourseIds]);
 
   const checklist: ChecklistItem[] = useMemo(() => buildChecklist(draft), [draft]);
+
+  const effectiveEntries = useMemo(() => {
+    const map: Record<string, DocumentEntry> = {};
+    for (const item of checklist) {
+      const base = getEntry(item.rule.code);
+      const discs = docDiscrepancyByCode[item.rule.code] ?? [];
+      const effective = resolveEffectiveDoc(base, discs);
+      map[item.rule.code] = {
+        ...base,
+        status: effective.status,
+        rejectionReason: effective.rejectionReason,
+      };
+    }
+    return map;
+  }, [checklist, getEntry, docDiscrepancyByCode]);
 
   const grouped = useMemo(() => {
     const action: ChecklistItem[] = [];
     const pending: ChecklistItem[] = [];
     const done: ChecklistItem[] = [];
     for (const item of checklist) {
-      const entry = getEntry(item.rule.code);
+      const entry = effectiveEntries[item.rule.code] ?? getEntry(item.rule.code);
       const target = bucketFor(entry.status);
       if (target === "action") action.push(item);
       else if (target === "pending") pending.push(item);
       else done.push(item);
     }
     return { action, pending, done };
-  }, [checklist, getEntry]);
+  }, [checklist, effectiveEntries, getEntry]);
 
   const total = checklist.length;
   const uploaded = checklist.filter((i) => {
-    const s = getEntry(i.rule.code).status;
+    const s = (effectiveEntries[i.rule.code] ?? getEntry(i.rule.code)).status;
     return s !== "not_uploaded";
   }).length;
-  const verified = checklist.filter((i) => getEntry(i.rule.code).status === "verified").length;
+  const verified = checklist.filter(
+    (i) => (effectiveEntries[i.rule.code] ?? getEntry(i.rule.code)).status === "verified",
+  ).length;
 
   const profileIncomplete = !draft.fullName || !draft.category;
   // Avoid "unused locals" warning when documents map isn't read directly.
@@ -107,7 +144,7 @@ export default function DocumentsPage() {
             <DocumentChecklistItem
               key={item.rule.code}
               item={item}
-              entry={getEntry(item.rule.code)}
+              entry={effectiveEntries[item.rule.code] ?? getEntry(item.rule.code)}
             />
           ))}
         </section>
@@ -122,7 +159,7 @@ export default function DocumentsPage() {
             <DocumentChecklistItem
               key={item.rule.code}
               item={item}
-              entry={getEntry(item.rule.code)}
+              entry={effectiveEntries[item.rule.code] ?? getEntry(item.rule.code)}
             />
           ))
         ) : (
@@ -143,7 +180,7 @@ export default function DocumentsPage() {
             <DocumentChecklistItem
               key={item.rule.code}
               item={item}
-              entry={getEntry(item.rule.code)}
+              entry={effectiveEntries[item.rule.code] ?? getEntry(item.rule.code)}
             />
           ))
         ) : (

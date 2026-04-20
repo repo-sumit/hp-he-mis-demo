@@ -10,6 +10,8 @@ import { useLocale } from "../_components/locale-provider";
 import { useApplications } from "../_components/apply/applications-provider";
 import { getCourse } from "../_components/discover/mock-data";
 import { formatTimestamp } from "../_components/documents/format";
+import { useScrutinyBridge } from "../_components/scrutiny-bridge/scrutiny-bridge-provider";
+import { DiscrepancySummaryCard } from "../_components/scrutiny-bridge/discrepancy-summary-card";
 
 const QUICK_LINKS = [
   { key: "documents", icon: "📄", href: "/documents" },
@@ -27,9 +29,21 @@ const BASE_NOTIFICATIONS = [
 export default function DashboardPage() {
   const { t, locale } = useLocale();
   const { applications, submittedCourseIds } = useApplications();
+  const bridge = useScrutinyBridge();
 
   const submittedIds = submittedCourseIds();
   const hasSubmitted = submittedIds.length > 0;
+
+  // Any open discrepancies? Take the highest-priority one as the headline.
+  const openDiscrepancies = bridge.all.filter((d) => !d.studentActionAt);
+  const headlineDiscrepancy = openDiscrepancies[0] ?? bridge.all[0];
+  const headlineCourseId =
+    headlineDiscrepancy
+      ? (Object.values(applications).find(
+          (a) => a.applicationNumber === headlineDiscrepancy.applicationId,
+        )?.courseId ?? "")
+      : "";
+  const moreCount = Math.max(0, openDiscrepancies.length - 1);
 
   // Advance the status tracker whenever the student has at least one
   // submitted application — keeps the 7-step pipeline honest.
@@ -57,6 +71,16 @@ export default function DashboardPage() {
           {t("screen.dashboard.subGreeting")}
         </p>
       </section>
+
+      {headlineDiscrepancy && headlineCourseId ? (
+        <div className="mt-5">
+          <DiscrepancySummaryCard
+            courseId={headlineCourseId}
+            headline={headlineDiscrepancy}
+            moreCount={moreCount}
+          />
+        </div>
+      ) : null}
 
       <section className="mt-5">
         <h3 className="mb-2 text-[var(--text-sm)] font-[var(--weight-semibold)] uppercase tracking-wide text-[var(--color-text-tertiary)]">

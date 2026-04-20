@@ -4,6 +4,7 @@ const nextConfig: NextConfig = {
   transpilePackages: [
     "@hp-mis/design-tokens",
     "@hp-mis/i18n",
+    "@hp-mis/shared-mock",
     "@hp-mis/types",
     "@hp-mis/ui",
     "@hp-mis/fixtures",

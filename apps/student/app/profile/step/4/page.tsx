@@ -10,6 +10,7 @@ import { AutosaveHint } from "../../../_components/profile/autosave-hint";
 import { useProfile } from "../../../_components/profile/profile-provider";
 import { CheckboxGroup } from "../../../_components/form/checkbox-group";
 import { CertificateSubForm } from "../../../_components/profile/certificate-subform";
+import { IssueBanner } from "../../../_components/scrutiny-bridge/issue-banner";
 
 const CLAIM_CODES = [
   "sc",
@@ -45,6 +46,8 @@ export default function Step4Page() {
     >
       <ProfileProgress step={4} />
       <AutosaveHint className="mb-4" />
+
+      <IssueBanner scope="reservation" />
 
       <form onSubmit={handleSubmit} noValidate className="space-y-6">
         <section className="space-y-4">
