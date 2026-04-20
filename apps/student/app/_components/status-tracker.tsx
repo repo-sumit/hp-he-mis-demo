@@ -20,23 +20,31 @@ export function StatusTracker({ currentStep }: { currentStep: StatusStep }) {
   const currentIndex = STEPS.indexOf(currentStep);
 
   return (
-    <ol className="grid grid-cols-7 gap-1" role="list" aria-label={t("screen.dashboard.statusTitle")}>
+    <ol
+      className="relative grid grid-cols-7 gap-1"
+      role="list"
+      aria-label={t("screen.dashboard.statusTitle")}
+    >
+      <span
+        aria-hidden="true"
+        className="pointer-events-none absolute left-[7%] right-[7%] top-[15px] h-px bg-[var(--color-border-subtle)]"
+      />
       {STEPS.map((step, idx) => {
         const state =
           idx < currentIndex ? "done" : idx === currentIndex ? "current" : "upcoming";
         return (
           <li
             key={step}
-            className="flex flex-col items-center text-center text-[10px] leading-tight"
+            className="relative flex flex-col items-center text-center text-[10px] leading-[var(--leading-tight)]"
           >
             <span
               aria-hidden="true"
               className={cn(
-                "flex h-8 w-8 items-center justify-center rounded-full border text-xs font-semibold",
+                "flex h-8 w-8 items-center justify-center rounded-full border text-xs font-semibold transition-colors",
                 state === "done" &&
-                  "border-[var(--color-interactive-brand)] bg-[var(--color-interactive-brand)] text-[var(--color-text-inverse)]",
+                  "border-[var(--color-interactive-brand)] bg-[var(--color-interactive-brand)] text-[var(--color-text-inverse)] shadow-[var(--shadow-sm)]",
                 state === "current" &&
-                  "border-[var(--color-interactive-brand)] bg-[var(--color-background-brand-subtle)] text-[var(--color-text-brand)]",
+                  "border-[var(--color-interactive-brand)] bg-[var(--color-surface)] text-[var(--color-text-brand)] shadow-[0_0_0_4px_var(--color-background-brand-subtle)]",
                 state === "upcoming" &&
                   "border-[var(--color-border)] bg-[var(--color-surface)] text-[var(--color-text-tertiary)]",
               )}
@@ -45,11 +53,12 @@ export function StatusTracker({ currentStep }: { currentStep: StatusStep }) {
             </span>
             <span
               className={cn(
-                "mt-1",
+                "mt-1.5 text-[10px] sm:text-[11px]",
                 state === "upcoming"
                   ? "text-[var(--color-text-tertiary)]"
                   : "text-[var(--color-text-secondary)]",
-                state === "current" && "font-[var(--weight-semibold)] text-[var(--color-text-brand)]",
+                state === "current" &&
+                  "font-[var(--weight-semibold)] text-[var(--color-text-brand)]",
               )}
             >
               {t(`status.${step}`)}

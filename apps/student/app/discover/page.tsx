@@ -133,20 +133,21 @@ export default function DiscoverPage() {
         eyebrow={t("discover.title")}
         title={t("app.name")}
         backHref="/dashboard"
+        width="comfortable"
       >
-        <section className="rounded-[var(--radius-lg)] border border-dashed border-[var(--color-border-strong)] bg-[var(--color-background-subtle)] p-5 text-center">
-          <p aria-hidden="true" className="text-3xl">
+        <section className="rounded-[var(--radius-lg)] border border-dashed border-[var(--color-border-strong)] bg-[var(--color-background-subtle)] p-8 text-center">
+          <p aria-hidden="true" className="text-4xl">
             🧭
           </p>
-          <h2 className="mt-2 text-[var(--text-lg)] font-[var(--weight-semibold)] text-[var(--color-text-primary)]">
+          <h2 className="mt-3 text-[var(--text-xl)] font-[var(--weight-semibold)] text-[var(--color-text-primary)]">
             {t("discover.empty.profileTitle")}
           </h2>
-          <p className="mt-1 text-[var(--text-sm)] text-[var(--color-text-secondary)]">
+          <p className="mt-2 text-[var(--text-sm)] leading-[var(--leading-relaxed)] text-[var(--color-text-secondary)]">
             {t("discover.empty.profileBody")}
           </p>
           <Link
             href="/profile/step/3"
-            className="mt-4 inline-flex h-11 items-center justify-center rounded-[var(--radius-md)] bg-[var(--color-interactive-brand)] px-4 text-[var(--text-sm)] font-[var(--weight-semibold)] text-[var(--color-text-inverse)] hover:bg-[var(--color-interactive-brand-hover)]"
+            className="mt-5 inline-flex h-11 items-center justify-center rounded-[var(--radius-md)] bg-[var(--color-interactive-brand)] px-5 text-[var(--text-sm)] font-[var(--weight-semibold)] text-[var(--color-text-inverse)] hover:bg-[var(--color-interactive-brand-hover)]"
           >
             {t("discover.empty.profileCta")}
           </Link>
@@ -157,17 +158,22 @@ export default function DiscoverPage() {
 
 
   return (
-    <PageShell eyebrow={t("discover.title")} title={t("app.name")} backHref="/dashboard">
+    <PageShell
+      eyebrow={t("discover.title")}
+      title={t("app.name")}
+      backHref="/dashboard"
+      width="wide"
+    >
       <section>
-        <h2 className="text-[var(--text-xl)] font-[var(--weight-bold)] text-[var(--color-text-primary)]">
+        <p className="text-[11px] font-[var(--weight-semibold)] uppercase tracking-[var(--tracking-wide)] text-[var(--color-text-tertiary)]">
           {t("discover.title")}
-        </h2>
-        <p className="mt-1 text-[var(--text-sm)] text-[var(--color-text-secondary)]">
-          {t("discover.subtitle")}
         </p>
+        <h2 className="mt-2 text-[var(--text-2xl)] font-[var(--weight-bold)] leading-[var(--leading-tight)] tracking-[var(--tracking-tight)] text-[var(--color-text-primary)] sm:text-[var(--text-3xl)]">
+          {t("discover.subtitle")}
+        </h2>
       </section>
 
-      <section className="mt-4">
+      <section className="mt-5">
         <SummaryHeader
           total={counts.total}
           eligible={counts.eligible}
@@ -176,7 +182,7 @@ export default function DiscoverPage() {
         />
       </section>
 
-      <section className="mt-4 space-y-2">
+      <section className="mt-5 space-y-2">
         <label className="sr-only" htmlFor="discover-search">
           {t("discover.searchPlaceholder")}
         </label>
@@ -266,9 +272,11 @@ export default function DiscoverPage() {
                 hint={t("discover.sections.eligibleHint")}
                 tone="success"
               >
-                {eligible.map((r) => (
-                  <EligibilityResultCard key={r.id} result={r} />
-                ))}
+                <div className="grid gap-3 md:grid-cols-2">
+                  {eligible.map((r) => (
+                    <EligibilityResultCard key={r.id} result={r} />
+                  ))}
+                </div>
               </Section>
             ) : null}
 
@@ -278,9 +286,11 @@ export default function DiscoverPage() {
                 hint={t("discover.sections.conditionalHint")}
                 tone="warning"
               >
-                {conditional.map((r) => (
-                  <EligibilityResultCard key={r.id} result={r} />
-                ))}
+                <div className="grid gap-3 md:grid-cols-2">
+                  {conditional.map((r) => (
+                    <EligibilityResultCard key={r.id} result={r} />
+                  ))}
+                </div>
               </Section>
             ) : null}
 
@@ -290,9 +300,11 @@ export default function DiscoverPage() {
                 hint={t("discover.sections.notEligibleHint")}
                 tone="danger"
               >
-                {notEligible.map((r) => (
-                  <EligibilityResultCard key={r.id} result={r} />
-                ))}
+                <div className="grid gap-3 md:grid-cols-2">
+                  {notEligible.map((r) => (
+                    <EligibilityResultCard key={r.id} result={r} />
+                  ))}
+                </div>
               </Section>
             ) : null}
           </>

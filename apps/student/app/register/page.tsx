@@ -57,11 +57,19 @@ export default function RegisterPage() {
 
   return (
     <PageShell backHref="/" eyebrow={t("app.name")} title={t("screen.register.title")}>
-      <p className="text-[var(--text-sm)] text-[var(--color-text-secondary)]">
-        {t("screen.register.subtitle")}
-      </p>
+      <section>
+        <p className="text-[11px] font-[var(--weight-semibold)] uppercase tracking-[var(--tracking-wide)] text-[var(--color-text-tertiary)]">
+          {t("screen.register.eyebrow")}
+        </p>
+        <h2 className="mt-2 text-[var(--text-2xl)] font-[var(--weight-bold)] leading-[var(--leading-tight)] tracking-[var(--tracking-tight)] text-[var(--color-text-primary)] sm:text-[var(--text-3xl)]">
+          {t("screen.register.title")}
+        </h2>
+        <p className="mt-1 text-[var(--text-sm)] leading-[var(--leading-relaxed)] text-[var(--color-text-secondary)] sm:text-[var(--text-base)]">
+          {t("screen.register.subtitle")}
+        </p>
+      </section>
 
-      <form onSubmit={handleSubmit} noValidate className="mt-5 space-y-4">
+      <form onSubmit={handleSubmit} noValidate className="mt-6 space-y-4">
         <Field
           name="email"
           type="email"

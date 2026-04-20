@@ -25,17 +25,21 @@ export default function DatesPage() {
       backHref="/"
       eyebrow={t("screen.home.cycleTag")}
       title={t("preLogin.cards.dates.title")}
+      width="comfortable"
     >
       <section>
-        <h2 className="text-[var(--text-xl)] font-[var(--weight-bold)] leading-tight text-[var(--color-text-primary)]">
+        <p className="text-[11px] font-[var(--weight-semibold)] uppercase tracking-[var(--tracking-wide)] text-[var(--color-text-tertiary)]">
+          {t("preLogin.cards.dates.title")}
+        </p>
+        <h2 className="mt-2 text-[var(--text-2xl)] font-[var(--weight-bold)] leading-[var(--leading-tight)] tracking-[var(--tracking-tight)] text-[var(--color-text-primary)] sm:text-[var(--text-3xl)]">
           {t("preLogin.dates.title")}
         </h2>
-        <p className="mt-2 text-[var(--text-sm)] text-[var(--color-text-secondary)]">
+        <p className="mt-2 text-[var(--text-sm)] leading-[var(--leading-relaxed)] text-[var(--color-text-secondary)] sm:text-[var(--text-base)]">
           {t("preLogin.dates.subtitle")}
         </p>
       </section>
 
-      <ul className="mt-5 divide-y divide-[var(--color-border)] overflow-hidden rounded-[var(--radius-lg)] border border-[var(--color-border)] bg-[var(--color-surface)]">
+      <ul className="mt-6 divide-y divide-[var(--color-border-subtle)] overflow-hidden rounded-[var(--radius-lg)] border border-[var(--color-border-subtle)] bg-[var(--color-surface)]">
         {ROWS.map((key) => (
           <li
             key={key}

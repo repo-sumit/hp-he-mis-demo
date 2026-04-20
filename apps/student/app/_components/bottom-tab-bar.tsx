@@ -11,6 +11,11 @@ const TABS = [
   { key: "help", href: "/help", icon: "💬" },
 ] as const;
 
+/**
+ * Mobile / tablet tab bar. On desktop the shell shows breadcrumbs in the
+ * header and the bar is hidden — repeating icons at 1280 px looked like a
+ * phone mockup pinned to the bottom of a browser window.
+ */
 export function BottomTabBar() {
   const pathname = usePathname();
   const { t } = useLocale();
@@ -18,7 +23,7 @@ export function BottomTabBar() {
   return (
     <nav
       aria-label={t("nav.home")}
-      className="grid grid-cols-3 border-t border-[var(--color-border)] bg-[var(--color-surface)] pb-[env(safe-area-inset-bottom)]"
+      className="mx-auto grid max-w-[640px] grid-cols-3 pb-[env(safe-area-inset-bottom)] md:hidden"
     >
       {TABS.map((tab) => {
         const active =
@@ -31,13 +36,13 @@ export function BottomTabBar() {
             href={tab.href}
             aria-current={active ? "page" : undefined}
             className={cn(
-              "flex min-h-[var(--tap-target-min)] flex-col items-center justify-center gap-0.5 py-2 text-[11px] sm:text-[var(--text-xs)]",
+              "flex min-h-[var(--tap-target-min)] flex-col items-center justify-center gap-0.5 py-2 text-[11px] transition-colors",
               active
                 ? "font-[var(--weight-semibold)] text-[var(--color-text-brand)]"
-                : "text-[var(--color-text-secondary)]",
+                : "text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]",
             )}
           >
-            <span aria-hidden="true" className="text-lg">
+            <span aria-hidden="true" className="text-lg leading-none">
               {tab.icon}
             </span>
             <span className="truncate px-1 text-center">{t(`nav.${tab.key}`)}</span>

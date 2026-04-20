@@ -96,22 +96,26 @@ export default function DocumentsPage() {
       eyebrow={t("document.checklist.title")}
       title={t("app.name")}
       backHref="/dashboard"
+      width="comfortable"
       footer={<BottomTabBar />}
     >
       <section>
-        <h2 className="text-[var(--text-xl)] font-[var(--weight-bold)] text-[var(--color-text-primary)]">
+        <p className="text-[11px] font-[var(--weight-semibold)] uppercase tracking-[var(--tracking-wide)] text-[var(--color-text-tertiary)]">
           {t("document.checklist.title")}
+        </p>
+        <h2 className="mt-2 text-[var(--text-2xl)] font-[var(--weight-bold)] leading-[var(--leading-tight)] tracking-[var(--tracking-tight)] text-[var(--color-text-primary)] sm:text-[var(--text-3xl)]">
+          {t("document.checklist.headline")}
         </h2>
-        <p className="mt-1 text-[var(--text-sm)] text-[var(--color-text-secondary)]">
+        <p className="mt-1 text-[var(--text-sm)] text-[var(--color-text-secondary)] sm:text-[var(--text-base)]">
           {t("document.checklist.subtitle")}
         </p>
       </section>
 
-      <section className="mt-4 rounded-[var(--radius-lg)] border border-[var(--color-border)] bg-[var(--color-surface)] p-4">
+      <section className="mt-5 rounded-[var(--radius-lg)] border border-[var(--color-border-subtle)] bg-[var(--color-surface)] p-5">
         <p className="text-[var(--text-sm)] font-[var(--weight-semibold)] text-[var(--color-text-primary)]">
           {t("document.checklist.summary", { done: uploaded, total, verified })}
         </p>
-        <div className="mt-2 h-2 w-full overflow-hidden rounded-[var(--radius-pill)] bg-[var(--color-background-muted)]">
+        <div className="mt-3 h-2 w-full overflow-hidden rounded-[var(--radius-pill)] bg-[var(--color-background-muted)]">
           <div
             style={{ width: total ? `${Math.round((uploaded / total) * 100)}%` : "0%" }}
             className="h-full bg-[var(--color-interactive-brand)] transition-[width] duration-300"

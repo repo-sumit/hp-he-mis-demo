@@ -40,7 +40,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       lang="en"
       className={`${montserrat.variable} ${notoDevanagari.variable} h-full antialiased`}
     >
-      <body className="min-h-full bg-[var(--color-background-subtle)]">
+      <body className="min-h-full bg-[var(--color-background)]">
         <LocaleProvider>
           <ProfileProvider>
             <DocumentsProvider>

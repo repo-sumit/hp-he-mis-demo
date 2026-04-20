@@ -185,20 +185,23 @@
     },
     "home": {
       "cycleTag": "Admissions · Cycle 2026-27",
-      "heading": "Apply to every HP government college in one place.",
-      "body": "Register once, check what you're eligible for, and track your admission from your phone.",
-      "datesLine": "Applications open 15 June · Close 24 June 2026, 5:00 PM",
-      "assistedMode": "Applying with help from family or a cyber café? Use your own email and mobile — the OTP will come to you.",
+      "heading": "Every Himachal Pradesh University college, one admission.",
+      "body": "Register once, see the courses you're eligible for, and follow every step of your admission from any device.",
+      "datesLine": "Open 15 June · Close 24 June 2026, 5:00 PM",
+      "cycleBannerLabel": "Application window",
+      "assistedMode": "Applying with help from family or at a cyber café? Use your own email and mobile — every update goes to you.",
       "trustLine": "A Government of Himachal Pradesh service"
     },
     "register": {
-      "title": "Create your account",
-      "subtitle": "One account works across every HP government college.",
+      "eyebrow": "Create your account",
+      "title": "Create your HPU Admission account",
+      "subtitle": "One account covers every college affiliated to Himachal Pradesh University.",
       "haveAccount": "Already registered?",
       "loginLink": "Log in",
       "declaration": "I confirm the details I have entered are my own. I will use my own email and mobile, and I understand that if this information is wrong my application may be cancelled."
     },
     "login": {
+      "eyebrow": "Continue your admission",
       "title": "Welcome back",
       "subtitle": "Log in to continue your application.",
       "orDivider": "or",
@@ -566,7 +569,8 @@
     },
     "checklist": {
       "title": "Your documents",
-      "subtitle": "This checklist updates as your profile changes. Upload once, we'll route it to the college.",
+      "headline": "Upload your documents",
+      "subtitle": "The checklist updates with your profile. Upload once — the college will get every file automatically.",
       "profileHint": "Complete your profile first — we use it to show the right documents.",
       "summary": "{done} of {total} uploaded · {verified} verified",
       "sections": {
@@ -1024,8 +1028,9 @@
   },
   "preLogin": {
     "learnBeforeApplying": {
-      "title": "Learn before applying",
-      "subtitle": "No sign-up needed — read up and come back when you're ready."
+      "title": "Before you register",
+      "heading": "Learn the admission process",
+      "subtitle": "Quick reads, no sign-up needed. Come back to register when you're ready."
     },
     "cards": {
       "dates": {

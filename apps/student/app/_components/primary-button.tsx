@@ -5,13 +5,13 @@ import type { ComponentProps, ReactNode } from "react";
 import { cn } from "@hp-mis/ui";
 
 const base =
-  "inline-flex h-[var(--button-height)] w-full items-center justify-center rounded-[var(--radius-md)] px-4 text-[var(--text-base)] font-[var(--weight-semibold)] transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-border-focus)] disabled:cursor-not-allowed disabled:opacity-60";
+  "inline-flex h-[var(--button-height)] w-full items-center justify-center rounded-[var(--radius-md)] px-5 text-[var(--text-sm)] font-[var(--weight-semibold)] tracking-[var(--tracking-snug)] transition-all duration-150 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50";
 
 const variants = {
   primary:
-    "bg-[var(--color-interactive-brand)] text-[var(--color-text-inverse)] hover:bg-[var(--color-interactive-brand-hover)] active:bg-[var(--color-interactive-brand-pressed)]",
+    "bg-[var(--color-interactive-brand)] text-[var(--color-text-inverse)] shadow-[var(--shadow-sm)] hover:bg-[var(--color-interactive-brand-hover)] hover:shadow-[var(--shadow-md)] active:bg-[var(--color-interactive-brand-pressed)] active:shadow-none",
   secondary:
-    "border border-[var(--color-border-strong)] bg-[var(--color-surface)] text-[var(--color-text-primary)] hover:bg-[var(--color-background-subtle)]",
+    "border border-[var(--color-border-strong)] bg-[var(--color-surface)] text-[var(--color-text-primary)] hover:border-[var(--color-border-brand)] hover:bg-[var(--color-background-brand-softer)]",
   ghost:
     "text-[var(--color-text-brand)] hover:bg-[var(--color-background-brand-subtle)]",
 } as const;

@@ -26,7 +26,7 @@ export function Field({ label, helper, error, adornment, ...inputProps }: FieldP
     <div className="flex flex-col gap-1.5">
       <label
         htmlFor={id}
-        className="text-[var(--text-sm)] font-[var(--weight-medium)] text-[var(--color-text-primary)]"
+        className="text-[var(--text-sm)] font-[var(--weight-semibold)] text-[var(--color-text-primary)]"
       >
         {label}
       </label>
@@ -35,13 +35,15 @@ export function Field({ label, helper, error, adornment, ...inputProps }: FieldP
         aria-invalid={Boolean(error) || undefined}
         aria-describedby={describedBy || undefined}
         className={cn(
-          "h-[var(--input-height)] w-full rounded-[var(--radius-md)] border bg-[var(--color-surface)] px-3 text-[var(--text-base)] text-[var(--color-text-primary)] outline-none placeholder:text-[var(--color-text-tertiary)] focus:border-[var(--color-border-focus)] focus:ring-2 focus:ring-[var(--color-border-focus)]/30",
-          error ? "border-[var(--color-text-danger)]" : "border-[var(--color-border-strong)]",
+          "h-[var(--input-height)] w-full rounded-[var(--radius-md)] border bg-[var(--color-surface)] px-3.5 text-[var(--text-base)] text-[var(--color-text-primary)] outline-none transition-colors placeholder:text-[var(--color-text-tertiary)] focus:border-[var(--color-border-focus)] focus:ring-4 focus:ring-[var(--color-border-focus)]/15 read-only:bg-[var(--color-background-subtle)] read-only:text-[var(--color-text-secondary)]",
+          error
+            ? "border-[var(--color-text-danger)] focus:border-[var(--color-text-danger)] focus:ring-[var(--color-text-danger)]/15"
+            : "border-[var(--color-border-strong)]",
         )}
         {...inputProps}
       />
       {helper && !error ? (
-        <p id={`${id}-helper`} className="text-[var(--text-xs)] text-[var(--color-text-secondary)]">
+        <p id={`${id}-helper`} className="text-[var(--text-xs)] leading-[var(--leading-relaxed)] text-[var(--color-text-secondary)]">
           {helper}
         </p>
       ) : null}

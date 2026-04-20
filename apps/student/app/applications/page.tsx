@@ -69,13 +69,17 @@ export default function ApplicationsListPage() {
       eyebrow={t("nav.myApplications")}
       title={t("app.name")}
       backHref="/dashboard"
+      width="comfortable"
       footer={<BottomTabBar />}
     >
       <section>
-        <h2 className="text-[var(--text-xl)] font-[var(--weight-bold)] text-[var(--color-text-primary)]">
+        <p className="text-[11px] font-[var(--weight-semibold)] uppercase tracking-[var(--tracking-wide)] text-[var(--color-text-tertiary)]">
+          {t("nav.myApplications")}
+        </p>
+        <h2 className="mt-2 text-[var(--text-2xl)] font-[var(--weight-bold)] leading-[var(--leading-tight)] tracking-[var(--tracking-tight)] text-[var(--color-text-primary)] sm:text-[var(--text-3xl)]">
           {t("apply.myApps.title")}
         </h2>
-        <p className="mt-1 text-[var(--text-sm)] text-[var(--color-text-secondary)]">
+        <p className="mt-1 text-[var(--text-sm)] text-[var(--color-text-secondary)] sm:text-[var(--text-base)]">
           {t("apply.myApps.subtitle")}
         </p>
       </section>

@@ -51,28 +51,37 @@
   --hp-info-700: #1d4ed8;
 
   /* ---------- Semantic tokens (light) ---------- */
-  --color-background: var(--hp-neutral-0);
+  /*
+   * Surfaces are layered:
+   *   --color-background        page-level wash (very soft)
+   *   --color-background-subtle section-level tint
+   *   --color-background-muted  input / chip tint
+   *   --color-surface           cards, sheets
+   */
+  --color-background: #fbfbfe;
   --color-background-subtle: var(--hp-neutral-50);
   --color-background-muted: var(--hp-neutral-100);
   --color-background-inverse: var(--hp-neutral-900);
   --color-background-brand: var(--hp-primary-600);
   --color-background-brand-subtle: var(--hp-primary-50);
+  --color-background-brand-softer: #f4f7ff;
 
   --color-surface: var(--hp-neutral-0);
   --color-surface-raised: var(--hp-neutral-0);
-  --color-surface-overlay: rgba(18, 24, 38, 0.6);
+  --color-surface-overlay: rgba(18, 24, 38, 0.55);
 
   --color-border: var(--hp-neutral-200);
+  --color-border-subtle: #eef0f5;
   --color-border-strong: var(--hp-neutral-300);
   --color-border-brand: var(--hp-primary-600);
   --color-border-focus: var(--hp-primary-500);
 
-  --color-text-primary: var(--hp-neutral-900);
+  --color-text-primary: var(--hp-neutral-800);
   --color-text-secondary: var(--hp-neutral-600);
   --color-text-tertiary: var(--hp-neutral-500);
   --color-text-inverse: var(--hp-neutral-0);
   --color-text-brand: var(--hp-primary-700);
-  --color-text-link: var(--hp-primary-600);
+  --color-text-link: var(--hp-primary-700);
   --color-text-danger: var(--hp-danger-700);
   --color-text-success: var(--hp-success-700);
   --color-text-warning: var(--hp-warning-700);
@@ -83,6 +92,15 @@
   --color-interactive-danger: var(--hp-danger-500);
   --color-interactive-success: var(--hp-success-500);
   --color-interactive-disabled: var(--hp-neutral-200);
+
+  /* Gradient used on marquee hero surfaces so the brand is prominent without
+   * the flat-blue, toy-like feel of a single solid fill. */
+  --gradient-brand-hero: linear-gradient(
+    135deg,
+    #1b2e6a 0%,
+    #2a4299 40%,
+    #4a6dfa 100%
+  );
 
   --color-status-success-bg: var(--hp-success-100);
   --color-status-success-fg: var(--hp-success-700);
@@ -106,11 +124,18 @@
   --text-3xl: 1.875rem;    /* 30 */
   --text-4xl: 2.25rem;     /* 36 */
   --text-display: 2.75rem; /* 44 */
+  --text-display-lg: 3.25rem; /* 52 */
 
-  --leading-tight: 1.2;
-  --leading-normal: 1.4;
+  --leading-tight: 1.15;
+  --leading-snug: 1.25;
+  --leading-normal: 1.45;
   --leading-relaxed: 1.6;
-  --leading-devanagari: 1.5;
+  --leading-devanagari: 1.55;
+
+  --tracking-tight: -0.015em;
+  --tracking-snug: -0.01em;
+  --tracking-normal: 0;
+  --tracking-wide: 0.08em;
 
   --weight-regular: 400;
   --weight-medium: 500;
@@ -143,8 +168,16 @@
   /* ---------- Layout constants ---------- */
   --tap-target-min: 44px;
   --button-height: 48px;
-  --input-height: 56px;
+  --input-height: 52px;
   --mobile-max: 430px;
+  /*
+   * Content-width scale used by PageShell. Forms sit at "narrow"; reading
+   * screens at "comfortable"; dashboard / discover at "wide".
+   */
+  --content-narrow: 36rem;      /* 576px */
+  --content-comfortable: 46rem; /* 736px */
+  --content-wide: 72rem;        /* 1152px */
+  --header-height: 56px;
 
   color-scheme: light;
 }

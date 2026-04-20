@@ -2,47 +2,75 @@
 
 import Link from "next/link";
 import { PageShell } from "./_components/page-shell";
-import { PrimaryLink } from "./_components/primary-button";
 import { useLocale } from "./_components/locale-provider";
 
 export default function HomePage() {
   const { t } = useLocale();
 
   return (
-    <PageShell eyebrow={t("screen.home.cycleTag")} title={t("app.name")}>
-      <section className="overflow-hidden rounded-[var(--radius-xl)] bg-[var(--color-interactive-brand)] p-5 text-[var(--color-text-inverse)] shadow-[var(--shadow-md)]">
-        <p className="text-[var(--text-xs)] uppercase tracking-wide opacity-80">
-          {t("screen.home.cycleTag")}
-        </p>
-        <h2 className="mt-1 text-[var(--text-2xl)] font-[var(--weight-bold)] leading-tight">
-          {t("screen.home.heading")}
-        </h2>
-        <p className="mt-3 text-[var(--text-sm)] opacity-90">{t("screen.home.body")}</p>
+    <PageShell eyebrow={t("screen.home.cycleTag")} title={t("app.name")} width="wide">
+      <section className="overflow-hidden rounded-[var(--radius-xl)] text-[var(--color-text-inverse)] shadow-[var(--shadow-lg)]">
         <div
-          className="mt-4 rounded-[var(--radius-md)] bg-white/10 px-3 py-2 text-[var(--text-xs)] font-[var(--weight-medium)]"
-          aria-live="polite"
+          className="px-6 py-8 sm:px-10 sm:py-10 lg:px-14 lg:py-14"
+          style={{ background: "var(--gradient-brand-hero)" }}
         >
-          {t("screen.home.datesLine")}
+          <div className="grid gap-8 lg:grid-cols-[1.2fr_1fr] lg:items-end">
+            <div>
+              <p className="text-[11px] font-[var(--weight-semibold)] uppercase tracking-[var(--tracking-wide)] text-white/70">
+                {t("screen.home.cycleTag")}
+              </p>
+              <h2 className="mt-3 text-[var(--text-3xl)] font-[var(--weight-bold)] leading-[var(--leading-tight)] tracking-[var(--tracking-tight)] sm:text-[var(--text-4xl)] lg:text-[var(--text-display)]">
+                {t("screen.home.heading")}
+              </h2>
+              <p className="mt-4 max-w-prose text-[var(--text-base)] leading-[var(--leading-relaxed)] text-white/85 sm:text-[var(--text-lg)]">
+                {t("screen.home.body")}
+              </p>
+              <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+                <Link
+                  href="/register"
+                  className="inline-flex h-12 items-center justify-center rounded-[var(--radius-md)] bg-white px-6 text-[var(--text-sm)] font-[var(--weight-semibold)] text-[var(--color-text-primary)] shadow-[var(--shadow-sm)] transition-colors hover:bg-white/90"
+                >
+                  {t("cta.register")}
+                </Link>
+                <Link
+                  href="/login"
+                  className="inline-flex h-12 items-center justify-center rounded-[var(--radius-md)] border border-white/40 bg-white/10 px-6 text-[var(--text-sm)] font-[var(--weight-semibold)] text-white backdrop-blur transition-colors hover:bg-white/20"
+                >
+                  {t("cta.login")}
+                </Link>
+              </div>
+            </div>
+            <div className="rounded-[var(--radius-lg)] border border-white/20 bg-white/10 p-4 text-[var(--text-sm)] leading-[var(--leading-relaxed)] text-white/90 backdrop-blur">
+              <p className="text-[11px] font-[var(--weight-semibold)] uppercase tracking-[var(--tracking-wide)] text-white/70">
+                {t("screen.home.cycleBannerLabel")}
+              </p>
+              <p className="mt-2 text-[var(--text-base)] font-[var(--weight-semibold)] text-white">
+                {t("screen.home.datesLine")}
+              </p>
+              <p className="mt-3 text-[var(--text-sm)] text-white/80">
+                {t("screen.home.assistedMode")}
+              </p>
+            </div>
+          </div>
         </div>
       </section>
 
-      <section className="mt-5 space-y-3">
-        <PrimaryLink href="/register">{t("cta.register")}</PrimaryLink>
-        <PrimaryLink href="/login" variant="secondary">
-          {t("cta.login")}
-        </PrimaryLink>
-      </section>
+      <section className="mt-10">
+        <div className="flex flex-wrap items-end justify-between gap-2">
+          <div>
+            <p className="text-[11px] font-[var(--weight-semibold)] uppercase tracking-[var(--tracking-wide)] text-[var(--color-text-tertiary)]">
+              {t("preLogin.learnBeforeApplying.title")}
+            </p>
+            <h3 className="mt-1 text-[var(--text-xl)] font-[var(--weight-semibold)] text-[var(--color-text-primary)] sm:text-[var(--text-2xl)]">
+              {t("preLogin.learnBeforeApplying.heading")}
+            </h3>
+          </div>
+          <p className="max-w-md text-[var(--text-sm)] text-[var(--color-text-secondary)]">
+            {t("preLogin.learnBeforeApplying.subtitle")}
+          </p>
+        </div>
 
-      {/* "Learn before applying" — absorbs the retired public-web content.
-          Four pre-login routes, each readable without registering. */}
-      <section className="mt-6">
-        <p className="text-[var(--text-xs)] font-[var(--weight-semibold)] uppercase tracking-wide text-[var(--color-text-tertiary)]">
-          {t("preLogin.learnBeforeApplying.title")}
-        </p>
-        <p className="mt-1 text-[var(--text-sm)] text-[var(--color-text-secondary)]">
-          {t("preLogin.learnBeforeApplying.subtitle")}
-        </p>
-        <ul className="mt-3 space-y-2">
+        <ul className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {(
             [
               { href: "/dates", key: "dates", icon: "🗓" },
@@ -53,23 +81,26 @@ export default function HomePage() {
             <li key={item.key}>
               <Link
                 href={item.href}
-                className="flex items-center gap-3 rounded-[var(--radius-lg)] border border-[var(--color-border)] bg-[var(--color-surface)] p-3 hover:bg-[var(--color-background-subtle)]"
+                className="group flex h-full items-start gap-4 rounded-[var(--radius-lg)] border border-[var(--color-border-subtle)] bg-[var(--color-surface)] p-5 transition-colors hover:border-[var(--color-border-brand)] hover:bg-[var(--color-background-brand-softer)]"
               >
                 <span
                   aria-hidden="true"
-                  className="flex h-9 w-9 flex-none items-center justify-center rounded-[var(--radius-md)] bg-[var(--color-background-brand-subtle)] text-[var(--color-text-brand)]"
+                  className="flex h-11 w-11 flex-none items-center justify-center rounded-[var(--radius-md)] bg-[var(--color-background-brand-subtle)] text-lg text-[var(--color-text-brand)]"
                 >
                   {item.icon}
                 </span>
                 <span className="min-w-0 flex-1">
-                  <span className="block text-[var(--text-sm)] font-[var(--weight-semibold)] text-[var(--color-text-primary)]">
+                  <span className="block text-[var(--text-base)] font-[var(--weight-semibold)] text-[var(--color-text-primary)]">
                     {t(`preLogin.cards.${item.key}.title`)}
                   </span>
-                  <span className="block text-[var(--text-xs)] text-[var(--color-text-secondary)]">
+                  <span className="mt-1 block text-[var(--text-sm)] leading-[var(--leading-relaxed)] text-[var(--color-text-secondary)]">
                     {t(`preLogin.cards.${item.key}.body`)}
                   </span>
                 </span>
-                <span aria-hidden="true" className="text-[var(--color-text-tertiary)]">
+                <span
+                  aria-hidden="true"
+                  className="mt-1 flex-none text-[var(--color-text-tertiary)] transition-transform group-hover:translate-x-0.5"
+                >
                   →
                 </span>
               </Link>
@@ -78,16 +109,13 @@ export default function HomePage() {
         </ul>
       </section>
 
-      <section className="mt-6 rounded-[var(--radius-lg)] border border-[var(--color-border)] bg-[var(--color-background-subtle)] p-4">
-        <p className="text-[var(--text-sm)] text-[var(--color-text-secondary)]">
-          <span aria-hidden="true" className="mr-1">ℹ️</span>
-          {t("screen.home.assistedMode")}
-        </p>
-      </section>
-
-      <section className="mt-6 flex items-center justify-between text-[var(--text-xs)] text-[var(--color-text-tertiary)]">
+      <section className="mt-10 flex flex-col gap-3 border-t border-[var(--color-border-subtle)] pt-6 text-[var(--text-xs)] text-[var(--color-text-tertiary)] sm:flex-row sm:items-center sm:justify-between">
         <span>{t("screen.home.trustLine")}</span>
-        <Link href="/language" className="font-[var(--weight-medium)] text-[var(--color-text-link)]">
+        <Link
+          href="/language"
+          className="inline-flex items-center gap-1 font-[var(--weight-medium)] text-[var(--color-text-link)] hover:underline"
+        >
+          <span aria-hidden="true">🌐</span>
           {t("nav.changeLanguage")}
         </Link>
       </section>
