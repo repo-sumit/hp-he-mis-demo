@@ -198,16 +198,6 @@ export default function Step2Page() {
             autoComplete="street-address"
           />
           <Select
-            name="district"
-            label={t("field.district.label")}
-            helper={t("field.district.helper")}
-            placeholder={t("field.district.label")}
-            options={districtOptions}
-            value={draft.district}
-            onChange={(event) => update("district", event.target.value)}
-            error={errors.district}
-          />
-          <Select
             name="state"
             label={t("field.state.label")}
             helper={t("field.state.helper")}
@@ -216,6 +206,16 @@ export default function Step2Page() {
             value={draft.state}
             onChange={(event) => update("state", event.target.value)}
             error={errors.state}
+          />
+          <Select
+            name="district"
+            label={t("field.district.label")}
+            helper={t("field.district.helper")}
+            placeholder={t("field.district.label")}
+            options={districtOptions}
+            value={draft.district}
+            onChange={(event) => update("district", event.target.value)}
+            error={errors.district}
           />
           <Field
             name="pincode"
@@ -256,6 +256,16 @@ export default function Step2Page() {
                 error={errors.correspondenceAddress}
               />
               <Select
+                name="correspondenceState"
+                label={t("field.state.label")}
+                helper={t("field.state.helper")}
+                placeholder={t("field.state.label")}
+                options={stateOptions}
+                value={draft.correspondenceState}
+                onChange={(event) => update("correspondenceState", event.target.value)}
+                error={errors.correspondenceState}
+              />
+              <Select
                 name="correspondenceDistrict"
                 label={t("field.district.label")}
                 helper={t("field.district.helper")}
@@ -266,16 +276,6 @@ export default function Step2Page() {
                   update("correspondenceDistrict", event.target.value)
                 }
                 error={errors.correspondenceDistrict}
-              />
-              <Select
-                name="correspondenceState"
-                label={t("field.state.label")}
-                helper={t("field.state.helper")}
-                placeholder={t("field.state.label")}
-                options={stateOptions}
-                value={draft.correspondenceState}
-                onChange={(event) => update("correspondenceState", event.target.value)}
-                error={errors.correspondenceState}
               />
               <Field
                 name="correspondencePincode"

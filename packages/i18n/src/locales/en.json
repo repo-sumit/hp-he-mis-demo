@@ -431,7 +431,8 @@
       "claimsSection": "Special category claims",
       "certificatesSection": "Upload your certificates",
       "uploadHint": "Upload a scan or use DigiLocker. Each certificate goes to its own upload screen.",
-      "uploadCta": "Upload certificate"
+      "uploadCta": "Upload certificate",
+      "backToClaims": "Back to reservation claims"
     },
     "step5": {
       "title": "Bank details",

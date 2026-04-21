@@ -318,20 +318,6 @@ export default function Step3Page() {
               {t("profile.step3.bofAutoHint")}
             </p>
           </div>
-
-          {derivedResult ? (
-            <div
-              className={
-                derivedResult === "pass"
-                  ? "rounded-[var(--radius-md)] border border-[var(--color-interactive-success)] bg-[var(--color-status-success-bg)] px-3 py-2 text-[var(--text-sm)] text-[var(--color-status-success-fg)]"
-                  : "rounded-[var(--radius-md)] border border-[var(--color-text-danger)] bg-[var(--color-status-danger-bg)] px-3 py-2 text-[var(--text-sm)] text-[var(--color-status-danger-fg)]"
-              }
-            >
-              {derivedResult === "pass"
-                ? t("profile.step3.resultPass")
-                : t("profile.step3.resultFail")}
-            </div>
-          ) : null}
         </section>
 
         {Object.keys(errors).length > 0 ? (

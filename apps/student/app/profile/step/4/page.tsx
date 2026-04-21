@@ -146,7 +146,11 @@ export default function Step4Page() {
                       ) : null}
                     </div>
                     <Link
-                      href={`/documents/upload/${code}`}
+                      // `?from=claims` tells the upload page to return here
+                      // after a successful confirm, so the student can move
+                      // straight to the next certificate without detouring
+                      // through the document preview screen.
+                      href={`/documents/upload/${code}?from=claims`}
                       className="inline-flex h-10 flex-none items-center justify-center rounded-[var(--radius-md)] bg-[var(--color-interactive-brand)] px-4 text-[var(--text-sm)] font-[var(--weight-semibold)] text-[var(--color-text-inverse)] shadow-[var(--shadow-sm)] transition-colors hover:bg-[var(--color-interactive-brand-hover)]"
                     >
                       {uploaded
