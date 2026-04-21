@@ -126,6 +126,7 @@ export default function LoginPage() {
 
   return (
     <PageShell backHref="/" eyebrow={t("app.name")} title={t("screen.login.title")}>
+     <div className="mx-auto w-full max-w-xl">
       <section>
         <p className="text-[11px] font-[var(--weight-semibold)] uppercase tracking-[var(--tracking-wide)] text-[var(--color-text-tertiary)]">
           {t("screen.login.eyebrow")}
@@ -292,6 +293,7 @@ export default function LoginPage() {
           {t("screen.login.registerLink")}
         </Link>
       </p>
+     </div>
     </PageShell>
   );
 }

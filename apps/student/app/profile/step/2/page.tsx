@@ -83,6 +83,7 @@ export default function Step2Page() {
       eyebrow={t("profile.header.title")}
       title={t("app.name")}
     >
+     <div className="mx-auto w-full max-w-xl">
       <ProfileProgress step={2} />
       <AutosaveHint className="mb-4" />
 
@@ -172,6 +173,7 @@ export default function Step2Page() {
           <PrimaryButton type="submit">{t(saveLabelKey)}</PrimaryButton>
         </div>
       </form>
+     </div>
     </PageShell>
   );
 }

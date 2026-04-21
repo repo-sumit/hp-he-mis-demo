@@ -63,6 +63,7 @@ export default function RegisterPage() {
 
   return (
     <PageShell backHref="/" eyebrow={t("app.name")} title={t("screen.register.title")}>
+     <div className="mx-auto w-full max-w-xl">
       <section>
         <p className="text-[11px] font-[var(--weight-semibold)] uppercase tracking-[var(--tracking-wide)] text-[var(--color-text-tertiary)]">
           {t("screen.register.eyebrow")}
@@ -158,6 +159,7 @@ export default function RegisterPage() {
           </Link>
         </p>
       </form>
+     </div>
     </PageShell>
   );
 }

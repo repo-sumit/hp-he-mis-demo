@@ -7,6 +7,11 @@ import { cn } from "@hp-mis/ui";
 import { LocaleToggle } from "./locale-toggle";
 import { useLocale } from "./locale-provider";
 
+/**
+ * Retained for API stability. The shell now renders every page at a uniform
+ * `max-w-6xl` container, so this prop is a no-op — existing callers can keep
+ * passing it without behaviour changes.
+ */
 export type ShellWidth = "narrow" | "comfortable" | "wide";
 
 type PageShellProps = {
@@ -22,8 +27,8 @@ type PageShellProps = {
   /** Sticky footer (e.g. bottom tab bar, action bar). */
   footer?: ReactNode;
   /**
-   * Content width. Forms default to "narrow"; reading screens use
-   * "comfortable"; dashboards / discover use "wide".
+   * Deprecated — the shell now always renders at the system width. The prop
+   * stays accepted so existing callers don't break.
    */
   width?: ShellWidth;
   /** Remove outer padding so a child can bleed to the edges (e.g. hero image). */
@@ -32,20 +37,16 @@ type PageShellProps = {
   className?: string;
 };
 
-const WIDTH_CLASS: Record<ShellWidth, string> = {
-  narrow: "max-w-[var(--content-narrow)]",
-  comfortable: "max-w-[var(--content-comfortable)]",
-  wide: "max-w-[var(--content-wide)]",
-};
-
 /**
- * Responsive frame for every student screen.
+ * System layout: a single responsive frame used by every student screen.
  *
- * Mobile → single column filling the viewport, sticky bottom footer slot.
- * Tablet → same layout with generous gutters.
- * Desktop → constrained reading column (width variant), full-bleed header
- * and footer strips for visual weight without the "phone mockup in grey
- * canvas" look. The app no longer draws a card-wrapper around every screen.
+ * The inner container is always `mx-auto w-full max-w-6xl px-6` with `py-6`
+ * vertical padding on the main area. Header and sticky footer strips use
+ * the same container so chrome and content stay aligned edge-to-edge.
+ *
+ * Pages that want a narrower reading or form column should constrain their
+ * own content (e.g. wrap a `<form>` in `max-w-xl`) — the outer chrome stays
+ * uniform across every screen.
  */
 export function PageShell({
   children,
@@ -54,12 +55,11 @@ export function PageShell({
   title,
   hideLocaleToggle,
   footer,
-  width = "narrow",
   bleed,
   className,
 }: PageShellProps) {
   const { t } = useLocale();
-  const containerClass = cn("mx-auto w-full px-4 sm:px-6 lg:px-8", WIDTH_CLASS[width]);
+  const containerClass = "mx-auto w-full max-w-6xl px-6";
 
   return (
     <div className="flex min-h-dvh flex-col bg-[var(--color-background)] text-[var(--color-text-primary)]">
@@ -102,7 +102,7 @@ export function PageShell({
       <main
         className={cn(
           "flex-1",
-          bleed ? "" : cn("py-6 sm:py-8 lg:py-10", containerClass),
+          bleed ? "" : cn("py-6", containerClass),
           className,
         )}
       >

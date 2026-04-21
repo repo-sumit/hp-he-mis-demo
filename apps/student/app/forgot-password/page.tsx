@@ -25,6 +25,7 @@ export default function ForgotPasswordPage() {
 
   return (
     <PageShell backHref="/login" eyebrow={t("app.name")} title={t("screen.forgot.title")}>
+     <div className="mx-auto w-full max-w-xl">
       <p className="text-[var(--text-sm)] text-[var(--color-text-secondary)]">
         {t("screen.forgot.subtitle")}
       </p>
@@ -72,6 +73,7 @@ export default function ForgotPasswordPage() {
           </p>
         </form>
       )}
+     </div>
     </PageShell>
   );
 }

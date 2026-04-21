@@ -75,6 +75,7 @@ export default function Step1Page() {
 
   return (
     <PageShell backHref="/dashboard" eyebrow={t("profile.header.title")} title={t("app.name")}>
+     <div className="mx-auto w-full max-w-xl">
       <ProfileProgress step={1} />
       <AutosaveHint className="mb-4" />
 
@@ -240,6 +241,7 @@ export default function Step1Page() {
           <PrimaryButton type="submit">{t(saveLabelKey)}</PrimaryButton>
         </div>
       </form>
+     </div>
     </PageShell>
   );
 }
