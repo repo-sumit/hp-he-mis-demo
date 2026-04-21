@@ -409,7 +409,8 @@
       "subtitle": "We'll use this to check eligibility and build the merit list.",
       "boardSection": "Board and year",
       "subjectsSection": "Subjects and marks",
-      "subjectsHint": "Enter at least five subjects with marks obtained and the subject's maximum marks. Your best-of-five is calculated automatically.",
+      "subjectsHint": "Enter at least five subjects with marks obtained and the subject's maximum marks. You can add more — we'll pick your top five automatically for the best-of-five percentage.",
+      "addSubject": "Add subject",
       "subjectsMinFive": "Enter marks for at least five subjects.",
       "table": {
         "subject": "Subject",
@@ -417,7 +418,7 @@
         "total": "Total marks",
         "subjectPlaceholder": "e.g. English"
       },
-      "bofAutoHint": "Calculated from your top five subjects.",
+      "bofAutoHint": "Calculated from your top five subject percentages.",
       "resultSection": "Result",
       "resultPass": "Pass — you can continue.",
       "resultFail": "Below the 35% pass mark. You can't apply this cycle.",

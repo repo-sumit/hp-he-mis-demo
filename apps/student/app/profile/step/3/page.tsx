@@ -132,6 +132,23 @@ export default function Step3Page() {
     update("subjectMarks", next);
   }
 
+  function addRow() {
+    update("subjectMarks", [
+      ...draft.subjectMarks,
+      { name: "", obtained: "", total: "100" },
+    ]);
+  }
+
+  function removeRow(index: number) {
+    // Keep a minimum of five rows so the table always scaffolds the
+    // best-of-five calculation; above that, any extra row can be removed.
+    if (draft.subjectMarks.length <= 5) return;
+    update(
+      "subjectMarks",
+      draft.subjectMarks.filter((_, i) => i !== index),
+    );
+  }
+
   return (
     <PageShell
       backHref="/profile/step/2"
@@ -171,11 +188,16 @@ export default function Step3Page() {
           />
           <Field
             name="rollNumber"
+            inputMode="numeric"
+            pattern="[0-9]*"
+            autoComplete="off"
             label={t("field.rollNumber.label")}
             helper={t("field.rollNumber.helper")}
             placeholder={t("field.rollNumber.placeholder")}
             value={draft.rollNumber}
-            onChange={(event) => update("rollNumber", event.target.value)}
+            onChange={(event) =>
+              update("rollNumber", event.target.value.replace(/\D/g, ""))
+            }
             error={errors.rollNumber}
           />
           <RadioCards
@@ -199,47 +221,85 @@ export default function Step3Page() {
             </p>
           </div>
 
-          <div className="overflow-hidden rounded-[var(--radius-lg)] border border-[var(--color-border)] bg-[var(--color-surface)]">
-            <div className="grid grid-cols-[1.4fr_0.9fr_0.9fr] gap-2 border-b border-[var(--color-border)] bg-[var(--color-background-subtle)] px-3 py-2 text-[10px] font-[var(--weight-semibold)] uppercase tracking-wide text-[var(--color-text-tertiary)] sm:text-[var(--text-xs)]">
-              <span>{t("profile.step3.table.subject")}</span>
-              <span>{t("profile.step3.table.obtained")}</span>
-              <span>{t("profile.step3.table.total")}</span>
-            </div>
-            <ul>
-              {draft.subjectMarks.map((row, index) => (
-                <li
-                  key={index}
-                  className="grid grid-cols-[1.4fr_0.9fr_0.9fr] gap-2 border-b border-[var(--color-border)] px-3 py-2 last:border-b-0"
+          {(() => {
+            // Minimum rows stays at five so the scaffold always matches the
+            // best-of-five calculation. Students can add as many more as
+            // they need; the extra ones gain a small remove button.
+            const canRemove = draft.subjectMarks.length > 5;
+            // Header + rows share the same grid template and horizontal
+            // padding. `pl-3` on header cells aligns the label text with
+            // the first character inside each row's input (input has its
+            // own `px-2`, which stacks with the `px-1` row padding).
+            const gridCols = canRemove
+              ? "grid-cols-[1.4fr_0.9fr_0.9fr_auto]"
+              : "grid-cols-[1.4fr_0.9fr_0.9fr]";
+            return (
+              <div className="overflow-hidden rounded-[var(--radius-lg)] border border-[var(--color-border)] bg-[var(--color-surface)]">
+                <div
+                  className={`grid ${gridCols} gap-2 border-b border-[var(--color-border)] bg-[var(--color-background-subtle)] px-3 py-2 text-[10px] font-[var(--weight-semibold)] uppercase tracking-wide text-[var(--color-text-tertiary)] sm:text-[var(--text-xs)]`}
                 >
-                  <input
-                    aria-label={t("profile.step3.table.subject")}
-                    className="h-10 rounded-[var(--radius-md)] border border-[var(--color-border-strong)] bg-[var(--color-surface)] px-2 text-[var(--text-sm)] text-[var(--color-text-primary)] outline-none focus:border-[var(--color-border-focus)]"
-                    value={row.name}
-                    onChange={(event) => updateRow(index, { name: event.target.value })}
-                    placeholder={t("profile.step3.table.subjectPlaceholder")}
-                  />
-                  <input
-                    aria-label={t("profile.step3.table.obtained")}
-                    inputMode="numeric"
-                    className="h-10 rounded-[var(--radius-md)] border border-[var(--color-border-strong)] bg-[var(--color-surface)] px-2 text-[var(--text-sm)] text-[var(--color-text-primary)] outline-none focus:border-[var(--color-border-focus)]"
-                    value={row.obtained}
-                    onChange={(event) =>
-                      updateRow(index, { obtained: event.target.value.replace(/[^\d.]/g, "") })
-                    }
-                  />
-                  <input
-                    aria-label={t("profile.step3.table.total")}
-                    inputMode="numeric"
-                    className="h-10 rounded-[var(--radius-md)] border border-[var(--color-border-strong)] bg-[var(--color-surface)] px-2 text-[var(--text-sm)] text-[var(--color-text-primary)] outline-none focus:border-[var(--color-border-focus)]"
-                    value={row.total}
-                    onChange={(event) =>
-                      updateRow(index, { total: event.target.value.replace(/[^\d.]/g, "") })
-                    }
-                  />
-                </li>
-              ))}
-            </ul>
-          </div>
+                  <span className="pl-2">{t("profile.step3.table.subject")}</span>
+                  <span className="pl-2">{t("profile.step3.table.obtained")}</span>
+                  <span className="pl-2">{t("profile.step3.table.total")}</span>
+                  {canRemove ? <span className="sr-only">{t("cta.remove")}</span> : null}
+                </div>
+                <ul>
+                  {draft.subjectMarks.map((row, index) => (
+                    <li
+                      key={index}
+                      className={`grid ${gridCols} items-center gap-2 border-b border-[var(--color-border)] px-3 py-2 last:border-b-0`}
+                    >
+                      <input
+                        aria-label={t("profile.step3.table.subject")}
+                        className="h-10 w-full rounded-[var(--radius-md)] border border-[var(--color-border-strong)] bg-[var(--color-surface)] px-2 text-[var(--text-sm)] text-[var(--color-text-primary)] outline-none focus:border-[var(--color-border-focus)]"
+                        value={row.name}
+                        onChange={(event) => updateRow(index, { name: event.target.value })}
+                        placeholder={t("profile.step3.table.subjectPlaceholder")}
+                      />
+                      <input
+                        aria-label={t("profile.step3.table.obtained")}
+                        inputMode="numeric"
+                        className="h-10 w-full rounded-[var(--radius-md)] border border-[var(--color-border-strong)] bg-[var(--color-surface)] px-2 text-[var(--text-sm)] text-[var(--color-text-primary)] outline-none focus:border-[var(--color-border-focus)]"
+                        value={row.obtained}
+                        onChange={(event) =>
+                          updateRow(index, { obtained: event.target.value.replace(/[^\d.]/g, "") })
+                        }
+                      />
+                      <input
+                        aria-label={t("profile.step3.table.total")}
+                        inputMode="numeric"
+                        className="h-10 w-full rounded-[var(--radius-md)] border border-[var(--color-border-strong)] bg-[var(--color-surface)] px-2 text-[var(--text-sm)] text-[var(--color-text-primary)] outline-none focus:border-[var(--color-border-focus)]"
+                        value={row.total}
+                        onChange={(event) =>
+                          updateRow(index, { total: event.target.value.replace(/[^\d.]/g, "") })
+                        }
+                      />
+                      {canRemove ? (
+                        <button
+                          type="button"
+                          onClick={() => removeRow(index)}
+                          aria-label={t("cta.remove")}
+                          title={t("cta.remove")}
+                          className="flex h-10 w-10 flex-none items-center justify-center rounded-[var(--radius-md)] border border-[var(--color-border)] bg-[var(--color-surface)] text-[var(--color-text-secondary)] transition-colors hover:border-[var(--color-text-danger)] hover:text-[var(--color-text-danger)]"
+                        >
+                          <span aria-hidden="true">✕</span>
+                        </button>
+                      ) : null}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            );
+          })()}
+
+          <button
+            type="button"
+            onClick={addRow}
+            className="mt-2 inline-flex h-10 items-center justify-center gap-2 rounded-[var(--radius-md)] border border-dashed border-[var(--color-border-strong)] bg-[var(--color-surface)] px-4 text-[var(--text-sm)] font-[var(--weight-medium)] text-[var(--color-text-primary)] transition-colors hover:border-[var(--color-border-brand)] hover:bg-[var(--color-background-brand-softer)]"
+          >
+            <span aria-hidden="true">＋</span>
+            {t("profile.step3.addSubject")}
+          </button>
 
           {errors.subjectMarks ? (
             <p className="text-[var(--text-xs)] text-[var(--color-text-danger)]">
@@ -272,25 +332,6 @@ export default function Step3Page() {
                 : t("profile.step3.resultFail")}
             </div>
           ) : null}
-        </section>
-
-        <section className="space-y-3">
-          <h3 className="text-[var(--text-xs)] font-[var(--weight-semibold)] uppercase tracking-wide text-[var(--color-text-tertiary)]">
-            {t("profile.step3.gapSection")}
-          </h3>
-          <div className="rounded-[var(--radius-lg)] border border-[var(--color-border-subtle)] bg-[var(--color-background-subtle)] p-4">
-            <p className="text-[11px] font-[var(--weight-semibold)] uppercase tracking-[var(--tracking-wide)] text-[var(--color-text-tertiary)]">
-              {t("field.gapYears.label")}
-            </p>
-            <p className="mt-1 text-[var(--text-xl)] font-[var(--weight-bold)] text-[var(--color-text-primary)]">
-              {derivedGap
-                ? t("field.gapYears.derivedValue", { n: derivedGap })
-                : "—"}
-            </p>
-            <p className="mt-1 text-[var(--text-xs)] text-[var(--color-text-secondary)]">
-              {t("field.gapYears.derivedHint")}
-            </p>
-          </div>
         </section>
 
         {Object.keys(errors).length > 0 ? (
