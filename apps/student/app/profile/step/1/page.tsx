@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useState, type FormEvent } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import { PageShell } from "../../../_components/page-shell";
 import { Field } from "../../../_components/field";
 import { PrimaryButton } from "../../../_components/primary-button";
@@ -10,6 +10,7 @@ import { ProfileProgress } from "../../../_components/profile/profile-progress";
 import { AutosaveHint } from "../../../_components/profile/autosave-hint";
 import { IssueBanner } from "../../../_components/scrutiny-bridge/issue-banner";
 import { useProfile } from "../../../_components/profile/profile-provider";
+import { useReviewReturn } from "../../../_components/profile/use-review-return";
 import { RadioCards } from "../../../_components/form/radio-cards";
 import { Toggle } from "../../../_components/form/toggle";
 
@@ -19,7 +20,22 @@ export default function Step1Page() {
   const router = useRouter();
   const { t } = useLocale();
   const { draft, update } = useProfile();
+  const { inReviewEdit, returnHref, saveLabelKey, focus } = useReviewReturn();
   const [errors, setErrors] = useState<Errors>({});
+
+  // When the user came from review to fix a specific field, scroll the
+  // field into view and focus it so the edit feels contextual instead of a
+  // full-page reset.
+  useEffect(() => {
+    if (!focus) return;
+    const id = `field-${focus}`;
+    const node = document.getElementById(id);
+    if (!node) return;
+    node.scrollIntoView({ behavior: "smooth", block: "center" });
+    if (node instanceof HTMLInputElement || node instanceof HTMLSelectElement) {
+      node.focus({ preventScroll: true });
+    }
+  }, [focus]);
 
   function validate(): Errors {
     const e: Errors = {};
@@ -39,7 +55,8 @@ export default function Step1Page() {
     event.preventDefault();
     const next = validate();
     setErrors(next);
-    if (Object.keys(next).length === 0) router.push("/profile/step/2");
+    if (Object.keys(next).length > 0) return;
+    router.push(inReviewEdit && returnHref ? returnHref : "/profile/step/2");
   }
 
   const genderOptions = [
@@ -220,7 +237,7 @@ export default function Step1Page() {
         ) : null}
 
         <div className="sticky bottom-0 -mx-4 border-t border-[var(--color-border)] bg-[var(--color-surface)] px-4 py-3">
-          <PrimaryButton type="submit">{t("cta.saveAndContinue")}</PrimaryButton>
+          <PrimaryButton type="submit">{t(saveLabelKey)}</PrimaryButton>
         </div>
       </form>
     </PageShell>

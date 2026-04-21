@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { use, useMemo } from "react";
 import { notFound } from "next/navigation";
+import { cn } from "@hp-mis/ui";
 import { PageShell } from "../../../_components/page-shell";
 import { PrimaryLink } from "../../../_components/primary-button";
 import { useLocale } from "../../../_components/locale-provider";
@@ -91,6 +92,7 @@ export default function ReviewPage({ params }: { params: Promise<Params> }) {
         <ReviewSectionCard
           title={t("review.sections.profile")}
           editHref="/profile/step/1"
+          courseId={courseId}
         >
           <dl>
             <SummaryRow label={t("review.rows.fullName")} value={draft.fullName} />
@@ -109,6 +111,7 @@ export default function ReviewPage({ params }: { params: Promise<Params> }) {
         <ReviewSectionCard
           title={t("review.sections.academic")}
           editHref="/profile/step/3"
+          courseId={courseId}
         >
           <dl>
             <SummaryRow label={t("review.rows.board")} value={boardLabel} />
@@ -124,6 +127,7 @@ export default function ReviewPage({ params }: { params: Promise<Params> }) {
         <ReviewSectionCard
           title={t("review.sections.claims")}
           editHref="/profile/step/4"
+          courseId={courseId}
         >
           <dl>
             <SummaryRow label={t("review.rows.category")} value={categoryLabel} />
@@ -142,6 +146,7 @@ export default function ReviewPage({ params }: { params: Promise<Params> }) {
         <ReviewSectionCard
           title={t("review.sections.documents")}
           editHref="/documents"
+          courseId={courseId}
         >
           <p className="text-[var(--text-sm)] font-[var(--weight-medium)] text-[var(--color-text-primary)]">
             {t("review.documentsSummary", {
@@ -236,16 +241,24 @@ export default function ReviewPage({ params }: { params: Promise<Params> }) {
       <div className="sticky bottom-0 -mx-4 mt-5 border-t border-[var(--color-border)] bg-[var(--color-surface)] px-4 py-3">
         <PrimaryLink
           href={`/apply/${courseId}/declaration`}
+          aria-disabled={!readiness.canSubmit || alreadySubmitted || undefined}
           className={readiness.canSubmit && !alreadySubmitted ? "" : "!pointer-events-none !opacity-60"}
         >
           {t("cta.continueToDeclaration")}
         </PrimaryLink>
-        <p className="mt-2 text-center text-[var(--text-xs)] text-[var(--color-text-tertiary)]">
+        <p
+          className={cn(
+            "mt-2 text-center text-[var(--text-xs)]",
+            readiness.canSubmit
+              ? "text-[var(--color-text-tertiary)]"
+              : "text-[var(--color-text-danger)]",
+          )}
+        >
           {alreadySubmitted
             ? t("apply.myApps.status.submitted")
             : readiness.canSubmit
               ? t("readiness.allGoodHint")
-              : t("readiness.blockedHint")}
+              : t("readiness.disabledHint")}
         </p>
       </div>
     </PageShell>

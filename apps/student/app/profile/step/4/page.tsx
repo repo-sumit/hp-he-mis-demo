@@ -1,13 +1,15 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { type FormEvent } from "react";
+import { useEffect, type FormEvent } from "react";
 import { PageShell } from "../../../_components/page-shell";
 import { PrimaryButton } from "../../../_components/primary-button";
 import { useLocale } from "../../../_components/locale-provider";
 import { ProfileProgress } from "../../../_components/profile/profile-progress";
 import { AutosaveHint } from "../../../_components/profile/autosave-hint";
 import { useProfile } from "../../../_components/profile/profile-provider";
+import { useClaimsUpdater } from "../../../_components/profile/use-claims-updater";
+import { useReviewReturn } from "../../../_components/profile/use-review-return";
 import { CheckboxGroup } from "../../../_components/form/checkbox-group";
 import { CertificateSubForm } from "../../../_components/profile/certificate-subform";
 import { IssueBanner } from "../../../_components/scrutiny-bridge/issue-banner";
@@ -26,11 +28,20 @@ const CLAIM_CODES = [
 export default function Step4Page() {
   const router = useRouter();
   const { t } = useLocale();
-  const { draft, update } = useProfile();
+  const { draft } = useProfile();
+  const setClaims = useClaimsUpdater();
+  const { inReviewEdit, returnHref, saveLabelKey, focus } = useReviewReturn();
+
+  useEffect(() => {
+    if (!focus) return;
+    const node = document.getElementById(`field-${focus}`);
+    if (!node) return;
+    node.scrollIntoView({ behavior: "smooth", block: "center" });
+  }, [focus]);
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    router.push("/profile/step/5");
+    router.push(inReviewEdit && returnHref ? returnHref : "/profile/step/5");
   }
 
   const claimOptions = CLAIM_CODES.map((code) => ({
@@ -59,7 +70,7 @@ export default function Step4Page() {
             helper={t("field.claims.helper")}
             options={claimOptions}
             value={draft.claims}
-            onChange={(next) => update("claims", next)}
+            onChange={setClaims}
           />
         </section>
 
@@ -83,7 +94,7 @@ export default function Step4Page() {
         )}
 
         <div className="sticky bottom-0 -mx-4 border-t border-[var(--color-border)] bg-[var(--color-surface)] px-4 py-3">
-          <PrimaryButton type="submit">{t("cta.saveAndContinue")}</PrimaryButton>
+          <PrimaryButton type="submit">{t(saveLabelKey)}</PrimaryButton>
         </div>
       </form>
     </PageShell>

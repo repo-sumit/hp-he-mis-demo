@@ -18,6 +18,7 @@
     "continue": "Continue",
     "back": "Back",
     "saveAndContinue": "Save and continue",
+    "saveAndReturnToReview": "Save and return to review",
     "submit": "Submit application",
     "payNow": "Pay now",
     "upload": "Upload document",
@@ -861,7 +862,23 @@
     "preferencesSummary": "{n} of {max} preferences ranked",
     "preferencesEmpty": "You haven't added any preferences yet.",
     "rankBadge": "#{n}",
-    "notProvided": "Not provided yet"
+    "notProvided": "Not provided yet",
+    "missing": {
+      "fullName": "Full name is missing",
+      "dob": "Date of birth is missing",
+      "gender": "Gender is missing",
+      "mobile": "Mobile number is missing",
+      "email": "Email address is missing",
+      "category": "Category is missing",
+      "permanentAddress": "Permanent address is missing",
+      "district": "District is missing",
+      "pincode": "PIN code is missing",
+      "board": "Class 12 board is missing",
+      "yearOfPassing": "Year of passing is missing",
+      "stream": "Stream is missing",
+      "bofPercentage": "Class 12 marks are missing",
+      "resultStatus": "Class 12 result status is missing"
+    }
   },
   "readiness": {
     "title": "Ready to submit?",
@@ -872,16 +889,18 @@
     "documents": {
       "ok": "All required documents are uploaded.",
       "partial": "{uploaded} of {required} required documents uploaded.",
-      "missing": "No required documents uploaded yet."
+      "missing": "No required documents uploaded yet.",
+      "missingItem": "{name} not uploaded yet"
     },
     "preferences": {
       "ok": "{n} preference(s) added.",
       "missing": "Add at least one preference before you submit."
     },
-    "blockedTitle": "A few things are still pending",
-    "blockedHint": "Open each item to finish what's missing, then come back to submit.",
+    "blockedTitle": "Fix these before you submit",
+    "blockedHint": "Each row links to the exact screen you need. You'll come back here once it's fixed.",
     "allGoodTitle": "You're ready to submit",
-    "allGoodHint": "Read the declaration on the next screen and submit your application."
+    "allGoodHint": "Read the declaration on the next screen and submit your application.",
+    "disabledHint": "Please complete the missing fields above to continue."
   },
   "declaration": {
     "title": "Declaration and fee",

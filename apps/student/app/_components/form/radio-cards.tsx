@@ -33,6 +33,10 @@ export function RadioCards({
   columns = 1,
 }: Props) {
   const groupId = useId();
+  // Stable, name-based id on the wrapper so the review page's focus helper
+  // (`#field-<name>`) can target radio groups the same way it targets
+  // regular inputs.
+  const anchorId = name ? `field-${name}` : groupId;
   return (
     <div className="flex flex-col gap-1.5">
       <span
@@ -42,9 +46,14 @@ export function RadioCards({
         {label}
       </span>
       <div
+        id={anchorId}
         role="radiogroup"
         aria-labelledby={groupId}
-        className={cn("grid gap-2", columns === 2 ? "grid-cols-2" : "grid-cols-1")}
+        tabIndex={-1}
+        className={cn(
+          "grid gap-2 scroll-mt-20 focus:outline-none",
+          columns === 2 ? "grid-cols-2" : "grid-cols-1",
+        )}
       >
         {options.map((opt) => {
           const active = opt.value === value;

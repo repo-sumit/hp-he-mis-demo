@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useState, type FormEvent } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import { PageShell } from "../../../_components/page-shell";
 import { Field } from "../../../_components/field";
 import { PrimaryButton } from "../../../_components/primary-button";
@@ -9,6 +9,7 @@ import { useLocale } from "../../../_components/locale-provider";
 import { ProfileProgress } from "../../../_components/profile/profile-progress";
 import { AutosaveHint } from "../../../_components/profile/autosave-hint";
 import { useProfile } from "../../../_components/profile/profile-provider";
+import { useReviewReturn } from "../../../_components/profile/use-review-return";
 import { SectionSummary } from "../../../_components/profile/section-summary";
 
 type Errors = Record<string, string>;
@@ -17,7 +18,16 @@ export default function Step5Page() {
   const router = useRouter();
   const { t } = useLocale();
   const { draft, update } = useProfile();
+  const { inReviewEdit, returnHref, saveLabelKey, focus } = useReviewReturn();
   const [errors, setErrors] = useState<Errors>({});
+
+  useEffect(() => {
+    if (!focus) return;
+    const node = document.getElementById(`field-${focus}`);
+    if (!node) return;
+    node.scrollIntoView({ behavior: "smooth", block: "center" });
+    if (node instanceof HTMLInputElement) node.focus({ preventScroll: true });
+  }, [focus]);
 
   function validate(): Errors {
     const e: Errors = {};
@@ -39,7 +49,8 @@ export default function Step5Page() {
     event.preventDefault();
     const next = validate();
     setErrors(next);
-    if (Object.keys(next).length === 0) router.push("/documents");
+    if (Object.keys(next).length > 0) return;
+    router.push(inReviewEdit && returnHref ? returnHref : "/documents");
   }
 
   const personalRows = [
@@ -180,7 +191,7 @@ export default function Step5Page() {
         ) : null}
 
         <div className="sticky bottom-0 -mx-4 border-t border-[var(--color-border)] bg-[var(--color-surface)] px-4 py-3">
-          <PrimaryButton type="submit">{t("cta.saveAndContinue")}</PrimaryButton>
+          <PrimaryButton type="submit">{t(saveLabelKey)}</PrimaryButton>
         </div>
       </form>
     </PageShell>

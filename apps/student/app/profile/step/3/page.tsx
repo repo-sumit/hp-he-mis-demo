@@ -15,6 +15,7 @@ import {
   type SubjectMark,
 } from "../../../_components/profile/profile-provider";
 import { IssueBanner } from "../../../_components/scrutiny-bridge/issue-banner";
+import { useReviewReturn } from "../../../_components/profile/use-review-return";
 import { Select } from "../../../_components/form/select";
 import { RadioCards } from "../../../_components/form/radio-cards";
 
@@ -24,7 +25,22 @@ export default function Step3Page() {
   const router = useRouter();
   const { t } = useLocale();
   const { draft, update } = useProfile();
+  const { inReviewEdit, returnHref, saveLabelKey, focus } = useReviewReturn();
   const [errors, setErrors] = useState<Errors>({});
+
+  useEffect(() => {
+    if (!focus) return;
+    const node = document.getElementById(`field-${focus}`);
+    if (!node) return;
+    node.scrollIntoView({ behavior: "smooth", block: "center" });
+    if (
+      node instanceof HTMLInputElement ||
+      node instanceof HTMLSelectElement ||
+      node instanceof HTMLTextAreaElement
+    ) {
+      node.focus({ preventScroll: true });
+    }
+  }, [focus]);
 
   const bof = useMemo(() => computeBestOfFive(draft.subjectMarks), [draft.subjectMarks]);
   const derivedResult = deriveResultStatus(bof);
@@ -93,7 +109,8 @@ export default function Step3Page() {
     event.preventDefault();
     const next = validate();
     setErrors(next);
-    if (Object.keys(next).length === 0) router.push("/profile/step/4");
+    if (Object.keys(next).length > 0) return;
+    router.push(inReviewEdit && returnHref ? returnHref : "/profile/step/4");
   }
 
   const boardOptions = (["hpbose", "cbse", "icse", "nios", "other"] as const).map((v) => ({
@@ -282,7 +299,7 @@ export default function Step3Page() {
         ) : null}
 
         <div className="sticky bottom-0 -mx-3 border-t border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-3 sm:-mx-4 sm:px-4">
-          <PrimaryButton type="submit">{t("cta.saveAndContinue")}</PrimaryButton>
+          <PrimaryButton type="submit">{t(saveLabelKey)}</PrimaryButton>
         </div>
       </form>
     </PageShell>

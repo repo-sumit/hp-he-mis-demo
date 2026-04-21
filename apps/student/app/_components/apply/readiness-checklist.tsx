@@ -7,99 +7,114 @@ import type { Readiness } from "./readiness";
 
 interface Props {
   readiness: Readiness;
-  /** Course id is used to build the Edit preferences link. */
+  /** Course id threads through every targeted Edit link so the step pages
+   *  know which review to bounce back to. */
   courseId: string;
   className?: string;
 }
 
-type Row = {
+type PendingRow = {
   key: string;
-  ok: boolean;
   message: string;
   editHref: string;
 };
 
 /**
- * Three-row readiness block shown on the review screen. Each row links back
- * to the screen that owns the missing piece so a student can jump straight to
- * the fix.
+ * Readiness summary shown on the review screen.
+ *
+ * When all three gates pass, renders a success confirmation card.
+ * When something is missing, renders one row per specific missing item with
+ * a targeted Edit link that deep-links into the right section and scrolls
+ * to the right field. "A few things are still pending" → gone.
  */
 export function ReadinessChecklist({ readiness, courseId, className }: Props) {
   const { t } = useLocale();
 
-  const rows: Row[] = [
-    {
-      key: "profile",
-      ok: readiness.profile.ok,
-      message: readiness.profile.ok
-        ? t("readiness.profile.ok")
-        : t("readiness.profile.missing", { n: readiness.profile.missing }),
-      editHref: "/profile/step/1",
-    },
-    {
-      key: "documents",
-      ok: readiness.documents.ok,
-      message: readiness.documents.ok
-        ? t("readiness.documents.ok")
-        : readiness.documents.uploaded === 0
-          ? t("readiness.documents.missing")
-          : t("readiness.documents.partial", {
-              uploaded: readiness.documents.uploaded,
-              required: readiness.documents.required,
-            }),
-      editHref: "/documents",
-    },
-    {
-      key: "preferences",
-      ok: readiness.preferences.ok,
-      message: readiness.preferences.ok
-        ? t("readiness.preferences.ok", { n: readiness.preferences.count })
-        : t("readiness.preferences.missing"),
-      editHref: `/apply/${courseId}/preferences`,
-    },
-  ];
+  if (readiness.canSubmit) {
+    return (
+      <section
+        className={cn(
+          "rounded-[var(--radius-lg)] border border-[var(--color-interactive-success)] bg-[var(--color-status-success-bg)] p-4",
+          className,
+        )}
+      >
+        <p className="flex items-center gap-2 text-[var(--text-sm)] font-[var(--weight-semibold)] text-[var(--color-status-success-fg)]">
+          <span
+            aria-hidden="true"
+            className="flex h-5 w-5 items-center justify-center rounded-full bg-[var(--color-interactive-success)] text-[var(--color-text-inverse)]"
+          >
+            ✓
+          </span>
+          {t("readiness.allGoodTitle")}
+        </p>
+        <p className="mt-1 pl-7 text-[var(--text-xs)] text-[var(--color-text-secondary)]">
+          {t("readiness.allGoodHint")}
+        </p>
+      </section>
+    );
+  }
 
-  const blocked = !readiness.canSubmit;
+  const rows: PendingRow[] = [];
+
+  // 1. One row per missing profile field — with the exact field name and
+  //    a deep link to the step + focus anchor.
+  for (const field of readiness.profile.missingFields) {
+    rows.push({
+      key: `profile:${field.key}`,
+      message: t(field.labelKey),
+      editHref: `/profile/step/${field.step}?from=review&courseId=${courseId}&focus=${field.focus}`,
+    });
+  }
+
+  // 2. One row per missing required document.
+  for (const item of readiness.documents.missingItems) {
+    rows.push({
+      key: `doc:${item.rule.code}`,
+      message: t("readiness.documents.missingItem", {
+        name: t(`document.name.${item.rule.code}`),
+      }),
+      editHref: `/documents/upload/${item.rule.code}`,
+    });
+  }
+
+  // 3. Preferences row — only one, worded for the current count.
+  if (!readiness.preferences.ok) {
+    rows.push({
+      key: "preferences",
+      message: t("readiness.preferences.missing"),
+      editHref: `/apply/${courseId}/preferences`,
+    });
+  }
 
   return (
     <section
       className={cn(
-        "rounded-[var(--radius-lg)] border p-4",
-        blocked
-          ? "border-[var(--color-text-danger)] bg-[var(--color-status-danger-bg)]"
-          : "border-[var(--color-interactive-success)] bg-[var(--color-status-success-bg)]",
+        "rounded-[var(--radius-lg)] border border-[var(--color-text-danger)] bg-[var(--color-status-danger-bg)] p-4",
         className,
       )}
     >
       <p className="text-[var(--text-sm)] font-[var(--weight-semibold)] text-[var(--color-text-primary)]">
-        {blocked ? t("readiness.blockedTitle") : t("readiness.allGoodTitle")}
+        {t("readiness.blockedTitle")}
       </p>
       <p className="mt-0.5 text-[var(--text-xs)] text-[var(--color-text-secondary)]">
-        {blocked ? t("readiness.blockedHint") : t("readiness.allGoodHint")}
+        {t("readiness.blockedHint")}
       </p>
       <ul className="mt-3 space-y-2">
         {rows.map((row) => (
           <li key={row.key} className="flex items-start gap-2 text-[var(--text-sm)]">
             <span
               aria-hidden="true"
-              className={cn(
-                "mt-0.5 flex h-5 w-5 flex-none items-center justify-center rounded-full text-[var(--text-xs)] font-[var(--weight-bold)]",
-                row.ok
-                  ? "bg-[var(--color-interactive-success)] text-[var(--color-text-inverse)]"
-                  : "bg-[var(--color-text-danger)] text-[var(--color-text-inverse)]",
-              )}
+              className="mt-0.5 flex h-5 w-5 flex-none items-center justify-center rounded-full bg-[var(--color-text-danger)] text-[var(--text-xs)] font-[var(--weight-bold)] text-[var(--color-text-inverse)]"
             >
-              {row.ok ? "✓" : "!"}
+              !
             </span>
             <span className="flex-1 text-[var(--color-text-primary)]">{row.message}</span>
-            {!row.ok ? (
-              <Link
-                href={row.editHref}
-                className="text-[var(--text-xs)] font-[var(--weight-medium)] text-[var(--color-text-link)]"
-              >
-                {t("cta.edit")}
-              </Link>
-            ) : null}
+            <Link
+              href={row.editHref}
+              className="text-[var(--text-xs)] font-[var(--weight-semibold)] text-[var(--color-text-link)]"
+            >
+              {t("cta.edit")}
+            </Link>
           </li>
         ))}
       </ul>

@@ -7,9 +7,23 @@ import { useLocale } from "../locale-provider";
 
 interface Props {
   title: string;
+  /**
+   * Path to the editor (e.g. "/profile/step/1", "/documents"). The card
+   * appends `?from=review&courseId=<courseId>` when `courseId` is set so
+   * the target page can bounce back to the review after saving.
+   */
   editHref: string;
+  /** Course id attached to the edit link — lets the step page return here. */
+  courseId?: string;
   children: ReactNode;
   className?: string;
+}
+
+function withReviewReturn(href: string, courseId: string | undefined): string {
+  if (!courseId) return href;
+  // Preserve any existing query (unusual here, but safe).
+  const join = href.includes("?") ? "&" : "?";
+  return `${href}${join}from=review&courseId=${encodeURIComponent(courseId)}`;
 }
 
 /**
@@ -17,7 +31,7 @@ interface Props {
  * free-form content below. Used for profile / academic / claims / documents /
  * preferences blocks on the review screen.
  */
-export function ReviewSectionCard({ title, editHref, children, className }: Props) {
+export function ReviewSectionCard({ title, editHref, courseId, children, className }: Props) {
   const { t } = useLocale();
   return (
     <section
@@ -31,7 +45,7 @@ export function ReviewSectionCard({ title, editHref, children, className }: Prop
           {title}
         </h3>
         <Link
-          href={editHref}
+          href={withReviewReturn(editHref, courseId)}
           className="text-[var(--text-xs)] font-[var(--weight-medium)] text-[var(--color-text-link)]"
         >
           {t("cta.edit")}
