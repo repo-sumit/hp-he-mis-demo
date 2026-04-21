@@ -1,7 +1,8 @@
 "use client";
 
+import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useState, type FormEvent } from "react";
+import { useEffect, type FormEvent } from "react";
 import { PageShell } from "../../../_components/page-shell";
 import { PrimaryButton } from "../../../_components/primary-button";
 import { useLocale } from "../../../_components/locale-provider";
@@ -11,12 +12,10 @@ import { useProfile } from "../../../_components/profile/profile-provider";
 import { useClaimsUpdater } from "../../../_components/profile/use-claims-updater";
 import { useReviewReturn } from "../../../_components/profile/use-review-return";
 import { CheckboxGroup } from "../../../_components/form/checkbox-group";
-import { RadioCards } from "../../../_components/form/radio-cards";
 import { Toggle } from "../../../_components/form/toggle";
-import { CertificateSubForm } from "../../../_components/profile/certificate-subform";
+import { useDocuments } from "../../../_components/documents/documents-provider";
+import { DocumentStatusBadge } from "../../../_components/documents/document-status-badge";
 import { IssueBanner } from "../../../_components/scrutiny-bridge/issue-banner";
-
-type Errors = Record<string, string>;
 
 const CLAIM_CODES = [
   "sc",
@@ -29,13 +28,26 @@ const CLAIM_CODES = [
   "exServiceman",
 ] as const;
 
+/**
+ * Claim code → document code that holds its certificate. Multiple claims
+ * can share the same doc (sc / st / obc all upload a single caste
+ * certificate), which is why we de-duplicate at render time.
+ */
+const CLAIM_TO_DOC: Record<string, string> = {
+  sc: "caste_cert",
+  st: "caste_cert",
+  obc: "caste_cert",
+  ews: "ews_cert",
+  pwd: "pwd_cert",
+};
+
 export default function Step4Page() {
   const router = useRouter();
   const { t } = useLocale();
   const { draft, update } = useProfile();
   const setClaims = useClaimsUpdater();
+  const { getEntry } = useDocuments();
   const { inReviewEdit, returnHref, saveLabelKey, focus } = useReviewReturn();
-  const [errors, setErrors] = useState<Errors>({});
 
   useEffect(() => {
     if (!focus) return;
@@ -44,32 +56,28 @@ export default function Step4Page() {
     node.scrollIntoView({ behavior: "smooth", block: "center" });
   }, [focus]);
 
-  function validate(): Errors {
-    const e: Errors = {};
-    if (!draft.category) e.category = t("error.required");
-    return e;
-  }
-
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    const next = validate();
-    setErrors(next);
-    if (Object.keys(next).length > 0) return;
+    // Claims are saved live via setClaims; the page just advances.
     router.push(inReviewEdit && returnHref ? returnHref : "/profile/step/5");
   }
-
-  const categoryOptions = [
-    { value: "general", label: t("field.category.options.general") },
-    { value: "ews", label: t("field.category.options.ews") },
-    { value: "obc", label: t("field.category.options.obc") },
-    { value: "sc", label: t("field.category.options.sc") },
-    { value: "st", label: t("field.category.options.st") },
-  ];
 
   const claimOptions = CLAIM_CODES.map((code) => ({
     value: code,
     label: t(`field.claims.options.${code}`),
   }));
+
+  // De-duplicated list of certificate documents needed across the selected
+  // claims — preserves the claim order the student picked them in, so SC
+  // (which maps to caste_cert) sits above EWS, etc.
+  const docsToUpload: string[] = [];
+  const seenDocs = new Set<string>();
+  for (const claim of draft.claims) {
+    const doc = CLAIM_TO_DOC[claim];
+    if (!doc || seenDocs.has(doc)) continue;
+    seenDocs.add(doc);
+    docsToUpload.push(doc);
+  }
 
   return (
     <PageShell
@@ -86,16 +94,14 @@ export default function Step4Page() {
       <form onSubmit={handleSubmit} noValidate className="space-y-6">
         <section className="space-y-4">
           <h3 className="text-[var(--text-xs)] font-[var(--weight-semibold)] uppercase tracking-wide text-[var(--color-text-tertiary)]">
-            {t("profile.step4.categorySection")}
+            {t("profile.step4.claimsSection")}
           </h3>
-          <RadioCards
-            name="category"
-            label={t("field.category.label")}
-            helper={t("field.category.helper")}
-            options={categoryOptions}
-            value={draft.category}
-            onChange={(v) => update("category", v as typeof draft.category)}
-            error={errors.category}
+          <CheckboxGroup
+            label={t("field.claims.label")}
+            helper={t("field.claims.helper")}
+            options={claimOptions}
+            value={draft.claims}
+            onChange={setClaims}
           />
           {draft.gender === "female" ? (
             <Toggle
@@ -107,43 +113,56 @@ export default function Step4Page() {
           ) : null}
         </section>
 
-        <section className="space-y-4">
-          <h3 className="text-[var(--text-xs)] font-[var(--weight-semibold)] uppercase tracking-wide text-[var(--color-text-tertiary)]">
-            {t("profile.step4.claimsSection")}
-          </h3>
-          <CheckboxGroup
-            label={t("field.claims.label")}
-            helper={t("field.claims.helper")}
-            options={claimOptions}
-            value={draft.claims}
-            onChange={setClaims}
-          />
-        </section>
-
-        {draft.claims.length > 0 ? (
-          <section className="space-y-4">
-            <h3 className="text-[var(--text-xs)] font-[var(--weight-semibold)] uppercase tracking-wide text-[var(--color-text-tertiary)]">
-              {t("profile.step4.certificatesSection")}
-            </h3>
-            {draft.claims.map((code) => (
-              <CertificateSubForm
-                key={code}
-                code={code}
-                label={t(`field.claims.options.${code}`)}
-              />
-            ))}
+        {docsToUpload.length > 0 ? (
+          <section className="space-y-3">
+            <div>
+              <h3 className="text-[var(--text-xs)] font-[var(--weight-semibold)] uppercase tracking-wide text-[var(--color-text-tertiary)]">
+                {t("profile.step4.certificatesSection")}
+              </h3>
+              <p className="mt-1 text-[var(--text-xs)] text-[var(--color-text-secondary)]">
+                {t("profile.step4.uploadHint")}
+              </p>
+            </div>
+            <ul className="space-y-2">
+              {docsToUpload.map((code) => {
+                const entry = getEntry(code);
+                const uploaded = entry.status !== "not_uploaded";
+                return (
+                  <li
+                    key={code}
+                    className="flex flex-col gap-3 rounded-[var(--radius-lg)] border border-[var(--color-border-subtle)] bg-[var(--color-surface)] p-4 sm:flex-row sm:items-center sm:justify-between"
+                  >
+                    <div className="min-w-0 flex-1">
+                      <p className="text-[var(--text-sm)] font-[var(--weight-semibold)] text-[var(--color-text-primary)]">
+                        {t(`document.name.${code}`)}
+                      </p>
+                      <p className="mt-0.5 text-[var(--text-xs)] leading-[var(--leading-relaxed)] text-[var(--color-text-secondary)]">
+                        {t(`document.description.${code}`)}
+                      </p>
+                      {uploaded ? (
+                        <div className="mt-2">
+                          <DocumentStatusBadge status={entry.status} />
+                        </div>
+                      ) : null}
+                    </div>
+                    <Link
+                      href={`/documents/upload/${code}`}
+                      className="inline-flex h-10 flex-none items-center justify-center rounded-[var(--radius-md)] bg-[var(--color-interactive-brand)] px-4 text-[var(--text-sm)] font-[var(--weight-semibold)] text-[var(--color-text-inverse)] shadow-[var(--shadow-sm)] transition-colors hover:bg-[var(--color-interactive-brand-hover)]"
+                    >
+                      {uploaded
+                        ? t("cta.replaceDocument")
+                        : t("profile.step4.uploadCta")}
+                    </Link>
+                  </li>
+                );
+              })}
+            </ul>
           </section>
         ) : (
           <p className="rounded-[var(--radius-lg)] border border-dashed border-[var(--color-border-strong)] bg-[var(--color-background-subtle)] px-3 py-4 text-center text-[var(--text-sm)] text-[var(--color-text-secondary)]">
             {t("profile.step4.subtitle")}
           </p>
         )}
-
-        {Object.keys(errors).length > 0 ? (
-          <p className="rounded-[var(--radius-md)] bg-[var(--color-status-danger-bg)] px-3 py-2 text-[var(--text-xs)] text-[var(--color-status-danger-fg)]">
-            ⚠ {t("error.fixBeforeContinue")}
-          </p>
-        ) : null}
 
         <div className="sticky bottom-0 -mx-4 border-t border-[var(--color-border)] bg-[var(--color-surface)] px-4 py-3">
           <PrimaryButton type="submit">{t(saveLabelKey)}</PrimaryButton>

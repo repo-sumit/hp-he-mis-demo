@@ -58,7 +58,6 @@ export default function ReviewPage({ params }: { params: Promise<Params> }) {
   // Map profile draft values into display-friendly strings.
   const streamLabel = draft.stream ? t(`field.stream.options.${draft.stream}`) : "";
   const boardLabel = draft.board ? t(`field.board.options.${draft.board}`) : "";
-  const categoryLabel = draft.category ? t(`field.category.options.${draft.category}`) : "";
   const resultLabel = draft.resultStatus
     ? t(`field.resultStatus.options.${draft.resultStatus}`)
     : "";
@@ -139,15 +138,10 @@ export default function ReviewPage({ params }: { params: Promise<Params> }) {
           courseId={courseId}
         >
           <dl>
-            <SummaryRow label={t("review.rows.category")} value={categoryLabel} />
             <SummaryRow label={t("review.rows.claims")} value={claimsLabel} />
             <SummaryRow
               label={t("review.rows.singleGirlChild")}
               value={draft.isSingleGirlChild ? t("common.yes") : t("common.no")}
-            />
-            <SummaryRow
-              label={t("review.rows.pwd")}
-              value={draft.isPwd ? t("common.yes") : t("common.no")}
             />
           </dl>
         </ReviewSectionCard>

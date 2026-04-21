@@ -426,10 +426,12 @@
     },
     "step4": {
       "title": "Category and reservation claims",
-      "subtitle": "Select the categories you belong to. You can upload the certificate later if you don't have it handy.",
+      "subtitle": "Select the categories you belong to. Certificate uploads appear below once you pick a claim.",
       "categorySection": "Reservation category",
       "claimsSection": "Special category claims",
-      "certificatesSection": "Certificate details"
+      "certificatesSection": "Upload your certificates",
+      "uploadHint": "Upload a scan or use DigiLocker. Each certificate goes to its own upload screen.",
+      "uploadCta": "Upload certificate"
     },
     "step5": {
       "title": "Bank details",
