@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import { cn } from "@hp-mis/ui";
 import { useLocale } from "../locale-provider";
 import type { EligibilityState } from "./evaluate";
-import { COLLEGES, COURSES, uniqueDistricts } from "./mock-data";
+import { COURSES, uniqueDistricts } from "./mock-data";
 
 export type DistanceBand = "any" | "within25" | "within50" | "within100";
 
@@ -159,17 +159,6 @@ export function FilterSheet({ open, value, onChange, onClose, onApply, onClear }
                 active={value.districts.includes(d)}
                 label={d}
                 onToggle={() => onChange({ ...value, districts: toggle(value.districts, d) })}
-              />
-            ))}
-          </Section>
-
-          <Section title={t("discover.filter.college")}>
-            {COLLEGES.map((c) => (
-              <ChipOption
-                key={c.id}
-                active={value.collegeIds.includes(c.id)}
-                label={c.name}
-                onToggle={() => onChange({ ...value, collegeIds: toggle(value.collegeIds, c.id) })}
               />
             ))}
           </Section>

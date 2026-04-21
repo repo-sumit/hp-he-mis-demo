@@ -29,18 +29,46 @@ export default function Step3Page() {
   const bof = useMemo(() => computeBestOfFive(draft.subjectMarks), [draft.subjectMarks]);
   const derivedResult = deriveResultStatus(bof);
 
-  // Keep derived fields synced whenever the table changes.
+  // Year-of-passing options: previous 10 years up to the current year, newest
+  // first. Using the local clock keeps the list current without a build step.
+  const currentYear = new Date().getFullYear();
+  const yearOptions = useMemo(
+    () =>
+      Array.from({ length: 11 }, (_, idx) => {
+        const y = (currentYear - idx).toString();
+        return { value: y, label: y };
+      }),
+    [currentYear],
+  );
+
+  // Gap years are derived from the chosen year of passing. A student passing
+  // this year has 0 gap; one who passed earlier has the difference. Clamped to
+  // 0 so a future year still shows 0 in the summary.
+  const yearNumber = Number(draft.yearOfPassing);
+  const derivedGap = Number.isFinite(yearNumber) && yearNumber > 0
+    ? String(Math.max(0, currentYear - yearNumber))
+    : "";
+
+  // Keep derived fields synced whenever the table or year changes.
   const bofString = bof == null ? "" : bof.toFixed(2);
   useEffect(() => {
     if (draft.bofPercentage !== bofString) update("bofPercentage", bofString);
     if (draft.resultStatus !== derivedResult) update("resultStatus", derivedResult);
-  }, [bofString, derivedResult, draft.bofPercentage, draft.resultStatus, update]);
+    if (derivedGap && draft.gapYears !== derivedGap) update("gapYears", derivedGap);
+  }, [
+    bofString,
+    derivedResult,
+    derivedGap,
+    draft.bofPercentage,
+    draft.resultStatus,
+    draft.gapYears,
+    update,
+  ]);
 
   function validate(): Errors {
     const e: Errors = {};
     if (!draft.board) e.board = t("error.required");
     if (!draft.yearOfPassing) e.yearOfPassing = t("error.required");
-    else if (!/^\d{4}$/.test(draft.yearOfPassing)) e.yearOfPassing = t("error.invalidYear");
     if (!draft.rollNumber.trim()) e.rollNumber = t("error.required");
     if (!draft.stream) e.stream = t("error.required");
 
@@ -113,12 +141,12 @@ export default function Step3Page() {
             onChange={(event) => update("board", event.target.value as typeof draft.board)}
             error={errors.board}
           />
-          <Field
+          <Select
             name="yearOfPassing"
-            inputMode="numeric"
             label={t("field.yearOfPassing.label")}
             helper={t("field.yearOfPassing.helper")}
             placeholder={t("field.yearOfPassing.placeholder")}
+            options={yearOptions}
             value={draft.yearOfPassing}
             onChange={(event) => update("yearOfPassing", event.target.value)}
             error={errors.yearOfPassing}
@@ -228,19 +256,23 @@ export default function Step3Page() {
           ) : null}
         </section>
 
-        <section className="space-y-4">
+        <section className="space-y-3">
           <h3 className="text-[var(--text-xs)] font-[var(--weight-semibold)] uppercase tracking-wide text-[var(--color-text-tertiary)]">
             {t("profile.step3.gapSection")}
           </h3>
-          <Field
-            name="gapYears"
-            inputMode="numeric"
-            label={t("field.gapYears.label")}
-            helper={t("field.gapYears.helper")}
-            placeholder={t("field.gapYears.placeholder")}
-            value={draft.gapYears}
-            onChange={(event) => update("gapYears", event.target.value)}
-          />
+          <div className="rounded-[var(--radius-lg)] border border-[var(--color-border-subtle)] bg-[var(--color-background-subtle)] p-4">
+            <p className="text-[11px] font-[var(--weight-semibold)] uppercase tracking-[var(--tracking-wide)] text-[var(--color-text-tertiary)]">
+              {t("field.gapYears.label")}
+            </p>
+            <p className="mt-1 text-[var(--text-xl)] font-[var(--weight-bold)] text-[var(--color-text-primary)]">
+              {derivedGap
+                ? t("field.gapYears.derivedValue", { n: derivedGap })
+                : "—"}
+            </p>
+            <p className="mt-1 text-[var(--text-xs)] text-[var(--color-text-secondary)]">
+              {t("field.gapYears.derivedHint")}
+            </p>
+          </div>
         </section>
 
         {Object.keys(errors).length > 0 ? (

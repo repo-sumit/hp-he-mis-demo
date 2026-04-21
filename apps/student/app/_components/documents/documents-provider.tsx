@@ -44,27 +44,20 @@ const DEFAULT_ENTRY: DocumentEntry = { status: "not_uploaded" };
 const DocumentsContext = createContext<DocumentsContextValue | null>(null);
 
 function buildSeed(now: number): DocumentsMap {
-  // Per the brief: one verified, one rejected, the rest not uploaded.
+  // First-time registration starts with nothing uploaded. Rejection only
+  // surfaces after the student has submitted an application and the portal
+  // flags a discrepancy — that round-trip drives the "Action needed" card.
+  // The verified photo here is kept so the checklist shows mixed progress
+  // right after a student completes profile and uploads an initial doc.
   return {
     photo: {
       status: "verified",
       fileName: "passport_photo.jpg",
       mimeType: "image/jpeg",
       sizeKb: 128,
-      uploadedAt: now - 1000 * 60 * 60 * 36, // 36 hours ago
-      reviewedAt: now - 1000 * 60 * 60 * 8, // 8 hours ago
+      uploadedAt: now - 1000 * 60 * 60 * 36,
+      reviewedAt: now - 1000 * 60 * 60 * 8,
       reviewedBy: "Sanjauli Govt College · Scrutiny",
-    },
-    marksheet_12: {
-      status: "rejected",
-      fileName: "marksheet_scan.pdf",
-      mimeType: "application/pdf",
-      sizeKb: 410,
-      uploadedAt: now - 1000 * 60 * 60 * 20, // 20 hours ago
-      reviewedAt: now - 1000 * 60 * 60 * 4, // 4 hours ago
-      reviewedBy: "Sanjauli Govt College · Scrutiny",
-      rejectionReason:
-        "Official seal is not clearly visible. Re-upload a brighter, fuller scan of the same page.",
     },
   };
 }

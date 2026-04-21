@@ -23,8 +23,11 @@ export default function Step5Page() {
     const e: Errors = {};
     if (!draft.accountHolder.trim()) e.accountHolder = t("error.required");
     if (!draft.accountNumber) e.accountNumber = t("error.required");
-    else if (draft.accountNumber.replace(/\s+/g, "").length < 9)
-      e.accountNumber = t("error.invalidAccount");
+    else {
+      const cleaned = draft.accountNumber.replace(/\s+/g, "");
+      if (!/^\d+$/.test(cleaned)) e.accountNumber = t("error.invalidAccountNumeric");
+      else if (cleaned.length < 9) e.accountNumber = t("error.invalidAccount");
+    }
     if (!draft.ifsc) e.ifsc = t("error.required");
     else if (!/^[A-Z]{4}0[A-Z0-9]{6}$/.test(draft.ifsc.toUpperCase()))
       e.ifsc = t("error.invalidIfsc");
@@ -76,7 +79,24 @@ export default function Step5Page() {
       <ProfileProgress step={5} />
       <AutosaveHint className="mb-4" />
 
-      <section className="mb-5 rounded-[var(--radius-lg)] border border-[var(--color-border-brand)] bg-[var(--color-status-warning-bg)] p-4">
+      <section className="mb-5 flex items-start gap-3 rounded-[var(--radius-lg)] border border-[var(--color-interactive-success)] bg-[var(--color-status-success-bg)] p-4">
+        <span
+          aria-hidden="true"
+          className="flex h-8 w-8 flex-none items-center justify-center rounded-[var(--radius-pill)] bg-[var(--color-interactive-success)] text-[var(--color-text-inverse)]"
+        >
+          ✓
+        </span>
+        <div className="min-w-0 flex-1">
+          <p className="text-[var(--text-sm)] font-[var(--weight-semibold)] text-[var(--color-status-success-fg)]">
+            {t("profile.step5.savedTitle")}
+          </p>
+          <p className="mt-1 text-[var(--text-sm)] leading-[var(--leading-relaxed)] text-[var(--color-text-primary)]">
+            {t("profile.step5.savedBody")}
+          </p>
+        </div>
+      </section>
+
+      <section className="mb-5 rounded-[var(--radius-lg)] border border-[var(--color-status-warning-fg)] bg-[var(--color-status-warning-bg)] p-4">
         <p className="flex items-center gap-2 text-[var(--text-sm)] font-[var(--weight-semibold)] text-[var(--color-status-warning-fg)]">
           <span aria-hidden="true">⚠️</span>
           {t("profile.step5.warningTitle")}
@@ -99,10 +119,13 @@ export default function Step5Page() {
           <Field
             name="accountNumber"
             inputMode="numeric"
+            pattern="[0-9]*"
             label={t("field.bank.accountNumber.label")}
             placeholder={t("field.bank.accountNumber.placeholder")}
             value={draft.accountNumber}
-            onChange={(event) => update("accountNumber", event.target.value)}
+            onChange={(event) =>
+              update("accountNumber", event.target.value.replace(/\D/g, ""))
+            }
             error={errors.accountNumber}
           />
           <Field

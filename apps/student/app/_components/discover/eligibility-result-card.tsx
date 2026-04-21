@@ -113,12 +113,6 @@ export function EligibilityResultCard({ result, hideDistrict, hideCollege }: Pro
         >
           {t("cta.viewCollege")}
         </Link>
-        <Link
-          href={`/discover/course/${result.courseId}`}
-          className="inline-flex h-10 items-center justify-center rounded-[var(--radius-md)] border border-[var(--color-border-strong)] bg-[var(--color-surface)] px-3 text-[var(--text-sm)] font-[var(--weight-medium)] text-[var(--color-text-primary)] hover:bg-[var(--color-background-subtle)]"
-        >
-          {t("cta.viewCourse")}
-        </Link>
       </div>
     </article>
   );

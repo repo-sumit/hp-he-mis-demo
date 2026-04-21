@@ -45,15 +45,16 @@ export default function CollegeDetailPage({ params }: { params: Promise<Params> 
       eyebrow={t("discover.title")}
       title={college.name}
       backHref="/discover"
+      width="wide"
     >
       <section>
-        <p className="text-[var(--text-xs)] uppercase tracking-wide text-[var(--color-text-tertiary)]">
+        <p className="text-[11px] font-[var(--weight-semibold)] uppercase tracking-[var(--tracking-wide)] text-[var(--color-text-tertiary)]">
           {t(`discover.college.type.${college.type}`)}
         </p>
-        <h2 className="mt-0.5 text-[var(--text-2xl)] font-[var(--weight-bold)] leading-tight text-[var(--color-text-primary)]">
+        <h2 className="mt-2 text-[var(--text-2xl)] font-[var(--weight-bold)] leading-[var(--leading-tight)] tracking-[var(--tracking-tight)] text-[var(--color-text-primary)] sm:text-[var(--text-3xl)]">
           {college.name}
         </h2>
-        <dl className="mt-2 flex flex-wrap gap-x-3 gap-y-1 text-[var(--text-xs)] text-[var(--color-text-secondary)]">
+        <dl className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-[var(--text-xs)] text-[var(--color-text-secondary)]">
           <div>
             <dt className="inline text-[var(--color-text-tertiary)]">
               {t("discover.card.district", { district: college.district })}
@@ -66,10 +67,10 @@ export default function CollegeDetailPage({ params }: { params: Promise<Params> 
           </div>
         </dl>
         <ul className="mt-3 flex flex-wrap gap-1.5">
-          <li className="rounded-[var(--radius-pill)] border border-[var(--color-border)] bg-[var(--color-background-subtle)] px-2 py-0.5 text-[var(--text-xs)] text-[var(--color-text-secondary)]">
+          <li className="rounded-[var(--radius-pill)] border border-[var(--color-border-subtle)] bg-[var(--color-background-subtle)] px-2.5 py-0.5 text-[var(--text-xs)] text-[var(--color-text-secondary)]">
             {t(`discover.college.coEd.${college.coEdStatus}`)}
           </li>
-          <li className="rounded-[var(--radius-pill)] border border-[var(--color-border)] bg-[var(--color-background-subtle)] px-2 py-0.5 text-[var(--text-xs)] text-[var(--color-text-secondary)]">
+          <li className="rounded-[var(--radius-pill)] border border-[var(--color-border-subtle)] bg-[var(--color-background-subtle)] px-2.5 py-0.5 text-[var(--text-xs)] text-[var(--color-text-secondary)]">
             {t(`discover.college.hostel.${college.hostelAvailable}`)}
           </li>
         </ul>
@@ -78,22 +79,22 @@ export default function CollegeDetailPage({ params }: { params: Promise<Params> 
             href={college.website}
             target="_blank"
             rel="noopener noreferrer"
-            className="mt-2 inline-flex text-[var(--text-xs)] font-[var(--weight-medium)] text-[var(--color-text-link)] underline-offset-2 hover:underline"
+            className="mt-3 inline-flex text-[var(--text-xs)] font-[var(--weight-medium)] text-[var(--color-text-link)] underline-offset-2 hover:underline"
           >
             {t("discover.college.website")}
           </a>
         ) : null}
       </section>
 
-      <section className="mt-4 rounded-[var(--radius-lg)] border border-[var(--color-border)] bg-[var(--color-surface)] p-3">
-        <p className="text-[var(--text-xs)] font-[var(--weight-semibold)] uppercase tracking-wide text-[var(--color-text-tertiary)]">
+      <section className="mt-6 rounded-[var(--radius-lg)] border border-[var(--color-border-subtle)] bg-[var(--color-surface)] p-4 sm:p-5">
+        <p className="text-[11px] font-[var(--weight-semibold)] uppercase tracking-[var(--tracking-wide)] text-[var(--color-text-tertiary)]">
           {t("discover.college.departments")}
         </p>
-        <ul className="mt-1 flex flex-wrap gap-1.5">
+        <ul className="mt-2 flex flex-wrap gap-1.5">
           {college.departments.map((dep) => (
             <li
               key={dep}
-              className="rounded-[var(--radius-pill)] border border-[var(--color-border)] bg-[var(--color-background-subtle)] px-2 py-0.5 text-[var(--text-xs)] text-[var(--color-text-secondary)]"
+              className="rounded-[var(--radius-pill)] border border-[var(--color-border-subtle)] bg-[var(--color-background-subtle)] px-2.5 py-0.5 text-[var(--text-xs)] text-[var(--color-text-secondary)]"
             >
               {dep}
             </li>
@@ -102,7 +103,7 @@ export default function CollegeDetailPage({ params }: { params: Promise<Params> 
       </section>
 
       {!ready ? (
-        <section className="mt-5 rounded-[var(--radius-lg)] border border-dashed border-[var(--color-border-strong)] bg-[var(--color-background-subtle)] p-4 text-center text-[var(--text-sm)] text-[var(--color-text-secondary)]">
+        <section className="mt-6 rounded-[var(--radius-lg)] border border-dashed border-[var(--color-border-strong)] bg-[var(--color-background-subtle)] p-5 text-center text-[var(--text-sm)] text-[var(--color-text-secondary)]">
           {t("discover.reason.profileIncomplete")}{" "}
           <Link
             href="/profile/step/3"
@@ -114,28 +115,30 @@ export default function CollegeDetailPage({ params }: { params: Promise<Params> 
       ) : null}
 
       {ready && results.length > 0 ? (
-        <section className="mt-6 space-y-3">
-          <h3 className="text-[var(--text-sm)] font-[var(--weight-semibold)] uppercase tracking-wide text-[var(--color-text-tertiary)]">
+        <section className="mt-8">
+          <h3 className="text-[11px] font-[var(--weight-semibold)] uppercase tracking-[var(--tracking-wide)] text-[var(--color-text-tertiary)]">
             {t("discover.college.coursesHere")}
           </h3>
-          {[baResult, ...otherResults].filter(Boolean).map((r) => (
-            <EligibilityResultCard key={r!.id} result={r!} hideCollege hideDistrict />
-          ))}
+          <div className="mt-3 grid gap-3 md:grid-cols-2">
+            {[baResult, ...otherResults].filter(Boolean).map((r) => (
+              <EligibilityResultCard key={r!.id} result={r!} hideCollege hideDistrict />
+            ))}
+          </div>
         </section>
       ) : null}
 
       {ready && baResult ? (
-        <section className="mt-6">
-          <h3 className="text-[var(--text-sm)] font-[var(--weight-semibold)] uppercase tracking-wide text-[var(--color-text-tertiary)]">
+        <section className="mt-8">
+          <h3 className="text-[11px] font-[var(--weight-semibold)] uppercase tracking-[var(--tracking-wide)] text-[var(--color-text-tertiary)]">
             {t("discover.college.combinationsHere")}
           </h3>
-          <p className="mt-1 text-[var(--text-xs)] text-[var(--color-text-secondary)]">
+          <p className="mt-1 text-[var(--text-sm)] text-[var(--color-text-secondary)]">
             {t("discover.college.combinationsHint")}
           </p>
-          <div className="mt-2">
+          <div className="mt-3">
             <CombinationsExplainer />
           </div>
-          <div className="mt-3 grid grid-cols-1 gap-2">
+          <div className="mt-4 grid gap-3 md:grid-cols-2">
             {baCombinations.map((combo) => (
               <CombinationCard
                 key={combo.id}
@@ -147,7 +150,7 @@ export default function CollegeDetailPage({ params }: { params: Promise<Params> 
         </section>
       ) : null}
 
-      <section className="mt-6 rounded-[var(--radius-lg)] border border-[var(--color-border)] bg-[var(--color-background-brand-subtle)] p-4">
+      <section className="mt-8 rounded-[var(--radius-lg)] border border-[var(--color-border-brand)] bg-[var(--color-background-brand-softer)] p-5">
         <p className="text-[var(--text-sm)] font-[var(--weight-semibold)] text-[var(--color-text-primary)]">
           {t("discover.addPreference.title")}
         </p>

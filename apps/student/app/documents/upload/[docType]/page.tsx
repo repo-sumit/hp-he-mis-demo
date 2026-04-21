@@ -1,6 +1,7 @@
 "use client";
 
-import { use, useState } from "react";
+import Image from "next/image";
+import { use, useRef, useState } from "react";
 import Link from "next/link";
 import { notFound, useRouter } from "next/navigation";
 import { cn } from "@hp-mis/ui";
@@ -11,6 +12,10 @@ import { getRule } from "../../../_components/documents/document-rules";
 import { useDocuments } from "../../../_components/documents/documents-provider";
 import { DocumentStatusBadge } from "../../../_components/documents/document-status-badge";
 import { UploadGuidanceCard } from "../../../_components/documents/upload-guidance-card";
+import {
+  DigiLockerSheet,
+  type DigiLockerDoc,
+} from "../../../_components/documents/digilocker-sheet";
 import { useApplications } from "../../../_components/apply/applications-provider";
 import { useScrutinyBridge } from "../../../_components/scrutiny-bridge/scrutiny-bridge-provider";
 
@@ -23,16 +28,11 @@ interface PickedFile {
   fileName: string;
   mimeType: string;
   sizeKb: number;
+  /** Issuer label when picked from DigiLocker. */
+  issuer?: string;
 }
 
-function mockPick(source: Source, code: string): PickedFile {
-  return {
-    source,
-    fileName: `${code}_scan.pdf`,
-    mimeType: "application/pdf",
-    sizeKb: 380,
-  };
-}
+const ACCEPTED_MIME = "application/pdf,image/png,image/jpeg";
 
 export default function UploadPage({ params }: { params: Promise<Params> }) {
   const { docType } = use(params);
@@ -47,14 +47,39 @@ export default function UploadPage({ params }: { params: Promise<Params> }) {
 
   const entry = getEntry(docType);
   const [picked, setPicked] = useState<PickedFile | null>(null);
+  const [digiLockerOpen, setDigiLockerOpen] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   const name = t(`document.name.${rule.code}`);
   const alreadyUploaded = entry.status !== "not_uploaded" && !picked;
 
-  const sources: { key: Source; icon: string; disabled?: boolean }[] = [
-    { key: "digilocker", icon: "🏛", disabled: true },
-    { key: "file", icon: "📄" },
-  ];
+  function handleFilePick(event: React.ChangeEvent<HTMLInputElement>) {
+    const file = event.target.files?.[0];
+    event.target.value = ""; // allow re-picking the same file next time
+    if (!file) return;
+    if (!ACCEPTED_MIME.split(",").includes(file.type)) {
+      // Browsers enforce accept= but some still let any file through — guard.
+      alert(t("document.upload.invalidType"));
+      return;
+    }
+    setPicked({
+      source: "file",
+      fileName: file.name,
+      mimeType: file.type,
+      sizeKb: Math.max(1, Math.round(file.size / 1024)),
+    });
+  }
+
+  function handleDigiLockerSelect(doc: DigiLockerDoc) {
+    setDigiLockerOpen(false);
+    setPicked({
+      source: "digilocker",
+      fileName: `${doc.code}_digilocker.pdf`,
+      mimeType: "application/pdf",
+      sizeKb: 220,
+      issuer: doc.issuer,
+    });
+  }
 
   function handleConfirm() {
     if (!picked) return;
@@ -63,8 +88,6 @@ export default function UploadPage({ params }: { params: Promise<Params> }) {
       mimeType: picked.mimeType,
       sizeKb: picked.sizeKb,
     });
-    // Tell the bridge this doc was just re-uploaded so any open document
-    // discrepancy on any submitted application flips into "sent for re-check".
     for (const cid of submittedCourseIds()) {
       const appNumber = applications[cid]?.applicationNumber;
       if (appNumber) bridge.markDocResubmitted(appNumber, rule!.code);
@@ -77,25 +100,27 @@ export default function UploadPage({ params }: { params: Promise<Params> }) {
       eyebrow={t("document.checklist.title")}
       title={t("document.upload.title", { name })}
       backHref="/documents"
+      width="comfortable"
     >
-      <section className="rounded-[var(--radius-lg)] border border-[var(--color-border)] bg-[var(--color-surface)] p-4">
+      <section className="rounded-[var(--radius-lg)] border border-[var(--color-border-subtle)] bg-[var(--color-surface)] p-4 sm:p-5">
         <div className="flex items-start justify-between gap-3">
           <div>
-            <p className="text-[var(--text-xs)] uppercase tracking-wide text-[var(--color-text-tertiary)]">
+            <p className="text-[11px] font-[var(--weight-semibold)] uppercase tracking-[var(--tracking-wide)] text-[var(--color-text-tertiary)]">
               {t("document.checklist.title")}
             </p>
             <h2 className="mt-0.5 text-[var(--text-lg)] font-[var(--weight-semibold)] text-[var(--color-text-primary)]">
               {name}
             </h2>
-            <p className="mt-1 text-[var(--text-xs)] text-[var(--color-text-secondary)]">
+            <p className="mt-1 text-[var(--text-sm)] leading-[var(--leading-relaxed)] text-[var(--color-text-secondary)]">
               {t(`document.description.${rule.code}`)}
             </p>
           </div>
-          <DocumentStatusBadge status={entry.status} />
+          {alreadyUploaded ? <DocumentStatusBadge status={entry.status} /> : null}
         </div>
-        <p className="mt-2 text-[var(--text-xs)] text-[var(--color-text-tertiary)]">
-          {t("document.meta.formats", { list: rule.acceptedFormats.join(" · ") })}{" "}
-          · {t("document.meta.maxSize", { mb: rule.maxSizeMb })}
+        <p className="mt-3 text-[var(--text-xs)] text-[var(--color-text-tertiary)]">
+          {t("document.meta.formats", { list: rule.acceptedFormats.join(" · ") })}
+          {" · "}
+          {t("document.meta.maxSize", { mb: rule.maxSizeMb })}
         </p>
       </section>
 
@@ -109,63 +134,70 @@ export default function UploadPage({ params }: { params: Promise<Params> }) {
         <p className="mb-2 text-[var(--text-sm)] font-[var(--weight-semibold)] text-[var(--color-text-primary)]">
           {t("document.upload.chooseSource")}
         </p>
-        <div className="grid grid-cols-1 gap-2">
-          {sources.map(({ key, icon, disabled }) => {
-            const active = picked?.source === key;
-            return (
-              <button
-                key={key}
-                type="button"
-                onClick={() => {
-                  if (disabled) return;
-                  setPicked(mockPick(key, rule.code));
-                }}
-                aria-disabled={disabled || undefined}
-                className={cn(
-                  "flex items-center gap-3 rounded-[var(--radius-md)] border px-3 py-3 text-left transition-colors",
-                  disabled
-                    ? "cursor-not-allowed border-[var(--color-border)] bg-[var(--color-background-subtle)] opacity-70"
-                    : active
-                      ? "border-[var(--color-border-brand)] bg-[var(--color-background-brand-subtle)]"
-                      : "border-[var(--color-border-strong)] bg-[var(--color-surface)] hover:bg-[var(--color-background-subtle)]",
-                )}
-              >
-                <span
-                  aria-hidden="true"
-                  className="flex h-10 w-10 flex-none items-center justify-center rounded-[var(--radius-md)] bg-[var(--color-background-subtle)] text-lg"
-                >
-                  {icon}
+        <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+          <button
+            type="button"
+            onClick={() => setDigiLockerOpen(true)}
+            className={cn(
+              "flex h-full items-center gap-3 rounded-[var(--radius-md)] border px-4 py-4 text-left transition-colors",
+              picked?.source === "digilocker"
+                ? "border-[var(--color-border-brand)] bg-[var(--color-background-brand-softer)]"
+                : "border-[var(--color-border-strong)] bg-[var(--color-surface)] hover:border-[var(--color-border-brand)] hover:bg-[var(--color-background-brand-softer)]",
+            )}
+          >
+            <Image
+              src="/digilocker.png"
+              alt="DigiLocker"
+              width={40}
+              height={40}
+              className="h-10 w-10 flex-none rounded-[var(--radius-sm)]"
+            />
+            <span className="min-w-0 flex-1">
+              <span className="flex items-center gap-2 text-[var(--text-sm)] font-[var(--weight-semibold)] text-[var(--color-text-primary)]">
+                {t("document.upload.sources.digilockerTitle")}
+                <span className="rounded-[var(--radius-pill)] bg-[var(--color-status-success-bg)] px-2 py-0.5 text-[10px] font-[var(--weight-semibold)] uppercase tracking-[var(--tracking-wide)] text-[var(--color-status-success-fg)]">
+                  {t("common.recommended")}
                 </span>
-                <span className="min-w-0 flex-1">
-                  <span className="flex items-center gap-2 text-[var(--text-sm)] font-[var(--weight-medium)] text-[var(--color-text-primary)]">
-                    {t(`document.upload.sources.${key}Title`)}
-                    {disabled ? (
-                      <span className="rounded-[var(--radius-pill)] bg-[var(--color-background-muted)] px-2 py-0.5 text-[10px] font-[var(--weight-semibold)] uppercase tracking-wide text-[var(--color-text-tertiary)]">
-                        {t("common.comingSoon")}
-                      </span>
-                    ) : null}
-                  </span>
-                  <span className="mt-0.5 block text-[var(--text-xs)] text-[var(--color-text-secondary)]">
-                    {t(`document.upload.sources.${key}Hint`)}
-                  </span>
-                </span>
-                {!disabled ? (
-                  <span
-                    aria-hidden="true"
-                    className={cn(
-                      "flex h-6 w-6 flex-none items-center justify-center rounded-full border-2",
-                      active
-                        ? "border-[var(--color-interactive-brand)] bg-[var(--color-interactive-brand)] text-[var(--color-text-inverse)]"
-                        : "border-[var(--color-border-strong)]",
-                    )}
-                  >
-                    {active ? "✓" : ""}
-                  </span>
-                ) : null}
-              </button>
-            );
-          })}
+              </span>
+              <span className="mt-0.5 block text-[var(--text-xs)] leading-[var(--leading-relaxed)] text-[var(--color-text-secondary)]">
+                {t("document.upload.sources.digilockerHint")}
+              </span>
+            </span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => fileInputRef.current?.click()}
+            className={cn(
+              "flex h-full items-center gap-3 rounded-[var(--radius-md)] border px-4 py-4 text-left transition-colors",
+              picked?.source === "file"
+                ? "border-[var(--color-border-brand)] bg-[var(--color-background-brand-softer)]"
+                : "border-[var(--color-border-strong)] bg-[var(--color-surface)] hover:border-[var(--color-border-brand)] hover:bg-[var(--color-background-brand-softer)]",
+            )}
+          >
+            <span
+              aria-hidden="true"
+              className="flex h-10 w-10 flex-none items-center justify-center rounded-[var(--radius-md)] bg-[var(--color-background-subtle)] text-lg"
+            >
+              📄
+            </span>
+            <span className="min-w-0 flex-1">
+              <span className="block text-[var(--text-sm)] font-[var(--weight-semibold)] text-[var(--color-text-primary)]">
+                {t("document.upload.sources.fileTitle")}
+              </span>
+              <span className="mt-0.5 block text-[var(--text-xs)] leading-[var(--leading-relaxed)] text-[var(--color-text-secondary)]">
+                {t("document.upload.sources.fileHint")}
+              </span>
+            </span>
+          </button>
         </div>
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept={ACCEPTED_MIME}
+          className="hidden"
+          onChange={handleFilePick}
+        />
       </section>
 
       <section className="mt-5">
@@ -173,23 +205,28 @@ export default function UploadPage({ params }: { params: Promise<Params> }) {
           className={cn(
             "rounded-[var(--radius-lg)] border border-dashed p-4 text-[var(--text-sm)]",
             picked
-              ? "border-[var(--color-interactive-brand)] bg-[var(--color-background-brand-subtle)] text-[var(--color-text-primary)]"
+              ? "border-[var(--color-interactive-brand)] bg-[var(--color-background-brand-softer)] text-[var(--color-text-primary)]"
               : "border-[var(--color-border-strong)] bg-[var(--color-background-subtle)] text-[var(--color-text-tertiary)]",
           )}
         >
           {picked ? (
             <div>
               <p className="text-[var(--text-sm)] font-[var(--weight-semibold)] text-[var(--color-text-primary)]">
-                {t("document.upload.preview.selectedTitle")}
+                {picked.source === "digilocker"
+                  ? t("document.upload.preview.digilockerTitle")
+                  : t("document.upload.preview.selectedTitle")}
               </p>
               <p className="mt-1 break-all text-[var(--text-sm)] text-[var(--color-text-primary)]">
                 📎 {picked.fileName}
               </p>
               <p className="mt-1 text-[var(--text-xs)] text-[var(--color-text-tertiary)]">
                 {picked.mimeType} · {Math.round(picked.sizeKb)} KB
+                {picked.issuer ? ` · ${picked.issuer}` : ""}
               </p>
               <p className="mt-2 text-[var(--text-xs)] text-[var(--color-text-secondary)]">
-                {t("document.upload.preview.selectedHint")}
+                {picked.source === "digilocker"
+                  ? t("document.upload.preview.digilockerHint")
+                  : t("document.upload.preview.selectedHint")}
               </p>
               <button
                 type="button"
@@ -209,7 +246,7 @@ export default function UploadPage({ params }: { params: Promise<Params> }) {
         <UploadGuidanceCard maxSizeMb={rule.maxSizeMb} />
       </section>
 
-      <div className="sticky bottom-0 -mx-4 mt-5 border-t border-[var(--color-border)] bg-[var(--color-surface)] px-4 py-3">
+      <div className="sticky bottom-0 -mx-3 mt-5 border-t border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-3 sm:-mx-4 sm:px-4">
         <PrimaryButton type="button" onClick={handleConfirm} disabled={!picked}>
           {t("cta.confirmUpload")}
         </PrimaryButton>
@@ -229,6 +266,13 @@ export default function UploadPage({ params }: { params: Promise<Params> }) {
           </Link>
         </p>
       </div>
+
+      <DigiLockerSheet
+        open={digiLockerOpen}
+        preferredCode={rule.code}
+        onClose={() => setDigiLockerOpen(false)}
+        onSelect={handleDigiLockerSelect}
+      />
     </PageShell>
   );
 }

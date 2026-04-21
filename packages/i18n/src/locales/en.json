@@ -147,6 +147,7 @@
     "no": "No",
     "loading": "Loading…",
     "comingSoon": "Coming soon",
+    "recommended": "Recommended",
     "languageSwitch": "हिन्दी",
     "backToHome": "Back to home",
     "or": "or",
@@ -161,6 +162,8 @@
     "required": "This field is required.",
     "invalidMobile": "Mobile must be 10 digits, starting with 6-9.",
     "invalidEmail": "Please enter a valid email address.",
+    "invalidEmailOrMobile": "Enter a valid email or 10-digit mobile number.",
+    "invalidAccountNumeric": "Account number can only contain digits.",
     "invalidAadhaar": "Aadhaar must be exactly 12 digits.",
     "invalidApaar": "APAAR ID should be 12 characters.",
     "invalidPincode": "PIN must be 6 digits.",
@@ -208,7 +211,24 @@
       "forgotPassword": "Forgot password?",
       "newUser": "New here?",
       "registerLink": "Create an account",
-      "otpHelper": "We'll send a one-time code to your mobile."
+      "otpHelper": "We'll send a one-time code to your mobile.",
+      "otp": {
+        "intro": "Get a one-time code on the email or mobile number you registered with.",
+        "identifierLabel": "Registered email or mobile",
+        "identifierHelper": "Enter the email or 10-digit mobile number you used at registration.",
+        "identifierPlaceholder": "name@example.com or 98765 43210",
+        "sendCta": "Send code",
+        "notFound": "We couldn't find an account with these details. Check and try again.",
+        "sentToEmail": "Code sent to {identifier}. It is valid for 10 minutes.",
+        "sentToMobile": "Code sent to {identifier}. It is valid for 10 minutes.",
+        "codeLabel": "6-digit code",
+        "codeHelper": "Enter the numeric code you received.",
+        "invalid": "Enter the 6-digit code.",
+        "verifyCta": "Verify and continue",
+        "change": "Change",
+        "successTitle": "Verified successfully",
+        "successBody": "Taking you to your dashboard…"
+      }
     },
     "forgot": {
       "title": "Reset your password",
@@ -290,14 +310,16 @@
       "gapSection": "Gap since Class 12"
     },
     "step4": {
-      "title": "Reservation and special claims",
-      "subtitle": "Only claim what you have a certificate for. You can add the certificate later.",
-      "claimsSection": "Which claims apply?",
+      "title": "Category and reservation claims",
+      "subtitle": "Select the categories you belong to. You can upload the certificate later if you don't have it handy.",
+      "claimsSection": "Special category claims",
       "certificatesSection": "Certificate details"
     },
     "step5": {
       "title": "Bank details",
       "subtitle": "We only use this for refunds and scholarship transfers.",
+      "savedTitle": "Your profile has been saved",
+      "savedBody": "Every change is saved automatically and safely stored against your HPU Admission account.",
       "warningTitle": "Use your own bank account",
       "warningBody": "Refunds only go to this account. Do not give a cyber-café operator's or a relative's bank details — refund returns can fail.",
       "reviewSection": "Your profile so far"
@@ -484,13 +506,15 @@
       }
     },
     "gapYears": {
-      "label": "Gap years (if any)",
-      "helper": "0 if you are applying right after Class 12.",
-      "placeholder": "0"
+      "label": "Gap years since Class 12",
+      "helper": "Calculated from your year of passing.",
+      "placeholder": "0",
+      "derivedHint": "Calculated from your year of passing. 0 means you are applying right after Class 12.",
+      "derivedValue": "{n} year(s)"
     },
     "claims": {
-      "label": "Which claims apply to you?",
-      "helper": "Tick only what you can support with a certificate.",
+      "label": "Select your applicable category claims",
+      "helper": "Tick every category you qualify for. Please tick only those you can support with a valid certificate.",
       "options": {
         "sc": "SC",
         "st": "ST",
@@ -586,10 +610,11 @@
       "chooseSource": "How would you like to upload?",
       "sources": {
         "digilockerTitle": "Upload via DigiLocker",
-        "digilockerHint": "Fetch a verified copy from your DigiLocker account.",
-        "fileTitle": "Upload a file",
-        "fileHint": "Choose a PDF or image from your device."
+        "digilockerHint": "Fetch an issued, verified copy from your DigiLocker account — no scanning needed.",
+        "fileTitle": "Upload from device",
+        "fileHint": "Choose a PDF or image (PNG / JPG) from your device."
       },
+      "invalidType": "Only PDF, PNG, and JPG files are allowed. Please pick a supported file.",
       "tips": {
         "title": "How to get it right the first time",
         "clear": "All details (name, marks, seal) must be crisp and readable.",
@@ -601,11 +626,21 @@
       "preview": {
         "empty": "No file picked yet",
         "selectedTitle": "Ready to upload",
-        "selectedHint": "This is a mock file for the demo — real camera and gallery picker land next sprint.",
+        "selectedHint": "You can replace this file any time before you submit.",
+        "digilockerTitle": "Ready to upload from DigiLocker",
+        "digilockerHint": "This is a verified copy issued by the source authority through DigiLocker.",
         "confirmHint": "You can replace this file any time before final submission."
       },
       "alreadyUploaded": "You've already uploaded this. Replacing will send the new file for review.",
       "replaceCtaHint": "Replacing resets the review status to \"Under review\"."
+    },
+    "digilocker": {
+      "title": "Pick from DigiLocker",
+      "subtitle": "DigiLocker issued documents are at par with original documents as per IT Act, 2000.",
+      "searchPlaceholder": "Search for a document",
+      "issuedCount": "My issued documents ({n})",
+      "noMatches": "No documents match your search.",
+      "disclaimer": "Demo build — real DigiLocker connect will be enabled in production."
     },
     "rejection": {
       "title": "Please upload again",
@@ -793,6 +828,88 @@
       "body": "Once preferences unlock, you'll drag and drop combinations into the order you want them."
     }
   },
+  "review": {
+    "title": "Review your {course} application",
+    "subtitle": "Everything below will go to the college when you submit. Check each section and edit anything that isn't correct.",
+    "applicationType": "{code} · {name}",
+    "sections": {
+      "profile": "Personal and address details",
+      "academic": "Class 12 details",
+      "claims": "Category and reservation claims",
+      "documents": "Documents",
+      "preferences": "Your preferences"
+    },
+    "rows": {
+      "fullName": "Full name",
+      "dob": "Date of birth",
+      "mobile": "Mobile number",
+      "email": "Email address",
+      "permanentAddress": "Permanent address",
+      "district": "District",
+      "pincode": "PIN code",
+      "board": "Board",
+      "stream": "Stream",
+      "bof": "Best-of-five percentage",
+      "result": "Result status",
+      "category": "Category",
+      "claims": "Special claims",
+      "singleGirlChild": "Single girl child",
+      "pwd": "Person with disability"
+    },
+    "documentsSummary": "{uploaded} of {required} required documents uploaded · {verified} verified",
+    "documentsEmpty": "You haven't uploaded any required documents yet.",
+    "preferencesSummary": "{n} of {max} preferences ranked",
+    "preferencesEmpty": "You haven't added any preferences yet.",
+    "rankBadge": "#{n}",
+    "notProvided": "Not provided yet"
+  },
+  "readiness": {
+    "title": "Ready to submit?",
+    "profile": {
+      "ok": "Your profile is complete.",
+      "missing": "Your profile has {n} field(s) left to complete."
+    },
+    "documents": {
+      "ok": "All required documents are uploaded.",
+      "partial": "{uploaded} of {required} required documents uploaded.",
+      "missing": "No required documents uploaded yet."
+    },
+    "preferences": {
+      "ok": "{n} preference(s) added.",
+      "missing": "Add at least one preference before you submit."
+    },
+    "blockedTitle": "A few things are still pending",
+    "blockedHint": "Open each item to finish what's missing, then come back to submit.",
+    "allGoodTitle": "You're ready to submit",
+    "allGoodHint": "Read the declaration on the next screen and submit your application."
+  },
+  "declaration": {
+    "title": "Declaration and fee",
+    "subtitle": "One final step before your application is sent to the college.",
+    "body": "I confirm that all the information I have provided is true and correct, and that I have uploaded my own documents. I understand that if any information is found to be wrong, my application or admission may be cancelled and the fee paid may be forfeited.",
+    "acceptLabel": "I accept the declaration above",
+    "consentError": "Please accept the declaration to continue.",
+    "feeTitle": "Application fee",
+    "feeBody": "₹{amount} for {course}. One fee per course type.",
+    "paymentLaterNote": "This is a demo build — submitting here counts as fee paid.",
+    "backHint": "Need to make a change? Go back to review."
+  },
+  "submit": {
+    "title": "Submitting your application",
+    "body": "Please don't close this screen — it will take just a moment.",
+    "processing": "Processing…"
+  },
+  "submitted": {
+    "title": "Application submitted",
+    "subtitle": "We've received your {course} application and shared it with the college.",
+    "applicationNumberLabel": "Application number",
+    "submittedAtLabel": "Submitted on",
+    "receiptNote": "Your receipt and provisional letter will be available as a PDF download in the full build.",
+    "nextStepsTitle": "What happens next",
+    "nextStepsBody": "The college will verify your documents and mark one of three outcomes — Accept, Conditional Accept, or Reject. You will get an update by SMS and inside this app.",
+    "trustTitle": "Your application is safely on record",
+    "trustBody": "Keep your application number handy — the college will refer to it for every update."
+  },
   "apply": {
     "hub": {
       "title": "Your applications",
@@ -854,86 +971,6 @@
       "combinationLabel": "{a} + {b}",
       "bucketLabel": "Buckets {a} · {b}",
       "seats": "{total} seats · {vacant} vacant"
-    },
-    "review": {
-      "title": "Review your {course} application",
-      "subtitle": "Everything below goes to the college when you submit. Edit anything that's out of date.",
-      "applicationType": "{code} · {name}",
-      "sections": {
-        "profile": "Personal + address",
-        "academic": "Class 12",
-        "claims": "Reservation and claims",
-        "documents": "Documents",
-        "preferences": "Preferences"
-      },
-      "rows": {
-        "fullName": "Full name",
-        "dob": "Date of birth",
-        "mobile": "Mobile",
-        "email": "Email",
-        "permanentAddress": "Permanent address",
-        "district": "District",
-        "pincode": "PIN code",
-        "board": "Board",
-        "stream": "Stream",
-        "bof": "Best-of-five",
-        "result": "Result status",
-        "category": "Category",
-        "claims": "Claims",
-        "singleGirlChild": "Single Girl Child",
-        "pwd": "PwD"
-      },
-      "documentsSummary": "{uploaded} of {required} required uploaded · {verified} verified",
-      "documentsEmpty": "You haven't uploaded any required documents yet.",
-      "preferencesSummary": "{n} of {max} preferences ranked",
-      "preferencesEmpty": "You haven't ranked any preferences yet.",
-      "rankBadge": "#{n}",
-      "notProvided": "Not provided yet"
-    },
-    "readiness": {
-      "title": "Ready to submit?",
-      "profile": {
-        "ok": "Profile is complete.",
-        "missing": "Finish your profile — {n} field(s) left."
-      },
-      "documents": {
-        "ok": "All required documents are uploaded.",
-        "partial": "{uploaded} of {required} required documents uploaded.",
-        "missing": "No required documents uploaded yet."
-      },
-      "preferences": {
-        "ok": "{n} preference(s) ranked.",
-        "missing": "Add at least 1 preference."
-      },
-      "blockedTitle": "Fix these before submitting",
-      "blockedHint": "Each item links back to the right screen.",
-      "allGoodTitle": "You're good to go",
-      "allGoodHint": "Review the declaration next, then submit."
-    },
-    "declaration": {
-      "title": "Declaration and fee",
-      "subtitle": "One last step before we send your application to the college.",
-      "body": "I confirm that all the information I have provided above is true and correct. I have uploaded my own documents. I understand that if any information is found to be wrong, my application or admission may be cancelled, and I may lose the fee I paid.",
-      "acceptLabel": "I accept the declaration above",
-      "consentError": "Please tick the declaration to continue.",
-      "feeTitle": "Application fee",
-      "feeBody": "₹{amount} for {course}. One fee per course type.",
-      "paymentLaterNote": "For this demo build we'll skip the real payment screen — submitting here counts as \"fee paid\".",
-      "backHint": "Need to edit? Go back to review."
-    },
-    "submit": {
-      "title": "Submitting your application",
-      "body": "Please don't close this screen — it only takes a moment.",
-      "processing": "Processing…"
-    },
-    "submitted": {
-      "title": "Application submitted",
-      "subtitle": "We've received your {course} application and shared it with the college.",
-      "applicationNumberLabel": "Application number",
-      "submittedAtLabel": "Submitted on",
-      "receiptNote": "Your receipt and provisional letter will download as a PDF in the full build.",
-      "nextStepsTitle": "What happens next",
-      "nextStepsBody": "The college will verify your documents and mark one of three outcomes — Accept, Conditional Accept, or Reject. We'll notify you on your mobile and inside the app."
     },
     "myApps": {
       "title": "My applications",

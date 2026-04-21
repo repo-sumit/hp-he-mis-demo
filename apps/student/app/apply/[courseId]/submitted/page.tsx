@@ -44,14 +44,31 @@ export default function SubmittedPage({ params }: { params: Promise<Params> }) {
   }
 
   return (
-    <PageShell eyebrow={t("apply.hub.title")} title={courseLabel}>
+    <PageShell eyebrow={t("apply.hub.title")} title={courseLabel} width="comfortable">
       <SuccessSummaryCard
         applicationNumber={draft.applicationNumber}
         submittedAt={draft.submittedAt}
         courseLabel={course.code}
       />
 
-      <section className="mt-5 rounded-[var(--radius-lg)] border border-[var(--color-border)] bg-[var(--color-surface)] p-4">
+      <section className="mt-5 flex items-start gap-3 rounded-[var(--radius-lg)] border border-[var(--color-interactive-success)] bg-[var(--color-status-success-bg)] p-4">
+        <span
+          aria-hidden="true"
+          className="flex h-9 w-9 flex-none items-center justify-center rounded-[var(--radius-pill)] bg-[var(--color-interactive-success)] text-[var(--color-text-inverse)]"
+        >
+          ✓
+        </span>
+        <div className="min-w-0 flex-1">
+          <p className="text-[var(--text-sm)] font-[var(--weight-semibold)] text-[var(--color-status-success-fg)]">
+            {t("submitted.trustTitle")}
+          </p>
+          <p className="mt-1 text-[var(--text-sm)] leading-[var(--leading-relaxed)] text-[var(--color-text-primary)]">
+            {t("submitted.trustBody")}
+          </p>
+        </div>
+      </section>
+
+      <section className="mt-5 rounded-[var(--radius-lg)] border border-[var(--color-border-subtle)] bg-[var(--color-surface)] p-4">
         <p className="text-[var(--text-sm)] font-[var(--weight-semibold)] text-[var(--color-text-primary)]">
           <span aria-hidden="true" className="mr-1">📅</span>
           {t("submitted.nextStepsTitle")}

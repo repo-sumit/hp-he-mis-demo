@@ -28,7 +28,7 @@ export default function HomePage() {
               <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
                 <Link
                   href="/register"
-                  className="inline-flex h-12 items-center justify-center rounded-[var(--radius-md)] bg-white px-6 text-[var(--text-sm)] font-[var(--weight-semibold)] text-[var(--color-text-primary)] shadow-[var(--shadow-sm)] transition-colors hover:bg-white/90"
+                  className="inline-flex h-12 items-center justify-center rounded-[var(--radius-md)] bg-white px-6 text-[var(--text-sm)] font-[var(--weight-semibold)] text-[var(--color-interactive-brand)] shadow-[var(--shadow-sm)] transition-colors hover:bg-white/90"
                 >
                   {t("cta.register")}
                 </Link>
@@ -109,15 +109,8 @@ export default function HomePage() {
         </ul>
       </section>
 
-      <section className="mt-10 flex flex-col gap-3 border-t border-[var(--color-border-subtle)] pt-6 text-[var(--text-xs)] text-[var(--color-text-tertiary)] sm:flex-row sm:items-center sm:justify-between">
+      <section className="mt-10 border-t border-[var(--color-border-subtle)] pt-6 text-[var(--text-xs)] text-[var(--color-text-tertiary)]">
         <span>{t("screen.home.trustLine")}</span>
-        <Link
-          href="/language"
-          className="inline-flex items-center gap-1 font-[var(--weight-medium)] text-[var(--color-text-link)] hover:underline"
-        >
-          <span aria-hidden="true">🌐</span>
-          {t("nav.changeLanguage")}
-        </Link>
       </section>
     </PageShell>
   );
