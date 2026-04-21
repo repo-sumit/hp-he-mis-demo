@@ -51,12 +51,18 @@ export interface Readiness {
  * where to send the Edit link (step) and which input to focus (focus id),
  * plus a human label.
  */
+/*
+ * Note: `email` is captured authoritatively at registration / login and
+ * synced into the profile draft there. It is intentionally absent from
+ * this list so readiness never flags it as missing — even on a mobile-only
+ * OTP session where `draft.email` may be empty, the review row falls back
+ * to a tolerant "Captured at login" value.
+ */
 const PROFILE_FIELDS: readonly MissingProfileField[] = [
   { key: "fullName", step: 1, focus: "fullName", labelKey: "review.missing.fullName" },
   { key: "dob", step: 1, focus: "dob", labelKey: "review.missing.dob" },
   { key: "gender", step: 1, focus: "gender", labelKey: "review.missing.gender" },
   { key: "mobile", step: 1, focus: "mobile", labelKey: "review.missing.mobile" },
-  { key: "email", step: 1, focus: "email", labelKey: "review.missing.email" },
   { key: "category", step: 1, focus: "category", labelKey: "review.missing.category" },
   { key: "permanentAddress", step: 2, focus: "permanentAddress", labelKey: "review.missing.permanentAddress" },
   { key: "district", step: 2, focus: "district", labelKey: "review.missing.district" },

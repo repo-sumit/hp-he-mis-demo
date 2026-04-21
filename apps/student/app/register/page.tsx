@@ -7,6 +7,7 @@ import { PageShell } from "../_components/page-shell";
 import { Field } from "../_components/field";
 import { PrimaryButton } from "../_components/primary-button";
 import { useLocale } from "../_components/locale-provider";
+import { useProfile } from "../_components/profile/profile-provider";
 
 type Values = { email: string; mobile: string; password: string; confirmPassword: string };
 type Errors = Partial<Record<keyof Values | "declaration", string>>;
@@ -14,6 +15,7 @@ type Errors = Partial<Record<keyof Values | "declaration", string>>;
 export default function RegisterPage() {
   const router = useRouter();
   const { t } = useLocale();
+  const { update: updateProfile } = useProfile();
   const [values, setValues] = useState<Values>({
     email: "",
     mobile: "",
@@ -49,10 +51,14 @@ export default function RegisterPage() {
     event.preventDefault();
     const next = validate();
     setErrors(next);
-    if (Object.keys(next).length === 0) {
-      // No backend yet — move to dashboard shell for the demo.
-      router.push("/dashboard");
-    }
+    if (Object.keys(next).length > 0) return;
+    // Registration is the source of truth for email + mobile. Sync both into
+    // the profile draft now so every downstream screen (profile, review,
+    // submission payload) can read them without asking the user to re-enter.
+    updateProfile("email", values.email.trim());
+    updateProfile("mobile", values.mobile.replace(/\s+/g, ""));
+    // No backend yet — move to dashboard shell for the demo.
+    router.push("/dashboard");
   }
 
   return (

@@ -863,12 +863,12 @@
     "preferencesEmpty": "You haven't added any preferences yet.",
     "rankBadge": "#{n}",
     "notProvided": "Not provided yet",
+    "emailFromLogin": "Using your login email",
     "missing": {
       "fullName": "Full name is missing",
       "dob": "Date of birth is missing",
       "gender": "Gender is missing",
       "mobile": "Mobile number is missing",
-      "email": "Email address is missing",
       "category": "Category is missing",
       "permanentAddress": "Permanent address is missing",
       "district": "District is missing",

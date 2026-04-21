@@ -7,6 +7,7 @@ import { PageShell } from "../_components/page-shell";
 import { Field } from "../_components/field";
 import { PrimaryButton } from "../_components/primary-button";
 import { useLocale } from "../_components/locale-provider";
+import { useProfile } from "../_components/profile/profile-provider";
 
 type Values = { identifier: string; password: string };
 type Errors = Partial<Record<keyof Values, string>>;
@@ -36,8 +37,24 @@ function classifyIdentifier(input: string): "email" | "mobile" | null {
 export default function LoginPage() {
   const router = useRouter();
   const { t } = useLocale();
+  const { update: updateProfile } = useProfile();
   const [values, setValues] = useState<Values>({ identifier: "", password: "" });
   const [errors, setErrors] = useState<Errors>({});
+
+  /**
+   * Login is an authoritative identity moment — sync whichever identifier
+   * the student logged in with into the profile draft so the review / edit
+   * screens never show "email not provided" for a session that clearly
+   * logged in via email. Mobile-only logins sync mobile; email logins sync
+   * email. Previous draft fields for the other channel are left as-is.
+   */
+  function syncIdentifierToProfile(identifier: string) {
+    const channel = classifyIdentifier(identifier);
+    if (channel === "email") updateProfile("email", identifier.trim());
+    else if (channel === "mobile") {
+      updateProfile("mobile", identifier.replace(/\s+/g, ""));
+    }
+  }
 
   // OTP sub-flow state. Lives on this page so the user never leaves the login
   // context. On success the user is sent to the dashboard just like the
@@ -69,9 +86,9 @@ export default function LoginPage() {
     event.preventDefault();
     const next = validate();
     setErrors(next);
-    if (Object.keys(next).length === 0) {
-      router.push("/dashboard");
-    }
+    if (Object.keys(next).length > 0) return;
+    syncIdentifierToProfile(values.identifier);
+    router.push("/dashboard");
   }
 
   function handleSendOtp(event: FormEvent<HTMLFormElement>) {
@@ -101,6 +118,7 @@ export default function LoginPage() {
       return;
     }
     setOtpErrors({});
+    syncIdentifierToProfile(otpIdentifier);
     setOtpStage("success");
     // Small delay so the success card is visible, then route to dashboard.
     window.setTimeout(() => router.push("/dashboard"), 900);

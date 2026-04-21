@@ -859,12 +859,12 @@
     "preferencesEmpty": "अभी कोई पसंद नहीं जोड़ी गई।",
     "rankBadge": "#{n}",
     "notProvided": "अभी नहीं भरा",
+    "emailFromLogin": "आपका लॉगिन ईमेल उपयोग हो रहा है",
     "missing": {
       "fullName": "पूरा नाम नहीं भरा",
       "dob": "जन्म तिथि नहीं भरी",
       "gender": "लिंग नहीं भरा",
       "mobile": "मोबाइल नंबर नहीं भरा",
-      "email": "ईमेल पता नहीं भरा",
       "category": "श्रेणी नहीं चुनी",
       "permanentAddress": "स्थायी पता नहीं भरा",
       "district": "ज़िला नहीं चुना",

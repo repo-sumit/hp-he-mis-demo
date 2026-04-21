@@ -153,19 +153,19 @@ export default function Step1Page() {
             onChange={(event) => update("mobile", event.target.value)}
             error={errors.mobile}
           />
-          <Field
-            name="email"
-            type="email"
-            inputMode="email"
-            autoComplete="email"
-            readOnly
-            label={t("field.email.label")}
-            helper={t("field.email.fromAccount")}
-            placeholder={t("field.email.placeholder")}
-            value={draft.email || "demo.student@example.com"}
-            onChange={(event) => update("email", event.target.value)}
-            error={errors.email}
-          />
+          {draft.email ? (
+            <Field
+              name="email"
+              type="email"
+              inputMode="email"
+              autoComplete="email"
+              readOnly
+              label={t("field.email.label")}
+              helper={t("field.email.fromAccount")}
+              value={draft.email}
+              onChange={(event) => update("email", event.target.value)}
+            />
+          ) : null}
         </section>
 
         <section className="space-y-4">
