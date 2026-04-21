@@ -12,7 +12,6 @@ import { IssueBanner } from "../../../_components/scrutiny-bridge/issue-banner";
 import { useProfile } from "../../../_components/profile/profile-provider";
 import { useReviewReturn } from "../../../_components/profile/use-review-return";
 import { RadioCards } from "../../../_components/form/radio-cards";
-import { Toggle } from "../../../_components/form/toggle";
 
 type Errors = Record<string, string>;
 
@@ -47,7 +46,6 @@ export default function Step1Page() {
       e.mobile = t("error.invalidMobile");
     if (draft.aadhaar && !/^\d{12}$/.test(draft.aadhaar.replace(/\s+/g, "")))
       e.aadhaar = t("error.invalidAadhaar");
-    if (!draft.category) e.category = t("error.required");
     return e;
   }
 
@@ -63,14 +61,6 @@ export default function Step1Page() {
     { value: "female", label: t("field.gender.female") },
     { value: "male", label: t("field.gender.male") },
     { value: "other", label: t("field.gender.other") },
-  ];
-
-  const categoryOptions = [
-    { value: "general", label: t("field.category.options.general") },
-    { value: "ews", label: t("field.category.options.ews") },
-    { value: "obc", label: t("field.category.options.obc") },
-    { value: "sc", label: t("field.category.options.sc") },
-    { value: "st", label: t("field.category.options.st") },
   ];
 
   return (
@@ -199,35 +189,6 @@ export default function Step1Page() {
                 {t("field.apaar.whatIsThis")}
               </a>
             }
-          />
-        </section>
-
-        <section className="space-y-4">
-          <h3 className="text-[var(--text-xs)] font-[var(--weight-semibold)] uppercase tracking-wide text-[var(--color-text-tertiary)]">
-            {t("profile.step1.reservationSection")}
-          </h3>
-          <RadioCards
-            name="category"
-            label={t("field.category.label")}
-            helper={t("field.category.helper")}
-            options={categoryOptions}
-            value={draft.category}
-            onChange={(v) => update("category", v as typeof draft.category)}
-            error={errors.category}
-          />
-          {draft.gender === "female" ? (
-            <Toggle
-              label={t("field.singleGirlChild.label")}
-              helper={t("field.singleGirlChild.helper")}
-              value={draft.isSingleGirlChild}
-              onChange={(v) => update("isSingleGirlChild", v)}
-            />
-          ) : null}
-          <Toggle
-            label={t("field.pwd.label")}
-            helper={t("field.pwd.helper")}
-            value={draft.isPwd}
-            onChange={(v) => update("isPwd", v)}
           />
         </section>
 

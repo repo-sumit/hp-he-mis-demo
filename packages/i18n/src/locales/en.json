@@ -426,6 +426,7 @@
     "step4": {
       "title": "Category and reservation claims",
       "subtitle": "Select the categories you belong to. You can upload the certificate later if you don't have it handy.",
+      "categorySection": "Reservation category",
       "claimsSection": "Special category claims",
       "certificatesSection": "Certificate details"
     },

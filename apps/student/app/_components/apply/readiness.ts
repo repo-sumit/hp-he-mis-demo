@@ -63,7 +63,7 @@ const PROFILE_FIELDS: readonly MissingProfileField[] = [
   { key: "dob", step: 1, focus: "dob", labelKey: "review.missing.dob" },
   { key: "gender", step: 1, focus: "gender", labelKey: "review.missing.gender" },
   { key: "mobile", step: 1, focus: "mobile", labelKey: "review.missing.mobile" },
-  { key: "category", step: 1, focus: "category", labelKey: "review.missing.category" },
+  { key: "category", step: 4, focus: "category", labelKey: "review.missing.category" },
   { key: "permanentAddress", step: 2, focus: "permanentAddress", labelKey: "review.missing.permanentAddress" },
   { key: "district", step: 2, focus: "district", labelKey: "review.missing.district" },
   { key: "pincode", step: 2, focus: "pincode", labelKey: "review.missing.pincode" },
