@@ -864,6 +864,7 @@
     "rankBadge": "#{n}",
     "notProvided": "Not provided yet",
     "emailFromLogin": "Using your login email",
+    "mobileOnlyContact": "Registered mobile number is being used for updates",
     "missing": {
       "fullName": "Full name is missing",
       "dob": "Date of birth is missing",

@@ -100,7 +100,13 @@ export default function ReviewPage({ params }: { params: Promise<Params> }) {
             <SummaryRow label={t("review.rows.mobile")} value={draft.mobile} />
             <SummaryRow
               label={t("review.rows.email")}
-              value={draft.email || t("review.emailFromLogin")}
+              value={
+                draft.email
+                  ? draft.email
+                  : draft.mobile
+                    ? t("review.mobileOnlyContact")
+                    : t("review.emailFromLogin")
+              }
             />
             <SummaryRow
               label={t("review.rows.permanentAddress")}

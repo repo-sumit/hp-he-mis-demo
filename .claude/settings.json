@@ -4,7 +4,9 @@
       "Bash(pnpm --filter student build)",
       "Bash(git add *)",
       "Bash(git commit -m ' *)",
-      "Bash(git push *)"
+      "Bash(git push *)",
+      "Bash(awk 'NR==755,NR==860' packages/i18n/src/locales/en.json)",
+      "Bash(node -e \"JSON.parse\\(require\\('fs'\\).readFileSync\\('packages/i18n/src/locales/en.json','utf8'\\)\\); JSON.parse\\(require\\('fs'\\).readFileSync\\('packages/i18n/src/locales/hi.json','utf8'\\)\\); console.log\\('ok'\\)\")"
     ]
   }
 }
