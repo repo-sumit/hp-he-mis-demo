@@ -120,6 +120,58 @@
     "dashboard": {
       "nextAction": "What to do next",
       "notifications": "Recent updates"
+    },
+    "allotment": {
+      "pageTitle": "Your seat offer",
+      "eyebrow": "Round {n} · Offer",
+      "waitingTitle": "Waiting for the next step",
+      "waitingBody": "Merit has not been published for this course yet. We'll update you as soon as the state releases the list.",
+      "heroTitle": "Congratulations, {name}!",
+      "heroBody": "You have been offered a seat in {course} at {college}.",
+      "rankLine": "Merit rank {rank} · {category}",
+      "combinationLine": "Subject combination: {combination}",
+      "feeSectionTitle": "Admission fee",
+      "feeBreakupHint": "Government-decided fee for this course. All fee heads are listed in your fee slip after payment.",
+      "deadlineTitle": "Respond by",
+      "deadlineBody": "Please choose within the deadline. No response means the seat is offered to the next student.",
+      "choose": "Choose your response",
+      "chooseHelp": "You can still change to Freeze or Float before the deadline.",
+      "freezeCta": "Freeze seat",
+      "freezeHelp": "Accept this seat and pay the fee. You won't be considered for other preferences.",
+      "floatCta": "Float for a better preference",
+      "floatHelp": "Hold this seat. If a higher preference opens up in the next round, you'll be moved up.",
+      "declineCta": "Decline",
+      "declineHelp": "Release this seat. You won't be considered for further rounds.",
+      "declineConfirmTitle": "Decline this seat?",
+      "declineConfirmBody": "You will lose the seat at {college} and won't be considered in later rounds. This cannot be undone.",
+      "declineConfirmCta": "Yes, decline",
+      "declineCancelCta": "Keep seat",
+      "toastFloat": "Seat held. You'll be moved up if a higher preference opens.",
+      "toastDecline": "Seat released.",
+      "statusFloat": "You chose Float. We'll try for a higher preference in the next round.",
+      "statusDecline": "You declined this seat.",
+      "statusFrozen": "Seat frozen. Please pay the admission fee to confirm.",
+      "statusFeePaid": "Fee paid. Admission confirmation ready.",
+      "statusConfirmed": "Admission confirmed."
+    },
+    "payment": {
+      "pageTitle": "Admission fee",
+      "eyebrow": "Fee payment",
+      "confirmTitle": "Pay your admission fee",
+      "confirmBody": "Review the fee breakup. Once paid, your admission is provisional until you submit original documents at the college.",
+      "feeHeadsTitle": "Fee breakup",
+      "totalLine": "Total payable",
+      "payCta": "Pay ₹{amount}",
+      "paying": "Processing payment…",
+      "successTitle": "🎓 Admission confirmed",
+      "successBody": "Your admission at {college} is confirmed. Your roll number is ready.",
+      "rollNumberLabel": "Roll number",
+      "nextStepsTitle": "What to do next",
+      "nextStepsBody": "Please visit the college within 7 days with your original documents for final verification. Carry a printed copy of your admission letter.",
+      "downloadReceipt": "Download fee receipt",
+      "downloadLetter": "Download admission letter",
+      "backToDashboard": "Back to dashboard",
+      "toastPaid": "Admission confirmed. Welcome to {college}!"
     }
   },
   "portal": {
@@ -141,6 +193,52 @@
       "convenorQueue": "Convenor queue",
       "finance": "Finance",
       "leadership": "Leadership"
+    },
+    "merit": {
+      "pageTitle": "Merit compilation",
+      "eyebrow": "State admin · Cycle 2026-27",
+      "lead": "Publish course-wise merit once scrutiny is complete. Verified applications are ranked by best-of-five; ties broken by older date of birth.",
+      "roleGate": "Merit publishing is restricted to State Admin. Switch roles to continue.",
+      "cardVerified": "{n} verified",
+      "cardPending": "{n} awaiting scrutiny",
+      "cardRejected": "{n} rejected",
+      "noVerified": "No verified applications yet. Complete scrutiny first.",
+      "publishCta": "Publish merit",
+      "republishCta": "Re-publish (v{v})",
+      "publishedAt": "Published {when}",
+      "publishedBy": "by {actor}",
+      "rankHeader": "Rank",
+      "studentHeader": "Student",
+      "bofHeader": "Best of 5",
+      "categoryHeader": "Category",
+      "previewTitle": "Ranked merit list",
+      "previewNote": "Preview only — ranks are finalised on publish. Re-publishing creates a new version and logs to audit.",
+      "toastPublished": "Merit published for {course}."
+    },
+    "allocation": {
+      "pageTitle": "Seat allocation",
+      "eyebrow": "State admin · Cycle 2026-27",
+      "lead": "Run allocation rounds. The engine walks the merit list, matches each student to their highest-ranked preference with a vacant seat, and writes offers. Students accept with Freeze, Float, or Decline on their dashboard.",
+      "roleGate": "Seat allocation is restricted to State Admin. Switch roles to continue.",
+      "meritRequired": "Publish merit before running allocation for this course.",
+      "runCta": "Run round 1",
+      "rerunCta": "Run again",
+      "runAt": "Round {n} · run {when}",
+      "seatsOffered": "{n} seats offered",
+      "seatsVacant": "{n} seats vacant after round",
+      "rankHeader": "Rank",
+      "studentHeader": "Student",
+      "offerHeader": "Offer",
+      "responseHeader": "Response",
+      "responsePending": "Awaiting student",
+      "responseFreeze": "Frozen",
+      "responseFloat": "Floated",
+      "responseDecline": "Declined",
+      "responseFeePaid": "Fee paid",
+      "responseConfirmed": "Admission confirmed",
+      "responseAutoCancelled": "Auto-cancelled",
+      "noMerit": "Merit not yet published.",
+      "toastRun": "Allocation run for {course}."
     }
   },
   "common": {
@@ -248,6 +346,21 @@
         "title": "Your application is with the college",
         "body": "They'll check your details and documents. We'll send you an update on mobile and here.",
         "cta": "View application"
+      },
+      "meritPublished": {
+        "title": "Merit list is out",
+        "body": "Your name appears on the merit list. Seat allocation runs next — we'll notify you the moment your seat is offered.",
+        "cta": "View application"
+      },
+      "seatOffered": {
+        "title": "🎉 Seat offered at {college}",
+        "body": "You have been offered a seat. Choose Freeze, Float, or Decline before the deadline.",
+        "cta": "View offer"
+      },
+      "admissionConfirmed": {
+        "title": "🎓 Admission confirmed",
+        "body": "Welcome to {college}. Your roll number and admission letter are ready to download.",
+        "cta": "View admission"
       },
       "findCourses": {
         "title": "Find courses that fit you",

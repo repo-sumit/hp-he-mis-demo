@@ -13,6 +13,7 @@ import { hasEnoughProfile, remainingProfileSteps } from "../_components/discover
 import { getCourse } from "../_components/discover/mock-data";
 import { useScrutinyBridge } from "../_components/scrutiny-bridge/scrutiny-bridge-provider";
 import { DiscrepancySummaryCard } from "../_components/scrutiny-bridge/discrepancy-summary-card";
+import { useAllotmentBridge } from "../_components/allotment-bridge/allotment-bridge-provider";
 
 const QUICK_LINKS = [
   { key: "documents", icon: "📄", href: "/documents" },
@@ -25,13 +26,20 @@ const BASE_NOTIFICATIONS = [
   { key: "dates", time: "1 hr ago", unread: true },
 ] as const;
 
-type NextActionVariant = "finishProfile" | "findCourses" | "underReview";
+type NextActionVariant =
+  | "finishProfile"
+  | "findCourses"
+  | "underReview"
+  | "meritPublished"
+  | "seatOffered"
+  | "admissionConfirmed";
 
 export default function DashboardPage() {
   const { t } = useLocale();
   const { applications, submittedCourseIds } = useApplications();
   const { draft } = useProfile();
   const bridge = useScrutinyBridge();
+  const allotment = useAllotmentBridge();
 
   const submittedIds = submittedCourseIds();
   const hasSubmitted = submittedIds.length > 0;
@@ -54,19 +62,52 @@ export default function DashboardPage() {
     : "";
   const moreCount = Math.max(0, openDiscrepancies.length - 1);
 
-  const currentStep: StatusStep = hasSubmitted ? "submitted" : "profileComplete";
-
   const firstSubmitted = hasSubmitted ? applications[submittedIds[0]!] : null;
   const firstSubmittedCourse = firstSubmitted ? getCourse(firstSubmitted.courseId) : null;
+
+  // Derive allocation state for the first submitted course. The tracker +
+  // next-action card both read from this — the dashboard is the one place
+  // where merit and allocation overlays actually animate the student's
+  // progress through steps 4, 5, 6, 7.
+  const firstAllocation = firstSubmitted
+    ? allotment.allocationFor(firstSubmitted.courseId)
+    : null;
+  const firstMeritPublished =
+    firstSubmitted && allotment.meritPublishedFor(firstSubmitted.courseId);
+
+  // Current step: walk backwards from the most advanced state.
+  const currentStep: StatusStep = (() => {
+    if (
+      firstAllocation?.status === "fee_paid" ||
+      firstAllocation?.status === "admission_confirmed"
+    ) {
+      return "admissionConfirmed";
+    }
+    if (firstAllocation) return "allotted";
+    if (firstMeritPublished) return "meritPublished";
+    if (hasSubmitted) return "submitted";
+    return "profileComplete";
+  })();
 
   const stepsLeft = remainingProfileSteps(draft);
   const firstName = draft.fullName.trim().split(/\s+/)[0] ?? "";
 
-  const nextActionVariant: NextActionVariant = hasSubmitted && firstSubmittedCourse
-    ? "underReview"
-    : !hasEnoughProfile(draft)
-      ? "finishProfile"
-      : "findCourses";
+  // Priority order for the next-action card. More advanced states win —
+  // a confirmed admission takes precedence over "seat offered" which takes
+  // precedence over "merit published" / "under review".
+  const nextActionVariant: NextActionVariant = (() => {
+    if (
+      firstAllocation?.status === "fee_paid" ||
+      firstAllocation?.status === "admission_confirmed"
+    ) {
+      return "admissionConfirmed";
+    }
+    if (firstAllocation) return "seatOffered";
+    if (firstMeritPublished) return "meritPublished";
+    if (hasSubmitted && firstSubmittedCourse) return "underReview";
+    if (!hasEnoughProfile(draft)) return "finishProfile";
+    return "findCourses";
+  })();
 
   return (
     <PageShell
@@ -115,7 +156,42 @@ export default function DashboardPage() {
               {t("screen.dashboard.nextActionTitle")}
             </h3>
             <div className="mt-3">
-              {nextActionVariant === "underReview" && firstSubmitted && firstSubmittedCourse ? (
+              {nextActionVariant === "admissionConfirmed" &&
+              firstSubmitted &&
+              firstAllocation ? (
+                <NextActionCard
+                  title={t("screen.dashboard.admissionConfirmed.title")}
+                  body={t("screen.dashboard.admissionConfirmed.body", {
+                    college: firstAllocation.offer.collegeName,
+                  })}
+                  cta={t("screen.dashboard.admissionConfirmed.cta")}
+                  href={`/payment/${firstSubmitted.courseId}`}
+                  meta={firstAllocation.rollNumber ?? firstSubmitted.applicationNumber}
+                  icon="🎓"
+                />
+              ) : nextActionVariant === "seatOffered" &&
+                firstSubmitted &&
+                firstAllocation ? (
+                <NextActionCard
+                  title={t("screen.dashboard.seatOffered.title", {
+                    college: firstAllocation.offer.collegeName,
+                  })}
+                  body={t("screen.dashboard.seatOffered.body")}
+                  cta={t("screen.dashboard.seatOffered.cta")}
+                  href={`/allotment/${firstSubmitted.courseId}`}
+                  meta={firstSubmitted.applicationNumber}
+                  icon="🎉"
+                />
+              ) : nextActionVariant === "meritPublished" && firstSubmitted ? (
+                <NextActionCard
+                  title={t("screen.dashboard.meritPublished.title")}
+                  body={t("screen.dashboard.meritPublished.body")}
+                  cta={t("screen.dashboard.meritPublished.cta")}
+                  href={`/allotment/${firstSubmitted.courseId}`}
+                  meta={firstSubmitted.applicationNumber}
+                  icon="🏅"
+                />
+              ) : nextActionVariant === "underReview" && firstSubmitted && firstSubmittedCourse ? (
                 <NextActionCard
                   title={t("screen.dashboard.underReview.title")}
                   body={t("screen.dashboard.underReview.body")}

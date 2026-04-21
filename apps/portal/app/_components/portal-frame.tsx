@@ -135,7 +135,6 @@ const NAV_ITEMS: readonly NavItem[] = [
     icon: "🏅",
     roles: ["state_admin"],
     href: "/merit",
-    disabled: true,
     labelKey: "portal.sidebar.merit",
   },
   {
@@ -143,7 +142,6 @@ const NAV_ITEMS: readonly NavItem[] = [
     icon: "🎯",
     roles: ["state_admin"],
     href: "/allocation",
-    disabled: true,
     labelKey: "portal.sidebar.allocation",
   },
   {

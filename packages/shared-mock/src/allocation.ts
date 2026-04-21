@@ -175,3 +175,74 @@ export function isAllocationRun(
 ): boolean {
   return Boolean(map[courseId]?.runAt);
 }
+
+/**
+ * Find this student's allocation within a course's overlay. The demo cheat
+ * lives here: when no explicit matching applicationId is passed (the common
+ * case — student-side doesn't know the portal's seeded application IDs),
+ * we return the top-ranked entry. That's how the demo binds the student
+ * persona to a seeded application like Asha Sharma (#147) without a real
+ * auth layer. A real backend swaps this for an identity-scoped lookup.
+ */
+export function findStudentAllocation(
+  overlay: AllocationOverlay | undefined,
+  applicationId?: string,
+): AllocationEntry | null {
+  if (!overlay) return null;
+  if (applicationId) {
+    const match = overlay.allocations.find((a) => a.applicationId === applicationId);
+    if (match) return match;
+  }
+  return overlay.allocations[0] ?? null;
+}
+
+/**
+ * Update one student's response + roll number inside an allocation overlay
+ * for a given course. Returns the new overlay map — caller persists.
+ * `newStatus` covers the full response lifecycle (freeze / float / decline
+ * / fee_paid / admission_confirmed). When `rollNumber` is provided it's
+ * written onto the entry (used by the payment flow on admission_confirmed).
+ */
+export function setStudentResponse(
+  map: AllocationOverlayMap,
+  courseId: string,
+  applicationId: string,
+  newStatus: AllotmentResponse,
+  rollNumber?: string,
+): AllocationOverlayMap {
+  const overlay = map[courseId];
+  if (!overlay) return map;
+  const next: AllocationOverlay = {
+    ...overlay,
+    allocations: overlay.allocations.map((entry) =>
+      entry.applicationId === applicationId
+        ? {
+            ...entry,
+            status: newStatus,
+            respondedAt: Date.now(),
+            ...(rollNumber ? { rollNumber } : {}),
+          }
+        : entry,
+    ),
+  };
+  return { ...map, [courseId]: next };
+}
+
+/**
+ * Deterministic roll-number generator for the demo. Shape:
+ * `HPU-2026-<COLLEGE>-<COURSE>-<NNN>`. College slug is built from the
+ * collegeId, course from the courseCode, and the numeric suffix from the
+ * allocation rank so re-running the payment flow produces the same value.
+ */
+export function generateRollNumber(
+  entry: AllocationEntry,
+  courseCode: string,
+): string {
+  const collegeSlug = entry.offer.collegeId
+    .toUpperCase()
+    .replace(/[^A-Z0-9]/g, "")
+    .slice(0, 6);
+  const courseSlug = courseCode.toUpperCase().replace(/[^A-Z0-9]/g, "");
+  const suffix = String(entry.rank).padStart(3, "0");
+  return `HPU-2026-${collegeSlug}-${courseSlug}-${suffix}`;
+}

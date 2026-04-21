@@ -114,3 +114,6 @@ export function sortDiscrepancies(a: ScrutinyDiscrepancy, b: ScrutinyDiscrepancy
 export function generateDiscrepancyId(): string {
   return `disc-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 6)}`;
 }
+
+export * from "./merit";
+export * from "./allocation";
