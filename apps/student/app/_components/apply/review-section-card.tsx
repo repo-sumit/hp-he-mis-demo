@@ -8,7 +8,7 @@ import { useLocale } from "../locale-provider";
 interface Props {
   title: string;
   /**
-   * Path to the editor (e.g. "/profile/step/1", "/documents"). The card
+   * Path to the editor (e.g. "/profile/step/1", "/profile/step/4"). The card
    * appends `?from=review&courseId=<courseId>` when `courseId` is set so
    * the target page can bounce back to the review after saving.
    */

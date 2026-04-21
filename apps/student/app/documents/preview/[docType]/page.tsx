@@ -27,7 +27,7 @@ export default function PreviewPage({ params }: { params: Promise<Params> }) {
     <PageShell
       eyebrow={t("document.checklist.title")}
       title={t("document.preview.title")}
-      backHref="/documents"
+      backHref="/profile/step/4"
     >
       <p className="text-[var(--text-sm)] text-[var(--color-text-secondary)]">
         {t("document.preview.subtitle")}
@@ -50,10 +50,10 @@ export default function PreviewPage({ params }: { params: Promise<Params> }) {
         </PrimaryLink>
         <p className="mt-2 text-center text-[var(--text-xs)]">
           <Link
-            href="/documents"
+            href="/profile/step/4"
             className="font-[var(--weight-medium)] text-[var(--color-text-link)]"
           >
-            {t("cta.backToChecklist")}
+            {t("profile.step4.backToClaims")}
           </Link>
         </p>
       </div>

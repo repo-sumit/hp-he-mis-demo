@@ -148,7 +148,7 @@ export default function ReviewPage({ params }: { params: Promise<Params> }) {
 
         <ReviewSectionCard
           title={t("review.sections.documents")}
-          editHref="/documents"
+          editHref="/profile/step/4"
           courseId={courseId}
         >
           <p className="text-[var(--text-sm)] font-[var(--weight-medium)] text-[var(--color-text-primary)]">

@@ -9,7 +9,7 @@ export function routeForIssue(disc: ScrutinyDiscrepancy): string {
   switch (disc.scope) {
     case "document":
       if (disc.targetRef) return `/documents/rejection/${disc.targetRef}`;
-      return "/documents";
+      return "/profile/step/4";
     case "academic":
       return "/profile/step/3";
     case "reservation":

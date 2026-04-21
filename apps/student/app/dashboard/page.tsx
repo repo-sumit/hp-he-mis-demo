@@ -16,7 +16,7 @@ import { DiscrepancySummaryCard } from "../_components/scrutiny-bridge/discrepan
 import { useAllotmentBridge } from "../_components/allotment-bridge/allotment-bridge-provider";
 
 const QUICK_LINKS = [
-  { key: "documents", icon: "📄", href: "/documents" },
+  { key: "documents", icon: "📄", href: "/profile/step/4" },
   { key: "eligibility", icon: "✓", href: "/discover" },
   { key: "helpdesk", icon: "💬", href: "/help" },
 ] as const;

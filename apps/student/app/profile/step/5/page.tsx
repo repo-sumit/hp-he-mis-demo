@@ -50,7 +50,7 @@ export default function Step5Page() {
     const next = validate();
     setErrors(next);
     if (Object.keys(next).length > 0) return;
-    router.push(inReviewEdit && returnHref ? returnHref : "/documents");
+    router.push(inReviewEdit && returnHref ? returnHref : "/dashboard");
   }
 
   const personalRows = [

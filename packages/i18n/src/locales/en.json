@@ -430,9 +430,11 @@
       "categorySection": "Reservation category",
       "claimsSection": "Special category claims",
       "certificatesSection": "Upload your certificates",
+      "documentsSection": "Required documents",
+      "documentsHint": "All the documents your application needs, in one place. Upload a scan or fetch a verified copy from DigiLocker — we'll keep track of status for you.",
       "uploadHint": "Upload a scan or use DigiLocker. Each certificate goes to its own upload screen.",
-      "uploadCta": "Upload certificate",
-      "backToClaims": "Back to reservation claims"
+      "uploadCta": "Upload",
+      "backToClaims": "Back to documents"
     },
     "step5": {
       "title": "Bank details",

@@ -53,7 +53,7 @@ export default function RejectionPage({ params }: { params: Promise<Params> }) {
     <PageShell
       eyebrow={t("document.checklist.title")}
       title={t("document.rejection.title")}
-      backHref="/documents"
+      backHref="/profile/step/4"
     >
       <p className="text-[var(--text-sm)] text-[var(--color-text-secondary)]">
         {t("document.rejection.subtitle")}

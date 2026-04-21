@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { use, useRef, useState } from "react";
 import Link from "next/link";
-import { notFound, useRouter, useSearchParams } from "next/navigation";
+import { notFound, useRouter } from "next/navigation";
 import { cn } from "@hp-mis/ui";
 import { PageShell } from "../../../_components/page-shell";
 import { PrimaryButton } from "../../../_components/primary-button";
@@ -37,11 +37,6 @@ const ACCEPTED_MIME = "application/pdf,image/png,image/jpeg";
 export default function UploadPage({ params }: { params: Promise<Params> }) {
   const { docType } = use(params);
   const router = useRouter();
-  const searchParams = useSearchParams();
-  // Upload contexts: "claims" returns to the claims step after confirm so a
-  // student can fire through multiple certificates without detouring; any
-  // other caller falls through to the regular document preview.
-  const returnTo = searchParams?.get("from") ?? null;
   const { t } = useLocale();
   const { getEntry, markUploaded } = useDocuments();
   const { applications, submittedCourseIds } = useApplications();
@@ -97,18 +92,17 @@ export default function UploadPage({ params }: { params: Promise<Params> }) {
       const appNumber = applications[cid]?.applicationNumber;
       if (appNumber) bridge.markDocResubmitted(appNumber, rule!.code);
     }
-    if (returnTo === "claims") {
-      router.push("/profile/step/4");
-      return;
-    }
-    router.push(`/documents/preview/${rule!.code}`);
+    // Step 4 is now the single home for all document uploads — after a
+    // successful confirm we always return the student there so they can
+    // pick the next document in the checklist.
+    router.push("/profile/step/4");
   }
 
   return (
     <PageShell
       eyebrow={t("document.checklist.title")}
       title={t("document.upload.title", { name })}
-      backHref={returnTo === "claims" ? "/profile/step/4" : "/documents"}
+      backHref="/profile/step/4"
       width="comfortable"
     >
       <section className="rounded-[var(--radius-lg)] border border-[var(--color-border-subtle)] bg-[var(--color-surface)] p-4 sm:p-5">
@@ -268,12 +262,10 @@ export default function UploadPage({ params }: { params: Promise<Params> }) {
         </p>
         <p className="mt-2 text-center text-[var(--text-xs)]">
           <Link
-            href={returnTo === "claims" ? "/profile/step/4" : "/documents"}
+            href="/profile/step/4"
             className="font-[var(--weight-medium)] text-[var(--color-text-link)]"
           >
-            {returnTo === "claims"
-              ? t("profile.step4.backToClaims")
-              : t("cta.backToChecklist")}
+            {t("profile.step4.backToClaims")}
           </Link>
         </p>
       </div>

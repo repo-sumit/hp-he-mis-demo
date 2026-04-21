@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, type FormEvent } from "react";
+import { useEffect, useMemo, type FormEvent } from "react";
 import { PageShell } from "../../../_components/page-shell";
 import { PrimaryButton } from "../../../_components/primary-button";
 import { useLocale } from "../../../_components/locale-provider";
@@ -15,6 +15,7 @@ import { CheckboxGroup } from "../../../_components/form/checkbox-group";
 import { Toggle } from "../../../_components/form/toggle";
 import { useDocuments } from "../../../_components/documents/documents-provider";
 import { DocumentStatusBadge } from "../../../_components/documents/document-status-badge";
+import { buildChecklist } from "../../../_components/documents/document-rules";
 import { IssueBanner } from "../../../_components/scrutiny-bridge/issue-banner";
 
 const CLAIM_CODES = [
@@ -27,19 +28,6 @@ const CLAIM_CODES = [
   "cultural",
   "exServiceman",
 ] as const;
-
-/**
- * Claim code → document code that holds its certificate. Multiple claims
- * can share the same doc (sc / st / obc all upload a single caste
- * certificate), which is why we de-duplicate at render time.
- */
-const CLAIM_TO_DOC: Record<string, string> = {
-  sc: "caste_cert",
-  st: "caste_cert",
-  obc: "caste_cert",
-  ews: "ews_cert",
-  pwd: "pwd_cert",
-};
 
 export default function Step4Page() {
   const router = useRouter();
@@ -58,7 +46,7 @@ export default function Step4Page() {
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    // Claims are saved live via setClaims; the page just advances.
+    // Claims + uploads are saved live; the page just advances.
     router.push(inReviewEdit && returnHref ? returnHref : "/profile/step/5");
   }
 
@@ -67,17 +55,14 @@ export default function Step4Page() {
     label: t(`field.claims.options.${code}`),
   }));
 
-  // De-duplicated list of certificate documents needed across the selected
-  // claims — preserves the claim order the student picked them in, so SC
-  // (which maps to caste_cert) sits above EWS, etc.
-  const docsToUpload: string[] = [];
-  const seenDocs = new Set<string>();
-  for (const claim of draft.claims) {
-    const doc = CLAIM_TO_DOC[claim];
-    if (!doc || seenDocs.has(doc)) continue;
-    seenDocs.add(doc);
-    docsToUpload.push(doc);
-  }
+  // Every document the student actually needs for their profile — base
+  // identity + academic docs plus anything added by claims, domicile, or
+  // gap-year. `buildChecklist` already resolves the entire list from the
+  // current draft, so step 4 is now the single home for uploads.
+  const checklist = useMemo(
+    () => buildChecklist(draft).filter((item) => item.required),
+    [draft],
+  );
 
   return (
     <PageShell
@@ -113,60 +98,60 @@ export default function Step4Page() {
           ) : null}
         </section>
 
-        {docsToUpload.length > 0 ? (
-          <section className="space-y-3">
-            <div>
-              <h3 className="text-[var(--text-xs)] font-[var(--weight-semibold)] uppercase tracking-wide text-[var(--color-text-tertiary)]">
-                {t("profile.step4.certificatesSection")}
-              </h3>
-              <p className="mt-1 text-[var(--text-xs)] text-[var(--color-text-secondary)]">
-                {t("profile.step4.uploadHint")}
-              </p>
-            </div>
-            <ul className="space-y-2">
-              {docsToUpload.map((code) => {
-                const entry = getEntry(code);
-                const uploaded = entry.status !== "not_uploaded";
-                return (
-                  <li
-                    key={code}
-                    className="flex flex-col gap-3 rounded-[var(--radius-lg)] border border-[var(--color-border-subtle)] bg-[var(--color-surface)] p-4 sm:flex-row sm:items-center sm:justify-between"
-                  >
-                    <div className="min-w-0 flex-1">
-                      <p className="text-[var(--text-sm)] font-[var(--weight-semibold)] text-[var(--color-text-primary)]">
-                        {t(`document.name.${code}`)}
-                      </p>
-                      <p className="mt-0.5 text-[var(--text-xs)] leading-[var(--leading-relaxed)] text-[var(--color-text-secondary)]">
-                        {t(`document.description.${code}`)}
-                      </p>
-                      {uploaded ? (
-                        <div className="mt-2">
-                          <DocumentStatusBadge status={entry.status} />
-                        </div>
+        <section className="space-y-3">
+          <div>
+            <h3 className="text-[var(--text-xs)] font-[var(--weight-semibold)] uppercase tracking-wide text-[var(--color-text-tertiary)]">
+              {t("profile.step4.documentsSection")}
+            </h3>
+            <p className="mt-1 text-[var(--text-xs)] text-[var(--color-text-secondary)]">
+              {t("profile.step4.documentsHint")}
+            </p>
+          </div>
+
+          <ul className="space-y-2">
+            {checklist.map((item) => {
+              const code = item.rule.code;
+              const entry = getEntry(code);
+              const uploaded = entry.status !== "not_uploaded";
+              return (
+                <li
+                  key={code}
+                  className="flex flex-col gap-3 rounded-[var(--radius-lg)] border border-[var(--color-border-subtle)] bg-[var(--color-surface)] p-4 sm:flex-row sm:items-center sm:justify-between"
+                >
+                  <div className="min-w-0 flex-1">
+                    <p className="text-[var(--text-sm)] font-[var(--weight-semibold)] text-[var(--color-text-primary)]">
+                      {t(`document.name.${code}`)}
+                      {item.conditional ? (
+                        <span className="ml-2 rounded-[var(--radius-pill)] border border-[var(--color-border-subtle)] bg-[var(--color-background-subtle)] px-2 py-0.5 text-[10px] font-[var(--weight-semibold)] uppercase tracking-[var(--tracking-wide)] text-[var(--color-text-tertiary)]">
+                          {t("common.optional")}
+                        </span>
                       ) : null}
-                    </div>
-                    <Link
-                      // `?from=claims` tells the upload page to return here
-                      // after a successful confirm, so the student can move
-                      // straight to the next certificate without detouring
-                      // through the document preview screen.
-                      href={`/documents/upload/${code}?from=claims`}
-                      className="inline-flex h-10 flex-none items-center justify-center rounded-[var(--radius-md)] bg-[var(--color-interactive-brand)] px-4 text-[var(--text-sm)] font-[var(--weight-semibold)] text-[var(--color-text-inverse)] shadow-[var(--shadow-sm)] transition-colors hover:bg-[var(--color-interactive-brand-hover)]"
-                    >
-                      {uploaded
-                        ? t("cta.replaceDocument")
-                        : t("profile.step4.uploadCta")}
-                    </Link>
-                  </li>
-                );
-              })}
-            </ul>
-          </section>
-        ) : (
-          <p className="rounded-[var(--radius-lg)] border border-dashed border-[var(--color-border-strong)] bg-[var(--color-background-subtle)] px-3 py-4 text-center text-[var(--text-sm)] text-[var(--color-text-secondary)]">
-            {t("profile.step4.subtitle")}
-          </p>
-        )}
+                    </p>
+                    <p className="mt-0.5 text-[var(--text-xs)] leading-[var(--leading-relaxed)] text-[var(--color-text-secondary)]">
+                      {t(`document.description.${code}`)}
+                    </p>
+                    {uploaded ? (
+                      <div className="mt-2">
+                        <DocumentStatusBadge status={entry.status} />
+                      </div>
+                    ) : null}
+                  </div>
+                  <Link
+                    // `?from=claims` brings the student straight back to
+                    // this page after a successful upload, so they can
+                    // move through the checklist without detouring.
+                    href={`/documents/upload/${code}?from=claims`}
+                    className="inline-flex h-10 flex-none items-center justify-center rounded-[var(--radius-md)] bg-[var(--color-interactive-brand)] px-4 text-[var(--text-sm)] font-[var(--weight-semibold)] text-[var(--color-text-inverse)] shadow-[var(--shadow-sm)] transition-colors hover:bg-[var(--color-interactive-brand-hover)]"
+                  >
+                    {uploaded
+                      ? t("cta.replaceDocument")
+                      : t("profile.step4.uploadCta")}
+                  </Link>
+                </li>
+              );
+            })}
+          </ul>
+        </section>
 
         <div className="sticky bottom-0 -mx-4 border-t border-[var(--color-border)] bg-[var(--color-surface)] px-4 py-3">
           <PrimaryButton type="submit">{t(saveLabelKey)}</PrimaryButton>
