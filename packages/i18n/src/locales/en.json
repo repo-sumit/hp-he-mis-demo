@@ -1043,9 +1043,11 @@
     },
     "dashboard": {
       "title": "One small fix on your application",
+      "actionRequiredTitle": "Action required on your application",
       "subtitle": "Don't worry — your fee and earlier work are safe. Fix this and your admission keeps moving.",
       "moreCount": "+{n} more — tap to see all",
       "fixCta": "Fix now",
+      "reuploadCta": "Re-upload {name}",
       "viewAll": "See all issues"
     },
     "list": {

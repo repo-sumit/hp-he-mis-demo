@@ -36,8 +36,16 @@ export default function DashboardPage() {
   const submittedIds = submittedCourseIds();
   const hasSubmitted = submittedIds.length > 0;
 
+  /*
+   * Only surface an action-required card on the dashboard when there's at
+   * least one OPEN discrepancy (student hasn't acted yet). Showing the
+   * awaiting/"sent for re-check" state here previously turned into a
+   * dead-end — green card with no CTA and "nothing more to do" copy even
+   * when the reason was an unresolved issue like a blurry photo. Awaiting
+   * status still lives on /applications and /issues where it belongs.
+   */
   const openDiscrepancies = bridge.all.filter((d) => !d.studentActionAt);
-  const headlineDiscrepancy = openDiscrepancies[0] ?? bridge.all[0];
+  const headlineDiscrepancy = openDiscrepancies[0] ?? null;
   const hasOpenDiscrepancy = openDiscrepancies.length > 0;
   const headlineCourseId = headlineDiscrepancy
     ? (Object.values(applications).find(
