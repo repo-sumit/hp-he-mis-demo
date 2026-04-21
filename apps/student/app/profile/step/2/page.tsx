@@ -16,8 +16,10 @@ import { Toggle } from "../../../_components/form/toggle";
 
 type Errors = Record<string, string>;
 
-// HP districts appear first, then key non-HP states. The picker is short enough
-// (<=16 options) to keep a single native <select> per §10.2's dropdown rule.
+// HP districts — the primary admission dataset only covers these twelve.
+// Non-HP domicile students still pick from the same list for now; if they
+// have no matching district they can use "Out of state" via a free-text
+// permanent-address line.
 const HP_DISTRICTS = [
   "Bilaspur",
   "Chamba",
@@ -31,6 +33,74 @@ const HP_DISTRICTS = [
   "Sirmaur",
   "Solan",
   "Una",
+];
+
+// Indian states + UTs with Himachal Pradesh pinned first so domicile
+// students don't have to scroll. Keeps the field auditable (no free text).
+const INDIAN_STATES = [
+  "Himachal Pradesh",
+  "Andhra Pradesh",
+  "Arunachal Pradesh",
+  "Assam",
+  "Bihar",
+  "Chhattisgarh",
+  "Goa",
+  "Gujarat",
+  "Haryana",
+  "Jharkhand",
+  "Karnataka",
+  "Kerala",
+  "Madhya Pradesh",
+  "Maharashtra",
+  "Manipur",
+  "Meghalaya",
+  "Mizoram",
+  "Nagaland",
+  "Odisha",
+  "Punjab",
+  "Rajasthan",
+  "Sikkim",
+  "Tamil Nadu",
+  "Telangana",
+  "Tripura",
+  "Uttar Pradesh",
+  "Uttarakhand",
+  "West Bengal",
+  "Andaman & Nicobar Islands",
+  "Chandigarh",
+  "Dadra & Nagar Haveli and Daman & Diu",
+  "Delhi",
+  "Jammu & Kashmir",
+  "Ladakh",
+  "Lakshadweep",
+  "Puducherry",
+];
+
+// Common HP postal codes surfaced as <datalist> suggestions. Students can
+// still type any 6-digit PIN; the list is just a shortcut. Ordered by
+// district so a Shimla student sees Shimla PINs near the top.
+const HP_PIN_SUGGESTIONS: Array<{ pin: string; label: string }> = [
+  { pin: "171001", label: "Shimla — 171001" },
+  { pin: "171002", label: "Shimla (Chhota Shimla) — 171002" },
+  { pin: "171006", label: "Shimla (Sanjauli) — 171006" },
+  { pin: "172001", label: "Rampur Bushahr — 172001" },
+  { pin: "172107", label: "Reckong Peo (Kinnaur) — 172107" },
+  { pin: "173001", label: "Solan — 173001" },
+  { pin: "173205", label: "Nalagarh (Solan) — 173205" },
+  { pin: "173212", label: "Kandaghat (Solan) — 173212" },
+  { pin: "174001", label: "Bilaspur — 174001" },
+  { pin: "174201", label: "Una — 174201" },
+  { pin: "174306", label: "Nadaun (Hamirpur) — 174306" },
+  { pin: "175001", label: "Mandi — 175001" },
+  { pin: "175101", label: "Kullu — 175101" },
+  { pin: "175125", label: "Manali (Kullu) — 175125" },
+  { pin: "175132", label: "Keylong (Lahaul & Spiti) — 175132" },
+  { pin: "176001", label: "Dharamshala (Kangra) — 176001" },
+  { pin: "176061", label: "Palampur (Kangra) — 176061" },
+  { pin: "176215", label: "Dharamshala (McLeodganj) — 176215" },
+  { pin: "177001", label: "Hamirpur — 177001" },
+  { pin: "177022", label: "Sujanpur Tira — 177022" },
+  { pin: "176310", label: "Chamba — 176310" },
 ];
 
 export default function Step2Page() {
@@ -62,8 +132,19 @@ export default function Step2Page() {
     if (!draft.pincode) e.pincode = t("error.required");
     else if (!/^\d{6}$/.test(draft.pincode.replace(/\s+/g, "")))
       e.pincode = t("error.invalidPincode");
-    if (!draft.correspondenceSame && !draft.correspondenceAddress.trim())
-      e.correspondenceAddress = t("error.required");
+
+    if (!draft.correspondenceSame) {
+      if (!draft.correspondenceAddress.trim())
+        e.correspondenceAddress = t("error.required");
+      if (!draft.correspondenceDistrict)
+        e.correspondenceDistrict = t("error.required");
+      if (!draft.correspondenceState.trim())
+        e.correspondenceState = t("error.required");
+      if (!draft.correspondencePincode)
+        e.correspondencePincode = t("error.required");
+      else if (!/^\d{6}$/.test(draft.correspondencePincode.replace(/\s+/g, "")))
+        e.correspondencePincode = t("error.invalidPincode");
+    }
     return e;
   }
 
@@ -76,6 +157,7 @@ export default function Step2Page() {
   }
 
   const districtOptions = HP_DISTRICTS.map((d) => ({ value: d, label: d }));
+  const stateOptions = INDIAN_STATES.map((s) => ({ value: s, label: s }));
 
   return (
     <PageShell
@@ -86,6 +168,19 @@ export default function Step2Page() {
      <div className="mx-auto w-full max-w-xl">
       <ProfileProgress step={2} />
       <AutosaveHint className="mb-4" />
+
+      {/*
+       * Shared HP PIN suggestions — referenced by `list="hp-pincodes"` on
+       * both the permanent and correspondence PIN inputs. Students can
+       * still type any 6-digit PIN; this just speeds up the common ones.
+       */}
+      <datalist id="hp-pincodes">
+        {HP_PIN_SUGGESTIONS.map((p) => (
+          <option key={p.pin} value={p.pin}>
+            {p.label}
+          </option>
+        ))}
+      </datalist>
 
       <form onSubmit={handleSubmit} noValidate className="space-y-6">
         <section className="space-y-4">
@@ -112,9 +207,12 @@ export default function Step2Page() {
             onChange={(event) => update("district", event.target.value)}
             error={errors.district}
           />
-          <Field
+          <Select
             name="state"
             label={t("field.state.label")}
+            helper={t("field.state.helper")}
+            placeholder={t("field.state.label")}
+            options={stateOptions}
             value={draft.state}
             onChange={(event) => update("state", event.target.value)}
             error={errors.state}
@@ -123,20 +221,16 @@ export default function Step2Page() {
             name="pincode"
             inputMode="numeric"
             autoComplete="postal-code"
+            list="hp-pincodes"
+            maxLength={6}
             label={t("field.pincode.label")}
             helper={t("field.pincode.helper")}
             placeholder={t("field.pincode.placeholder")}
             value={draft.pincode}
-            onChange={(event) => update("pincode", event.target.value)}
-            error={errors.pincode}
-            adornment={
-              <a
-                href="#"
-                className="text-[var(--text-xs)] font-[var(--weight-medium)] text-[var(--color-text-link)]"
-              >
-                {t("field.pincode.finder")}
-              </a>
+            onChange={(event) =>
+              update("pincode", event.target.value.replace(/\D/g, "").slice(0, 6))
             }
+            error={errors.pincode}
           />
         </section>
 
@@ -151,15 +245,57 @@ export default function Step2Page() {
             onChange={(v) => update("correspondenceSame", v)}
           />
           {!draft.correspondenceSame ? (
-            <Textarea
-              name="correspondenceAddress"
-              label={t("field.correspondenceAddress.label")}
-              helper={t("field.correspondenceAddress.helper")}
-              placeholder={t("field.correspondenceAddress.placeholder")}
-              value={draft.correspondenceAddress}
-              onChange={(event) => update("correspondenceAddress", event.target.value)}
-              error={errors.correspondenceAddress}
-            />
+            <>
+              <Textarea
+                name="correspondenceAddress"
+                label={t("field.correspondenceAddress.label")}
+                helper={t("field.correspondenceAddress.helper")}
+                placeholder={t("field.correspondenceAddress.placeholder")}
+                value={draft.correspondenceAddress}
+                onChange={(event) => update("correspondenceAddress", event.target.value)}
+                error={errors.correspondenceAddress}
+              />
+              <Select
+                name="correspondenceDistrict"
+                label={t("field.district.label")}
+                helper={t("field.district.helper")}
+                placeholder={t("field.district.label")}
+                options={districtOptions}
+                value={draft.correspondenceDistrict}
+                onChange={(event) =>
+                  update("correspondenceDistrict", event.target.value)
+                }
+                error={errors.correspondenceDistrict}
+              />
+              <Select
+                name="correspondenceState"
+                label={t("field.state.label")}
+                helper={t("field.state.helper")}
+                placeholder={t("field.state.label")}
+                options={stateOptions}
+                value={draft.correspondenceState}
+                onChange={(event) => update("correspondenceState", event.target.value)}
+                error={errors.correspondenceState}
+              />
+              <Field
+                name="correspondencePincode"
+                inputMode="numeric"
+                autoComplete="postal-code"
+                list="hp-pincodes"
+                maxLength={6}
+                label={t("field.pincode.label")}
+                helper={t("field.pincode.helper")}
+                placeholder={t("field.pincode.placeholder")}
+                value={draft.correspondencePincode}
+                onChange={(event) =>
+                  update(
+                    "correspondencePincode",
+                    event.target.value.replace(/\D/g, "").slice(0, 6),
+                  )
+                }
+                error={errors.correspondencePincode}
+              />
+            </>
           ) : null}
         </section>
 

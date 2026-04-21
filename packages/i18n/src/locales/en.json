@@ -551,6 +551,7 @@
     },
     "state": {
       "label": "State",
+      "helper": "Himachal Pradesh is pinned at the top.",
       "default": "Himachal Pradesh"
     },
     "pincode": {

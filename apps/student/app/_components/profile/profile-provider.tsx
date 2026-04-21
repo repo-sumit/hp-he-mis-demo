@@ -81,6 +81,9 @@ export interface ProfileDraft {
   pincode: string;
   correspondenceSame: boolean;
   correspondenceAddress: string;
+  correspondenceDistrict: string;
+  correspondenceState: string;
+  correspondencePincode: string;
 
   // Step 3 — academic
   board: "" | "hpbose" | "cbse" | "icse" | "nios" | "other";
@@ -127,6 +130,9 @@ const initialDraft: ProfileDraft = {
   pincode: "",
   correspondenceSame: true,
   correspondenceAddress: "",
+  correspondenceDistrict: "",
+  correspondenceState: "Himachal Pradesh",
+  correspondencePincode: "",
   board: "",
   yearOfPassing: "",
   rollNumber: "",
