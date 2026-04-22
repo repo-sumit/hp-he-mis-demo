@@ -29,16 +29,19 @@ export interface FooterProps {
  * Institutional page footer used across the portal and student app.
  *
  * Design-system rhythm:
- *   - Layer: `color/background/surface` (subtle contrast vs page bg)
- *   - Spacing: `space/24` inner, `space/32–48` between top grid + legal strip
- *   - Typography: Label/Small uppercase column headings, Body/Medium links,
- *                 Caption legal strip
+ *   - Layer: `color/background/subtle` (subtle contrast vs page bg)
+ *   - Spacing: py-12 (space/48) mobile, py-16 (space/64) tablet+
+ *   - Typography: Caption SemiBold uppercase column headings, Body/Medium
+ *                 links, Caption legal strip
  *   - Border: 1px `color/border/subtle` at the top only
  *
- * Responsive grid (aligned to `grid/*`):
- *   - Mobile (4 col)  : single column stack
- *   - Tablet (8 col)  : 2 columns → brand | 3 link columns split 2/1
- *   - Desktop (12 col): brand spans 4/12, 3 link columns each 2–3/12
+ * Responsive grid:
+ *   - Mobile (<640px)        : 1 column stack
+ *   - Small (≥640px, sm)     : 2 columns — brand spans both, link groups split
+ *   - Large (≥1024px, lg)    : 4 columns — brand + 3 link columns side-by-side
+ *
+ * Using plain Tailwind grid utilities (not arbitrary minmax/repeat) so the
+ * JIT reliably emits the `grid-template-columns` rule.
  */
 export function Footer({
   brand,
@@ -55,19 +58,11 @@ export function Footer({
         className,
       )}
     >
-      <div className="mx-auto w-full max-w-[var(--content-ultra)] px-4 py-12 md:px-9 md:py-16 lg:px-16">
+      <div className="mx-auto w-full max-w-[var(--content-ultra)] px-6 py-12 sm:px-8 md:py-16 lg:px-16">
         {brand || hasColumns ? (
-          <div
-            className={cn(
-              "grid gap-8 md:gap-12",
-              // Brand on its own row for mobile; brand + N link columns for
-              // ≥tablet. Using a CSS grid so link columns can be flexible
-              // (never go narrower than 160px).
-              "md:grid-cols-[minmax(0,2fr)_repeat(3,minmax(160px,1fr))]",
-            )}
-          >
+          <div className="grid grid-cols-1 gap-10 sm:grid-cols-2 sm:gap-12 lg:grid-cols-4 lg:gap-10">
             {brand ? (
-              <div className="min-w-0 text-[var(--text-sm)] leading-[var(--leading-relaxed)] text-[var(--color-text-secondary)]">
+              <div className="min-w-0 sm:col-span-2 lg:col-span-1 text-[var(--text-sm)] leading-[var(--leading-relaxed)] text-[var(--color-text-secondary)]">
                 {brand}
               </div>
             ) : null}
@@ -83,7 +78,7 @@ export function Footer({
                         href={link.href}
                         target={link.external ? "_blank" : undefined}
                         rel={link.external ? "noreferrer noopener" : undefined}
-                        className="inline-flex items-center gap-1.5 rounded-[var(--radius-sm)] text-[var(--text-sm)] text-[var(--color-text-secondary)] transition-colors hover:text-[var(--color-text-brand)] hover:underline underline-offset-4 focus-visible:outline-none focus-visible:shadow-[var(--focus-ring)]"
+                        className="inline-flex items-center gap-2 rounded-[var(--radius-sm)] text-[var(--text-sm)] text-[var(--color-text-secondary)] transition-colors hover:text-[var(--color-text-brand)] hover:underline underline-offset-4 focus-visible:outline-none focus-visible:shadow-[var(--focus-ring)]"
                       >
                         <span className="truncate">{link.label}</span>
                         {link.external ? (
@@ -101,9 +96,9 @@ export function Footer({
         ) : null}
 
         {note || noteSecondary ? (
-          <div className="mt-12 flex flex-col gap-2 border-t border-[var(--color-border-subtle)] pt-6 sm:flex-row sm:items-center sm:justify-between md:gap-4">
+          <div className="mt-12 flex flex-col gap-3 border-t border-[var(--color-border-subtle)] pt-8 sm:flex-row sm:items-center sm:justify-between sm:gap-6">
             {note ? (
-              <p className="text-[var(--text-xs)] leading-[var(--leading-relaxed)] text-[var(--color-text-tertiary)]">
+              <p className="max-w-3xl text-[var(--text-xs)] leading-[var(--leading-relaxed)] text-[var(--color-text-tertiary)]">
                 {note}
               </p>
             ) : (
