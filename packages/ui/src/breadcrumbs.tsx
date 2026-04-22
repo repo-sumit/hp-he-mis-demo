@@ -40,17 +40,17 @@ export function Breadcrumbs({
         <a
           href={backHref}
           aria-label="Back"
-          className="inline-flex h-8 w-8 flex-none items-center justify-center rounded-[var(--radius-sm)] bg-[var(--color-interactive-brand)] text-[var(--color-text-inverse)] shadow-[var(--shadow-sm)] transition-colors hover:bg-[var(--color-interactive-brand-hover)]"
+          className="inline-flex h-8 w-8 flex-none items-center justify-center rounded-[var(--radius-sm)] bg-[var(--color-interactive-primary)] text-[var(--color-text-on-brand)] shadow-[var(--shadow-sm)] transition-colors hover:bg-[var(--color-interactive-primary-hover)]"
         >
           <span aria-hidden="true">←</span>
         </a>
       ) : null}
-      <ol className="flex min-w-0 flex-wrap items-center gap-1.5 text-[var(--color-text-secondary)]">
+      <ol className="flex min-w-0 flex-wrap items-center gap-2 text-[var(--color-text-secondary)]">
         {items.map((crumb, index) => {
           const isLast = index === items.length - 1;
           const isCurrent = crumb.current ?? isLast;
           return (
-            <li key={index} className="flex min-w-0 items-center gap-1.5">
+            <li key={index} className="flex min-w-0 items-center gap-2">
               {isCurrent || !crumb.href ? (
                 <span
                   aria-current={isCurrent ? "page" : undefined}

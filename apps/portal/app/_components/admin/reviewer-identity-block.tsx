@@ -24,7 +24,7 @@ export function ReviewerIdentityBlock({ className, hint }: Props) {
     >
       <span
         aria-hidden="true"
-        className="flex h-10 w-10 flex-none items-center justify-center rounded-[var(--radius-pill)] bg-[var(--color-interactive-brand)] text-[var(--text-sm)] font-[var(--weight-semibold)] text-[var(--color-text-inverse)]"
+        className="flex h-10 w-10 flex-none items-center justify-center rounded-[var(--radius-pill)] bg-[var(--color-interactive-primary)] text-[var(--text-sm)] font-[var(--weight-semibold)] text-[var(--color-text-on-brand)]"
       >
         {REVIEWER_NAME.split(" ")
           .map((p) => p.charAt(0))

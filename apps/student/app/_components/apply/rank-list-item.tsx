@@ -24,7 +24,7 @@ export function RankListItem({ rank, candidate, canUp, canDown, onUp, onDown, on
   return (
     <div className="flex items-start gap-2">
       <span
-        className="flex h-9 w-9 flex-none items-center justify-center rounded-[var(--radius-md)] bg-[var(--color-interactive-brand)] text-[var(--text-sm)] font-[var(--weight-bold)] text-[var(--color-text-inverse)]"
+        className="flex h-9 w-9 flex-none items-center justify-center rounded-[var(--radius-md)] bg-[var(--color-interactive-primary)] text-[var(--text-sm)] font-[var(--weight-bold)] text-[var(--color-text-on-brand)]"
         aria-label={t("apply.rank.rankBadge", { n: rank })}
       >
         {rank}

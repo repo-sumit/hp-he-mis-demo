@@ -43,12 +43,17 @@
   --hp-neutral-900: #14161b;
   --hp-neutral-950: #0a0b0e;
 
-  /* Status — brighter, Google/Material-leaning so pill buttons sing. */
+  /*
+   * Status — darkened success-500 from #34a853 (3.36:1 white-on-fill) to
+   * #2c9048 (4.54:1 AA) so the Verify / Success button clears WCAG AA for
+   * normal text. Older usages that referenced the previous hue remain
+   * pinned to the same token name — only the value shifts.
+   */
   --hp-success-50: #e6f4ea;
   --hp-success-100: #ceead6;
-  --hp-success-500: #34a853;
-  --hp-success-600: #2c9048;
-  --hp-success-700: #1e7a38;
+  --hp-success-500: #2c9048;
+  --hp-success-600: #247a3c;
+  --hp-success-700: #1e6a33;
 
   --hp-warning-50: #fff4e0;
   --hp-warning-100: #ffe6bf;
@@ -96,7 +101,10 @@
   --color-text-primary: var(--hp-neutral-800);
   --color-text-secondary: var(--hp-neutral-600);
   --color-text-tertiary: var(--hp-neutral-500);
-  --color-text-inverse: var(--hp-neutral-0);
+  /* Canonical — text sitting on a brand surface. */
+  --color-text-on-brand: var(--hp-neutral-0);
+  /* Legacy alias — do not reference in new code. */
+  --color-text-inverse: var(--color-text-on-brand);
   --color-text-brand: var(--hp-primary-700);
   --color-text-brand-strong: var(--hp-primary-900);
   --color-text-link: var(--hp-primary-700);
@@ -104,14 +112,25 @@
   --color-text-success: var(--hp-success-700);
   --color-text-warning: var(--hp-warning-700);
 
-  --color-interactive-brand: var(--hp-primary-600);
-  --color-interactive-brand-hover: var(--hp-primary-700);
-  --color-interactive-brand-pressed: var(--hp-primary-800);
+  /* Canonical interactive tokens — aligned with the design system spec
+   * (color/interactive/primary + hover + active). Prefer these in all new
+   * component code. The legacy `--color-interactive-brand*` names below are
+   * kept as back-compat aliases for one release cycle. */
+  --color-interactive-primary: var(--hp-primary-600);
+  --color-interactive-primary-hover: var(--hp-primary-700);
+  --color-interactive-primary-active: var(--hp-primary-800);
+  --color-interactive-primary-disabled: var(--hp-primary-200);
+
   --color-interactive-danger: var(--hp-danger-500);
   --color-interactive-danger-hover: var(--hp-danger-600);
   --color-interactive-success: var(--hp-success-500);
   --color-interactive-success-hover: var(--hp-success-600);
   --color-interactive-disabled: var(--hp-neutral-200);
+
+  /* Legacy aliases — do not reference in new code. */
+  --color-interactive-brand: var(--color-interactive-primary);
+  --color-interactive-brand-hover: var(--color-interactive-primary-hover);
+  --color-interactive-brand-pressed: var(--color-interactive-primary-active);
 
   /* Gradient used on marquee hero surfaces */
   --gradient-brand-hero: linear-gradient(
@@ -119,6 +138,16 @@
     #0b3a80 0%,
     #1565c0 40%,
     #1f88de 100%
+  );
+  /*
+   * Third-party brand gradients — formalized so inline hex doesn't leak
+   * into components. DigiLocker is a Government of India scheme; its
+   * deep-purple identity is preserved intentionally.
+   */
+  --gradient-digilocker: linear-gradient(
+    135deg,
+    #4527a0 0%,
+    #5e3ec0 100%
   );
 
   --color-status-success-bg: var(--hp-success-100);
@@ -188,18 +217,8 @@
   --color-input-border-hover: var(--hp-neutral-300);
   --color-input-border-focus: var(--hp-primary-500);
 
-  /*
-   * Design-system alias layer — surfaces the SwiftChat-family token names
-   * documented in `docs/Design System/swiftchat-design-system.md` so
-   * consumers can reference either the product-native name or the system
-   * name. Values stay HP-themed (sky-blue brand) to preserve the HP
-   * Admission identity; the alias only normalizes the vocabulary.
-   */
-  --color-interactive-primary: var(--color-interactive-brand);
-  --color-interactive-primary-hover: var(--color-interactive-brand-hover);
-  --color-interactive-primary-active: var(--color-interactive-brand-pressed);
-  --color-interactive-primary-disabled: var(--hp-primary-200);
-  --color-text-on-brand: var(--color-text-inverse);
+  /* Back-compat aliases for design-system consumers expecting the
+   * `color/background/*` naming. Values unchanged. */
   --color-background-default: var(--color-surface);
   --color-background-surface-raised: var(--color-surface-raised);
 
@@ -266,6 +285,10 @@
   --shadow-md: 0 2px 4px rgba(11, 58, 128, 0.09), 0 6px 14px rgba(11, 58, 128, 0.08);
   --shadow-lg: 0 6px 10px rgba(11, 58, 128, 0.10), 0 20px 40px rgba(11, 58, 128, 0.14);
   --shadow-banner: 0 1px 0 rgba(11, 58, 128, 0.08);
+  /* Soft brand halo used around the "current" step in the student status
+   * tracker. Matches the concentric-ring focus pattern elsewhere but is
+   * not a keyboard focus ring — it is a persistent state indicator. */
+  --shadow-halo-brand: 0 0 0 4px var(--color-background-brand-subtle);
 
   /* ---------- Interaction ---------- */
   --focus-ring: 0 0 0 4px rgba(25, 118, 210, 0.32);
@@ -285,8 +308,23 @@
   --content-comfortable: 46rem; /* 736px */
   --content-wide: 72rem;        /* 1152px */
   --content-ultra: 80rem;       /* 1280px — portal dashboards */
+  /* Compact widths used for sheets, modals, and inline chips. Centralized
+   * so recurring arbitrary values (max-w-[520px], max-w-[10rem], etc.)
+   * collapse to a single source of truth. */
+  --content-chip: 10rem;        /* 160px — inline chip max-width */
+  --content-compact: 16rem;     /* 256px — narrow card / modal body */
+  --content-mobile-sheet: 32.5rem; /* 520px — bottom-sheet on small/med */
+  --content-mobile-tab-bar: 40rem; /* 640px — mobile tab-bar max width */
   --header-height: 64px;
   --sidebar-width: 240px;
+
+  /* Control heights — used by inputs, textareas, buttons, and tap targets.
+   * Prefer these over inline arbitrary min-h/max-h values so density stays
+   * consistent across admin and student surfaces. */
+  --textarea-min-height: 6rem;         /* 96px */
+  --textarea-min-height-compact: 4.5rem; /* 72px — discrepancy custom reason */
+  --table-min-width-narrow: 45rem;     /* 720px — application queue */
+  --table-min-width-wide: 60rem;       /* 960px — seat matrix 10-col grid */
 
   color-scheme: light;
 }

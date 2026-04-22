@@ -15,7 +15,7 @@ export function NotificationItem({ title, time, unread }: Props) {
         aria-hidden="true"
         className={cn(
           "mt-1 h-2 w-2 flex-none rounded-full",
-          unread ? "bg-[var(--color-interactive-brand)]" : "bg-[var(--color-border-strong)]",
+          unread ? "bg-[var(--color-interactive-primary)]" : "bg-[var(--color-border-strong)]",
         )}
       />
       <div className="min-w-0 flex-1">

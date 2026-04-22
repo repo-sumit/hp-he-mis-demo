@@ -56,7 +56,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
       aria-invalid={invalid}
       className={cn(
         baseControl,
-        "h-[var(--input-height)] px-3.5",
+        "h-[var(--input-height)] px-4",
         variantClass[variant],
         invalid && invalidClass,
         className,
@@ -125,7 +125,7 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(function 
       aria-invalid={invalid}
       className={cn(
         baseControl,
-        "min-h-[96px] px-3.5 py-2.5 leading-[var(--leading-normal)]",
+        "min-h-[var(--textarea-min-height)] px-4 py-3 leading-[var(--leading-normal)]",
         variantClass[variant],
         invalid && invalidClass,
         className,

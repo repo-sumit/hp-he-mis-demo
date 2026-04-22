@@ -23,7 +23,7 @@ export function BottomTabBar() {
   return (
     <nav
       aria-label={t("nav.home")}
-      className="mx-auto grid max-w-[640px] grid-cols-3 pb-[env(safe-area-inset-bottom)] md:hidden"
+      className="mx-auto grid max-w-[var(--content-mobile-tab-bar)] grid-cols-3 pb-[env(safe-area-inset-bottom)] md:hidden"
     >
       {TABS.map((tab) => {
         const active =

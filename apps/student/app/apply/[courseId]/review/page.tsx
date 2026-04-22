@@ -202,7 +202,7 @@ export default function ReviewPage({ params }: { params: Promise<Params> }) {
                   : candidateCollegeName(candidate);
                 return (
                   <li key={candidate.id} className="flex items-start gap-2">
-                    <span className="flex h-7 w-7 flex-none items-center justify-center rounded-[var(--radius-md)] bg-[var(--color-interactive-brand)] text-[var(--text-xs)] font-[var(--weight-bold)] text-[var(--color-text-inverse)]">
+                    <span className="flex h-7 w-7 flex-none items-center justify-center rounded-[var(--radius-md)] bg-[var(--color-interactive-primary)] text-[var(--text-xs)] font-[var(--weight-bold)] text-[var(--color-text-on-brand)]">
                       {idx + 1}
                     </span>
                     <div className="min-w-0 flex-1">

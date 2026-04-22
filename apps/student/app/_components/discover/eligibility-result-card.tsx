@@ -102,7 +102,7 @@ export function EligibilityResultCard({ result, hideDistrict, hideCollege }: Pro
         {result.state !== "not_eligible" ? (
           <Link
             href={`/apply/${result.courseId}/preferences`}
-            className="inline-flex h-10 items-center justify-center rounded-[var(--radius-md)] bg-[var(--color-interactive-brand)] px-3 text-[var(--text-sm)] font-[var(--weight-semibold)] text-[var(--color-text-inverse)] hover:bg-[var(--color-interactive-brand-hover)]"
+            className="inline-flex h-10 items-center justify-center rounded-[var(--radius-md)] bg-[var(--color-interactive-primary)] px-3 text-[var(--text-sm)] font-[var(--weight-semibold)] text-[var(--color-text-on-brand)] hover:bg-[var(--color-interactive-primary-hover)]"
           >
             {t("cta.startApplication")}
           </Link>

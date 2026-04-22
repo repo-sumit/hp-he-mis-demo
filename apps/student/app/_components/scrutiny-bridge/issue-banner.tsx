@@ -54,8 +54,8 @@ export function IssueBanner({ scope, applicationId, className }: Props) {
           className={cn(
             "flex h-8 w-8 flex-none items-center justify-center rounded-[var(--radius-pill)] text-[var(--text-base)] font-[var(--weight-bold)]",
             awaiting
-              ? "bg-[var(--color-interactive-success)] text-[var(--color-text-inverse)]"
-              : "bg-[var(--color-text-danger)] text-[var(--color-text-inverse)]",
+              ? "bg-[var(--color-interactive-success)] text-[var(--color-text-on-brand)]"
+              : "bg-[var(--color-text-danger)] text-[var(--color-text-on-brand)]",
           )}
         >
           {awaiting ? "✓" : "!"}
@@ -100,7 +100,7 @@ export function IssueBanner({ scope, applicationId, className }: Props) {
             <button
               type="button"
               onClick={() => markStudentAction(disc.applicationId, disc.id)}
-              className="inline-flex h-9 flex-none items-center justify-center rounded-[var(--radius-md)] bg-[var(--color-interactive-brand)] px-3 text-[var(--text-xs)] font-[var(--weight-semibold)] text-[var(--color-text-inverse)] hover:bg-[var(--color-interactive-brand-hover)]"
+              className="inline-flex h-9 flex-none items-center justify-center rounded-[var(--radius-md)] bg-[var(--color-interactive-primary)] px-3 text-[var(--text-xs)] font-[var(--weight-semibold)] text-[var(--color-text-on-brand)] hover:bg-[var(--color-interactive-primary-hover)]"
             >
               {t("cta.markAsUpdated")}
             </button>

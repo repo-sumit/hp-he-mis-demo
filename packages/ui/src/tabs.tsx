@@ -60,7 +60,7 @@ export function Tabs<V extends string = string>({
                 ? cn(
                     "-mb-px h-10 border-b-2 px-4 text-[var(--text-sm)] font-[var(--weight-semibold)]",
                     active
-                      ? "border-[var(--color-interactive-brand)] text-[var(--color-text-brand)]"
+                      ? "border-[var(--color-interactive-primary)] text-[var(--color-text-brand)]"
                       : "border-transparent text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]",
                     tab.disabled && "cursor-not-allowed opacity-55",
                   )

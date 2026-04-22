@@ -141,7 +141,7 @@ export default function Step4Page() {
                     // this page after a successful upload, so they can
                     // move through the checklist without detouring.
                     href={`/documents/upload/${code}?from=claims`}
-                    className="inline-flex h-10 flex-none items-center justify-center rounded-[var(--radius-md)] bg-[var(--color-interactive-brand)] px-4 text-[var(--text-sm)] font-[var(--weight-semibold)] text-[var(--color-text-inverse)] shadow-[var(--shadow-sm)] transition-colors hover:bg-[var(--color-interactive-brand-hover)]"
+                    className="inline-flex h-10 flex-none items-center justify-center rounded-[var(--radius-md)] bg-[var(--color-interactive-primary)] px-4 text-[var(--text-sm)] font-[var(--weight-semibold)] text-[var(--color-text-on-brand)] shadow-[var(--shadow-sm)] transition-colors hover:bg-[var(--color-interactive-primary-hover)]"
                   >
                     {uploaded
                       ? t("cta.replaceDocument")

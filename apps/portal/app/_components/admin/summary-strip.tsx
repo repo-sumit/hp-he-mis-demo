@@ -16,7 +16,7 @@ interface Tile {
  */
 const STRIPE: Record<NonNullable<Tile["tone"]>, string> = {
   default: "bg-[var(--color-border-strong)]",
-  brand: "bg-[var(--color-interactive-brand)]",
+  brand: "bg-[var(--color-interactive-primary)]",
   warning: "bg-[var(--color-interactive-success-hover)] bg-[var(--color-status-warning-fg)]",
   success: "bg-[var(--color-interactive-success)]",
   danger: "bg-[var(--color-interactive-danger)]",

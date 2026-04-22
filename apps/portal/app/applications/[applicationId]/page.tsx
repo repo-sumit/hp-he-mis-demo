@@ -171,7 +171,7 @@ export default function ApplicationDetailPage({ params }: { params: Promise<Para
                     key={pref.rank}
                     className="flex items-start gap-3 rounded-[var(--radius-md)] border border-[var(--color-border)] bg-[var(--color-surface)] p-3"
                   >
-                    <span className="flex h-8 w-8 flex-none items-center justify-center rounded-[var(--radius-md)] bg-[var(--color-interactive-brand)] text-[var(--text-xs)] font-[var(--weight-bold)] text-[var(--color-text-inverse)]">
+                    <span className="flex h-8 w-8 flex-none items-center justify-center rounded-[var(--radius-md)] bg-[var(--color-interactive-primary)] text-[var(--text-xs)] font-[var(--weight-bold)] text-[var(--color-text-on-brand)]">
                       {pref.rank}
                     </span>
                     <div className="min-w-0 flex-1">
@@ -205,7 +205,7 @@ export default function ApplicationDetailPage({ params }: { params: Promise<Para
                 <li key={`${entry.at}-${idx}`} className="flex items-start gap-3">
                   <span
                     aria-hidden="true"
-                    className="mt-1 h-2 w-2 flex-none rounded-full bg-[var(--color-interactive-brand)]"
+                    className="mt-1 h-2 w-2 flex-none rounded-full bg-[var(--color-interactive-primary)]"
                   />
                   <div className="min-w-0 flex-1">
                     <p className="text-[var(--text-sm)] font-[var(--weight-medium)] text-[var(--color-text-primary)]">
@@ -260,13 +260,13 @@ export default function ApplicationDetailPage({ params }: { params: Promise<Para
         </Link>
         <Link
           href={`/applications/${applicationId}/discrepancy`}
-          className="inline-flex h-[var(--button-height)] items-center justify-center gap-1.5 rounded-[var(--radius-pill)] border border-[var(--color-status-warning-fg)] bg-[var(--color-status-warning-bg)] px-5 text-[var(--text-sm)] font-[var(--weight-semibold)] text-[var(--color-status-warning-fg)] transition-colors hover:bg-[var(--color-status-warning-fg)] hover:text-[var(--color-text-inverse)]"
+          className="inline-flex h-[var(--button-height)] items-center justify-center gap-2 rounded-[var(--radius-pill)] border border-[var(--color-status-warning-fg)] bg-[var(--color-status-warning-bg)] px-5 text-[var(--text-sm)] font-[var(--weight-semibold)] text-[var(--color-status-warning-fg)] transition-colors hover:bg-[var(--color-status-warning-fg)] hover:text-[var(--color-text-on-brand)]"
         >
           <span aria-hidden="true">⚠</span> Raise discrepancy
         </Link>
         <Link
           href={`/applications/${applicationId}/scrutiny`}
-          className="inline-flex h-[var(--button-height)] items-center justify-center gap-1.5 rounded-[var(--radius-pill)] bg-[var(--color-interactive-brand)] px-6 text-[var(--text-sm)] font-[var(--weight-semibold)] text-[var(--color-text-inverse)] shadow-[var(--shadow-sm)] transition-[background-color,box-shadow] hover:bg-[var(--color-interactive-brand-hover)] hover:shadow-[var(--shadow-md)]"
+          className="inline-flex h-[var(--button-height)] items-center justify-center gap-2 rounded-[var(--radius-pill)] bg-[var(--color-interactive-primary)] px-6 text-[var(--text-sm)] font-[var(--weight-semibold)] text-[var(--color-text-on-brand)] shadow-[var(--shadow-sm)] transition-[background-color,box-shadow] hover:bg-[var(--color-interactive-primary-hover)] hover:shadow-[var(--shadow-md)]"
         >
           Open scrutiny workbench <span aria-hidden="true">→</span>
         </Link>

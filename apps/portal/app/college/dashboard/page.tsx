@@ -70,7 +70,7 @@ export default function CollegeDashboardPage() {
             <div className="mt-4">
               <Link
                 href="/applications"
-                className="inline-flex h-[var(--button-height)] items-center justify-center gap-1.5 rounded-[var(--radius-pill)] bg-[var(--color-interactive-brand)] px-6 text-[var(--text-sm)] font-[var(--weight-semibold)] text-[var(--color-text-inverse)] shadow-[var(--shadow-sm)] transition-[background-color,box-shadow] hover:bg-[var(--color-interactive-brand-hover)] hover:shadow-[var(--shadow-md)]"
+                className="inline-flex h-[var(--button-height)] items-center justify-center gap-2 rounded-[var(--radius-pill)] bg-[var(--color-interactive-primary)] px-6 text-[var(--text-sm)] font-[var(--weight-semibold)] text-[var(--color-text-on-brand)] shadow-[var(--shadow-sm)] transition-[background-color,box-shadow] hover:bg-[var(--color-interactive-primary-hover)] hover:shadow-[var(--shadow-md)]"
               >
                 Open queue <span aria-hidden="true">→</span>
               </Link>

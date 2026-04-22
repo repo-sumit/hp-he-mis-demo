@@ -15,13 +15,13 @@ export interface IconButtonProps
 
 const tones: Record<Tone, string> = {
   brand:
-    "bg-[var(--color-interactive-brand)] text-[var(--color-text-inverse)] hover:bg-[var(--color-interactive-brand-hover)]",
+    "bg-[var(--color-interactive-primary)] text-[var(--color-text-on-brand)] hover:bg-[var(--color-interactive-primary-hover)]",
   neutral:
     "bg-[var(--color-background-muted)] text-[var(--color-text-secondary)] hover:bg-[var(--color-background-subtle)] hover:text-[var(--color-text-primary)]",
   danger:
-    "bg-[var(--color-interactive-danger)] text-[var(--color-text-inverse)] hover:bg-[var(--color-interactive-danger-hover)]",
+    "bg-[var(--color-interactive-danger)] text-[var(--color-text-on-brand)] hover:bg-[var(--color-interactive-danger-hover)]",
   success:
-    "bg-[var(--color-interactive-success)] text-[var(--color-text-inverse)] hover:bg-[var(--color-interactive-success-hover)]",
+    "bg-[var(--color-interactive-success)] text-[var(--color-text-on-brand)] hover:bg-[var(--color-interactive-success-hover)]",
 };
 
 const sizes: Record<Size, string> = {

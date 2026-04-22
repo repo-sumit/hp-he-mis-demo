@@ -146,7 +146,7 @@ export default function DashboardPage() {
                           aria-hidden="true"
                         >
                           <span
-                            className="block h-full rounded-full bg-[var(--color-interactive-brand)]"
+                            className="block h-full rounded-full bg-[var(--color-interactive-primary)]"
                             style={{ width: `${(row.colleges / maxCollegeCount) * 100}%` }}
                           />
                         </span>

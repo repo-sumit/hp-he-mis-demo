@@ -53,7 +53,7 @@ export function DiscrepancySummaryCard({ courseId, headline, moreCount, classNam
       <div className="flex items-start gap-3">
         <span
           aria-hidden="true"
-          className="flex h-9 w-9 flex-none items-center justify-center rounded-[var(--radius-pill)] bg-[var(--color-text-danger)] text-[var(--text-lg)] font-[var(--weight-bold)] text-[var(--color-text-inverse)]"
+          className="flex h-9 w-9 flex-none items-center justify-center rounded-[var(--radius-pill)] bg-[var(--color-text-danger)] text-[var(--text-lg)] font-[var(--weight-bold)] text-[var(--color-text-on-brand)]"
         >
           !
         </span>
@@ -80,7 +80,7 @@ export function DiscrepancySummaryCard({ courseId, headline, moreCount, classNam
       <div className="mt-4 flex flex-wrap items-center gap-3">
         <Link
           href={ctaHref}
-          className="inline-flex h-11 items-center justify-center rounded-[var(--radius-md)] bg-[var(--color-interactive-brand)] px-4 text-[var(--text-sm)] font-[var(--weight-semibold)] text-[var(--color-text-inverse)] shadow-[var(--shadow-sm)] transition-colors hover:bg-[var(--color-interactive-brand-hover)]"
+          className="inline-flex h-11 items-center justify-center rounded-[var(--radius-md)] bg-[var(--color-interactive-primary)] px-4 text-[var(--text-sm)] font-[var(--weight-semibold)] text-[var(--color-text-on-brand)] shadow-[var(--shadow-sm)] transition-colors hover:bg-[var(--color-interactive-primary-hover)]"
         >
           {ctaLabel}
         </Link>

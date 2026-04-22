@@ -25,7 +25,7 @@ export function SubmissionStatusCard({ className }: Props) {
     >
       <div
         aria-hidden="true"
-        className="mx-auto h-10 w-10 animate-spin rounded-full border-2 border-[var(--color-interactive-brand)] border-t-transparent"
+        className="mx-auto h-10 w-10 animate-spin rounded-full border-2 border-[var(--color-interactive-primary)] border-t-transparent"
       />
       <p className="mt-3 text-[var(--text-lg)] font-[var(--weight-semibold)] text-[var(--color-text-primary)]">
         {t("submit.title")}

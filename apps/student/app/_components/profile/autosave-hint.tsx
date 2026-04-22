@@ -44,7 +44,7 @@ export function AutosaveHint({ className }: { className?: string }) {
     <div
       aria-live="polite"
       className={cn(
-        "inline-flex items-center gap-1.5 rounded-[var(--radius-pill)] bg-[var(--color-background-subtle)] px-2.5 py-1 text-[var(--text-xs)] text-[var(--color-text-secondary)]",
+        "inline-flex items-center gap-2 rounded-[var(--radius-pill)] bg-[var(--color-background-subtle)] px-2.5 py-1 text-[var(--text-xs)] text-[var(--color-text-secondary)]",
         className,
       )}
     >

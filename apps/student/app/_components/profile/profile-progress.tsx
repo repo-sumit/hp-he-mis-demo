@@ -40,7 +40,7 @@ export function ProfileProgress({
       >
         <div
           style={{ width: `${percent}%` }}
-          className="h-full bg-[var(--color-interactive-brand)] transition-[width] duration-300"
+          className="h-full bg-[var(--color-interactive-primary)] transition-[width] duration-300"
         />
       </div>
       <h2 className="mt-5 text-[var(--text-2xl)] font-[var(--weight-bold)] leading-[var(--leading-tight)] tracking-[var(--tracking-tight)] text-[var(--color-text-primary)] sm:text-[var(--text-3xl)]">

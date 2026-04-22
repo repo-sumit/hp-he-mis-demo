@@ -4,7 +4,7 @@ import Link from "next/link";
 import { use, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { notFound } from "next/navigation";
-import { cn } from "@hp-mis/ui";
+import { cn, useToast } from "@hp-mis/ui";
 import type { AllocationEntry } from "@hp-mis/shared-mock";
 import { PageShell } from "../../_components/page-shell";
 import { BottomTabBar } from "../../_components/bottom-tab-bar";
@@ -59,7 +59,7 @@ export default function AllotmentPage({
   } = useAllotmentBridge();
 
   const [declineOpen, setDeclineOpen] = useState(false);
-  const [toast, setToast] = useState<string | null>(null);
+  const { toast } = useToast();
 
   const course = getCourse(courseId);
   if (!course) notFound();
@@ -140,14 +140,14 @@ export default function AllotmentPage({
 
   const onFloat = () => {
     setResponse(courseId, "float");
-    setToast(t("student.allotment.toastFloat"));
+    toast(t("student.allotment.toastFloat"), { tone: "success" });
     window.setTimeout(() => router.push("/dashboard"), 900);
   };
 
   const onDeclineConfirmed = () => {
     setDeclineOpen(false);
     setResponse(courseId, "decline");
-    setToast(t("student.allotment.toastDecline"));
+    toast(t("student.allotment.toastDecline"), { tone: "info" });
     window.setTimeout(() => router.push("/dashboard"), 900);
   };
 
@@ -164,7 +164,7 @@ export default function AllotmentPage({
         <div className="flex items-start gap-3">
           <span
             aria-hidden="true"
-            className="flex h-11 w-11 flex-none items-center justify-center rounded-[var(--radius-pill)] bg-[var(--color-interactive-brand)] text-[var(--text-xl)]"
+            className="flex h-11 w-11 flex-none items-center justify-center rounded-[var(--radius-pill)] bg-[var(--color-interactive-primary)] text-[var(--text-xl)]"
           >
             🎉
           </span>
@@ -174,7 +174,7 @@ export default function AllotmentPage({
                 ? t("student.allotment.heroTitle", { name: firstName })
                 : "Congratulations!"}
             </h2>
-            <p className="mt-1.5 text-[var(--text-sm)] leading-[var(--leading-relaxed)] text-[var(--color-text-primary)] sm:text-[var(--text-base)]">
+            <p className="mt-2 text-[var(--text-sm)] leading-[var(--leading-relaxed)] text-[var(--color-text-primary)] sm:text-[var(--text-base)]">
               {t("student.allotment.heroBody", {
                 course: course.code,
                 college: allocation.offer.collegeName,
@@ -315,16 +315,6 @@ export default function AllotmentPage({
           <PrimaryLink href="/dashboard" variant="secondary">
             {t("cta.backToDashboard")}
           </PrimaryLink>
-        </div>
-      ) : null}
-
-      {toast ? (
-        <div
-          role="status"
-          aria-live="polite"
-          className="fixed bottom-24 left-1/2 z-40 -translate-x-1/2 rounded-[var(--radius-md)] bg-[var(--color-text-primary)] px-4 py-2 text-[var(--text-sm)] font-[var(--weight-medium)] text-[var(--color-text-inverse)] shadow-[var(--shadow-lg)]"
-        >
-          ✓ {toast}
         </div>
       ) : null}
 

@@ -59,7 +59,7 @@ export function DocumentChecklistItem({ item, entry }: Props) {
           <p className="mt-0.5 text-[var(--text-xs)] text-[var(--color-text-secondary)]">
             {t(`document.description.${rule.code}`)}
           </p>
-          <div className="mt-2 flex flex-wrap items-center gap-1.5">
+          <div className="mt-2 flex flex-wrap items-center gap-2">
             <span className="inline-flex items-center rounded-[var(--radius-pill)] border border-[var(--color-border)] bg-[var(--color-background-subtle)] px-2 py-0.5 text-[var(--text-xs)] font-[var(--weight-medium)] text-[var(--color-text-secondary)]">
               {t(badgeKey)}
             </span>
@@ -95,10 +95,10 @@ export function DocumentChecklistItem({ item, entry }: Props) {
           className={cn(
             "inline-flex h-11 items-center justify-center rounded-[var(--radius-md)] px-4 text-[var(--text-sm)] font-[var(--weight-semibold)]",
             needsAction
-              ? "bg-[var(--color-interactive-danger)] text-[var(--color-text-inverse)]"
+              ? "bg-[var(--color-interactive-danger)] text-[var(--color-text-on-brand)]"
               : isDone
                 ? "border border-[var(--color-border-strong)] bg-[var(--color-surface)] text-[var(--color-text-primary)]"
-                : "bg-[var(--color-interactive-brand)] text-[var(--color-text-inverse)]",
+                : "bg-[var(--color-interactive-primary)] text-[var(--color-text-on-brand)]",
           )}
         >
           {ctaLabel}

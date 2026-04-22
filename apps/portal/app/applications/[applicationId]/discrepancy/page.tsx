@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { notFound, useRouter, useSearchParams } from "next/navigation";
 import { use, useMemo, useState } from "react";
-import { Badge, Button, Input, Select, Textarea } from "@hp-mis/ui";
+import { Badge, Button, Input, SegmentedOptions, Select, Textarea, type SegmentedOption } from "@hp-mis/ui";
 import { PortalFrame } from "../../../_components/portal-frame";
 import { ApplicationSummaryHeader } from "../../../_components/admin/application-summary-header";
 import { ReviewSectionCard } from "../../../_components/admin/review-section-card";
@@ -23,7 +23,7 @@ import {
 
 type Params = { applicationId: string };
 
-const SCOPE_OPTIONS: Array<{ value: DiscrepancyScope; label: string; hint: string }> = [
+const SCOPE_OPTIONS: readonly SegmentedOption<DiscrepancyScope>[] = [
   {
     value: "personal",
     label: "Personal details",
@@ -151,48 +151,19 @@ export default function DiscrepancyPage({ params }: { params: Promise<Params> })
             title="Which area is the problem in?"
             description="Pick the closest match — the student's action card will open the right screen for them."
           >
-            <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
-              {SCOPE_OPTIONS.map((opt) => {
-                const active = opt.value === scope;
-                return (
-                  <button
-                    key={opt.value}
-                    type="button"
-                    onClick={() => setScope(opt.value)}
-                    aria-pressed={active}
-                    className={`flex min-h-[60px] items-start gap-3 rounded-[var(--radius-md)] border px-3 py-2.5 text-left transition-colors focus-visible:outline-none focus-visible:shadow-[var(--focus-ring)] ${
-                      active
-                        ? "border-[var(--color-border-brand)] bg-[var(--color-background-brand-subtle)]"
-                        : "border-[var(--color-border-strong)] bg-[var(--color-surface)] hover:bg-[var(--color-background-subtle)]"
-                    }`}
-                  >
-                    <span
-                      aria-hidden="true"
-                      className={`mt-1 flex h-4 w-4 flex-none items-center justify-center rounded-full border-2 ${
-                        active
-                          ? "border-[var(--color-interactive-brand)] bg-[var(--color-interactive-brand)] text-[var(--color-text-inverse)]"
-                          : "border-[var(--color-border-strong)]"
-                      }`}
-                    >
-                      {active ? "•" : ""}
-                    </span>
-                    <span className="min-w-0 flex-1">
-                      <span className="block text-[var(--text-sm)] font-[var(--weight-semibold)] text-[var(--color-text-primary)]">
-                        {opt.label}
-                      </span>
-                      <span className="block text-[var(--text-xs)] text-[var(--color-text-secondary)]">
-                        {opt.hint}
-                      </span>
-                    </span>
-                  </button>
-                );
-              })}
-            </div>
+            <SegmentedOptions
+              value={scope}
+              onChange={setScope}
+              options={SCOPE_OPTIONS}
+              layout="stack"
+              columns={2}
+              ariaLabel="Discrepancy scope"
+            />
           </ReviewSectionCard>
 
           {scope === "document" ? (
             <ReviewSectionCard title="Which document?">
-              <label className="flex flex-col gap-1.5">
+              <label className="flex flex-col gap-2">
                 <span className={FIELD_LABEL_CLASS}>Document</span>
                 <Select
                   variant="filled"
@@ -213,7 +184,7 @@ export default function DiscrepancyPage({ params }: { params: Promise<Params> })
             title="Reason"
             description="Start from a template so the student sees a clear Hindi + English message, or write a custom reason."
           >
-            <label className="flex flex-col gap-1.5">
+            <label className="flex flex-col gap-2">
               <span className={FIELD_LABEL_CLASS}>Template</span>
               <Select
                 variant="filled"
@@ -231,17 +202,17 @@ export default function DiscrepancyPage({ params }: { params: Promise<Params> })
 
             {templateId === "__custom__" ? (
               <div className="mt-3 space-y-3">
-                <label className="flex flex-col gap-1.5">
+                <label className="flex flex-col gap-2">
                   <span className={FIELD_LABEL_CLASS}>English</span>
                   <Textarea
                     variant="filled"
                     value={customReasonEn}
                     onChange={(event) => setCustomReasonEn(event.target.value)}
                     rows={2}
-                    className="min-h-[72px]"
+                    className="min-h-[var(--textarea-min-height-compact)]"
                   />
                 </label>
-                <label className="flex flex-col gap-1.5">
+                <label className="flex flex-col gap-2">
                   <span className={FIELD_LABEL_CLASS}>हिन्दी</span>
                   <Textarea
                     variant="filled"
@@ -249,13 +220,13 @@ export default function DiscrepancyPage({ params }: { params: Promise<Params> })
                     onChange={(event) => setCustomReasonHi(event.target.value)}
                     rows={2}
                     lang="hi"
-                    className="min-h-[72px] leading-[var(--leading-devanagari)]"
+                    className="min-h-[var(--textarea-min-height-compact)] leading-[var(--leading-devanagari)]"
                   />
                 </label>
               </div>
             ) : null}
 
-            <label className="mt-4 flex flex-col gap-1.5">
+            <label className="mt-4 flex flex-col gap-2">
               <span className={FIELD_LABEL_CLASS}>
                 Deadline (shown to the student exactly as written)
               </span>

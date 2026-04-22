@@ -41,7 +41,7 @@ export function ReadinessChecklist({ readiness, courseId, className }: Props) {
         <p className="flex items-center gap-2 text-[var(--text-sm)] font-[var(--weight-semibold)] text-[var(--color-status-success-fg)]">
           <span
             aria-hidden="true"
-            className="flex h-5 w-5 items-center justify-center rounded-full bg-[var(--color-interactive-success)] text-[var(--color-text-inverse)]"
+            className="flex h-5 w-5 items-center justify-center rounded-full bg-[var(--color-interactive-success)] text-[var(--color-text-on-brand)]"
           >
             ✓
           </span>
@@ -104,7 +104,7 @@ export function ReadinessChecklist({ readiness, courseId, className }: Props) {
           <li key={row.key} className="flex items-start gap-2 text-[var(--text-sm)]">
             <span
               aria-hidden="true"
-              className="mt-0.5 flex h-5 w-5 flex-none items-center justify-center rounded-full bg-[var(--color-text-danger)] text-[var(--text-xs)] font-[var(--weight-bold)] text-[var(--color-text-inverse)]"
+              className="mt-0.5 flex h-5 w-5 flex-none items-center justify-center rounded-full bg-[var(--color-text-danger)] text-[var(--text-xs)] font-[var(--weight-bold)] text-[var(--color-text-on-brand)]"
             >
               !
             </span>

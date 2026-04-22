@@ -208,7 +208,7 @@ export default function UploadPage({ params }: { params: Promise<Params> }) {
           className={cn(
             "rounded-[var(--radius-lg)] border border-dashed p-4 text-[var(--text-sm)]",
             picked
-              ? "border-[var(--color-interactive-brand)] bg-[var(--color-background-brand-softer)] text-[var(--color-text-primary)]"
+              ? "border-[var(--color-interactive-primary)] bg-[var(--color-background-brand-softer)] text-[var(--color-text-primary)]"
               : "border-[var(--color-border-strong)] bg-[var(--color-background-subtle)] text-[var(--color-text-tertiary)]",
           )}
         >

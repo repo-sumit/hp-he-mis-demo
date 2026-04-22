@@ -37,7 +37,7 @@ export function NextActionCard({
       <div className="flex items-start gap-3">
         <span
           aria-hidden="true"
-          className="flex h-10 w-10 flex-none items-center justify-center rounded-[var(--radius-pill)] bg-[var(--color-interactive-brand)] text-[var(--color-text-inverse)] shadow-[var(--shadow-sm)]"
+          className="flex h-10 w-10 flex-none items-center justify-center rounded-[var(--radius-pill)] bg-[var(--color-interactive-primary)] text-[var(--color-text-on-brand)] shadow-[var(--shadow-sm)]"
         >
           {icon ?? "→"}
         </span>
@@ -45,11 +45,11 @@ export function NextActionCard({
           <p className="text-[var(--text-base)] font-[var(--weight-semibold)] leading-[var(--leading-snug)] text-[var(--color-text-primary)]">
             {title}
           </p>
-          <p className="mt-1.5 text-[var(--text-sm)] leading-[var(--leading-relaxed)] text-[var(--color-text-secondary)]">
+          <p className="mt-2 text-[var(--text-sm)] leading-[var(--leading-relaxed)] text-[var(--color-text-secondary)]">
             {body}
           </p>
           {deadline ? (
-            <p className="mt-2.5 text-[var(--text-xs)] font-[var(--weight-semibold)] text-[var(--color-text-brand)]">
+            <p className="mt-3 text-[var(--text-xs)] font-[var(--weight-semibold)] text-[var(--color-text-brand)]">
               {deadline}
             </p>
           ) : null}
@@ -60,10 +60,10 @@ export function NextActionCard({
           ) : null}
           <Link
             href={href}
-            className="mt-4 inline-flex h-11 items-center justify-center rounded-[var(--radius-md)] bg-[var(--color-interactive-brand)] px-5 text-[var(--text-sm)] font-[var(--weight-semibold)] text-[var(--color-text-inverse)] shadow-[var(--shadow-sm)] transition-colors hover:bg-[var(--color-interactive-brand-hover)]"
+            className="mt-4 inline-flex h-11 items-center justify-center rounded-[var(--radius-md)] bg-[var(--color-interactive-primary)] px-5 text-[var(--text-sm)] font-[var(--weight-semibold)] text-[var(--color-text-on-brand)] shadow-[var(--shadow-sm)] transition-colors hover:bg-[var(--color-interactive-primary-hover)]"
           >
             {cta}
-            <span aria-hidden="true" className="ml-1.5">→</span>
+            <span aria-hidden="true" className="ml-2">→</span>
           </Link>
         </div>
       </div>

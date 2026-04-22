@@ -10,8 +10,7 @@ import { ProfileProgress } from "../../../_components/profile/profile-progress";
 import { AutosaveHint } from "../../../_components/profile/autosave-hint";
 import { useProfile } from "../../../_components/profile/profile-provider";
 import { useReviewReturn } from "../../../_components/profile/use-review-return";
-import { Select } from "../../../_components/form/select";
-import { Textarea } from "../../../_components/form/textarea";
+import { FieldGroup, Select, Textarea } from "@hp-mis/ui";
 import { Toggle } from "../../../_components/form/toggle";
 
 type Errors = Record<string, string>;
@@ -187,36 +186,55 @@ export default function Step2Page() {
           <h3 className="text-[var(--text-xs)] font-[var(--weight-semibold)] uppercase tracking-wide text-[var(--color-text-tertiary)]">
             {t("profile.step2.permanentSection")}
           </h3>
-          <Textarea
-            name="permanentAddress"
+          <FieldGroup
             label={t("field.permanentAddress.label")}
             helper={t("field.permanentAddress.helper")}
-            placeholder={t("field.permanentAddress.placeholder")}
-            value={draft.permanentAddress}
-            onChange={(event) => update("permanentAddress", event.target.value)}
             error={errors.permanentAddress}
-            autoComplete="street-address"
-          />
-          <Select
-            name="state"
+          >
+            <Textarea
+              name="permanentAddress"
+              placeholder={t("field.permanentAddress.placeholder")}
+              value={draft.permanentAddress}
+              onChange={(event) => update("permanentAddress", event.target.value)}
+              autoComplete="street-address"
+            />
+          </FieldGroup>
+          <FieldGroup
             label={t("field.state.label")}
             helper={t("field.state.helper")}
-            placeholder={t("field.state.label")}
-            options={stateOptions}
-            value={draft.state}
-            onChange={(event) => update("state", event.target.value)}
             error={errors.state}
-          />
-          <Select
-            name="district"
+          >
+            <Select
+              name="state"
+              placeholder={t("field.state.label")}
+              value={draft.state}
+              onChange={(event) => update("state", event.target.value)}
+            >
+              {stateOptions.map((opt) => (
+                <option key={opt.value} value={opt.value}>
+                  {opt.label}
+                </option>
+              ))}
+            </Select>
+          </FieldGroup>
+          <FieldGroup
             label={t("field.district.label")}
             helper={t("field.district.helper")}
-            placeholder={t("field.district.label")}
-            options={districtOptions}
-            value={draft.district}
-            onChange={(event) => update("district", event.target.value)}
             error={errors.district}
-          />
+          >
+            <Select
+              name="district"
+              placeholder={t("field.district.label")}
+              value={draft.district}
+              onChange={(event) => update("district", event.target.value)}
+            >
+              {districtOptions.map((opt) => (
+                <option key={opt.value} value={opt.value}>
+                  {opt.label}
+                </option>
+              ))}
+            </Select>
+          </FieldGroup>
           <Field
             name="pincode"
             inputMode="numeric"
@@ -246,37 +264,60 @@ export default function Step2Page() {
           />
           {!draft.correspondenceSame ? (
             <>
-              <Textarea
-                name="correspondenceAddress"
+              <FieldGroup
                 label={t("field.correspondenceAddress.label")}
                 helper={t("field.correspondenceAddress.helper")}
-                placeholder={t("field.correspondenceAddress.placeholder")}
-                value={draft.correspondenceAddress}
-                onChange={(event) => update("correspondenceAddress", event.target.value)}
                 error={errors.correspondenceAddress}
-              />
-              <Select
-                name="correspondenceState"
+              >
+                <Textarea
+                  name="correspondenceAddress"
+                  placeholder={t("field.correspondenceAddress.placeholder")}
+                  value={draft.correspondenceAddress}
+                  onChange={(event) =>
+                    update("correspondenceAddress", event.target.value)
+                  }
+                />
+              </FieldGroup>
+              <FieldGroup
                 label={t("field.state.label")}
                 helper={t("field.state.helper")}
-                placeholder={t("field.state.label")}
-                options={stateOptions}
-                value={draft.correspondenceState}
-                onChange={(event) => update("correspondenceState", event.target.value)}
                 error={errors.correspondenceState}
-              />
-              <Select
-                name="correspondenceDistrict"
+              >
+                <Select
+                  name="correspondenceState"
+                  placeholder={t("field.state.label")}
+                  value={draft.correspondenceState}
+                  onChange={(event) =>
+                    update("correspondenceState", event.target.value)
+                  }
+                >
+                  {stateOptions.map((opt) => (
+                    <option key={opt.value} value={opt.value}>
+                      {opt.label}
+                    </option>
+                  ))}
+                </Select>
+              </FieldGroup>
+              <FieldGroup
                 label={t("field.district.label")}
                 helper={t("field.district.helper")}
-                placeholder={t("field.district.label")}
-                options={districtOptions}
-                value={draft.correspondenceDistrict}
-                onChange={(event) =>
-                  update("correspondenceDistrict", event.target.value)
-                }
                 error={errors.correspondenceDistrict}
-              />
+              >
+                <Select
+                  name="correspondenceDistrict"
+                  placeholder={t("field.district.label")}
+                  value={draft.correspondenceDistrict}
+                  onChange={(event) =>
+                    update("correspondenceDistrict", event.target.value)
+                  }
+                >
+                  {districtOptions.map((opt) => (
+                    <option key={opt.value} value={opt.value}>
+                      {opt.label}
+                    </option>
+                  ))}
+                </Select>
+              </FieldGroup>
               <Field
                 name="correspondencePincode"
                 inputMode="numeric"

@@ -15,6 +15,7 @@ import {
   TH,
   THead,
   TR,
+  useToast,
 } from "@hp-mis/ui";
 import {
   MERIT_STORAGE_KEY,
@@ -86,7 +87,7 @@ export default function MeritCompilationPage() {
   const { effectiveStatus, hydrated: scrutinyHydrated } = useScrutiny();
 
   const [map, setMap] = useState<MeritOverlayMap>({});
-  const [toast, setToast] = useState<string | null>(null);
+  const { toast } = useToast();
 
   useEffect(() => {
     // Hydration read from localStorage — synchronous setState here is the
@@ -104,12 +105,6 @@ export default function MeritCompilationPage() {
     window.addEventListener("storage", onStorage);
     return () => window.removeEventListener("storage", onStorage);
   }, []);
-
-  useEffect(() => {
-    if (!toast) return;
-    const timer = window.setTimeout(() => setToast(null), 3500);
-    return () => window.clearTimeout(timer);
-  }, [toast]);
 
   const buckets = useMemo(() => {
     if (!scrutinyHydrated) return [];
@@ -153,9 +148,11 @@ export default function MeritCompilationPage() {
       const updated = { ...map, [bucket.courseId]: next };
       setMap(updated);
       persistMeritMap(updated);
-      setToast(t("portal.merit.toastPublished", { course: bucket.courseCode }));
+      toast(t("portal.merit.toastPublished", { course: bucket.courseCode }), {
+        tone: "success",
+      });
     },
-    [map, session.name],
+    [map, session.name, toast],
   );
 
   // Non-state-admin roles get a polite block rather than a 403 — lets the
@@ -231,15 +228,6 @@ export default function MeritCompilationPage() {
         })}
       </div>
 
-      {toast ? (
-        <div
-          role="status"
-          aria-live="polite"
-          className="fixed bottom-6 left-1/2 z-50 -translate-x-1/2 rounded-[var(--radius-md)] bg-[var(--color-text-primary)] px-4 py-2 text-[var(--text-sm)] font-[var(--weight-medium)] text-[var(--color-text-inverse)] shadow-[var(--shadow-lg)]"
-        >
-          ✓ {toast}
-        </div>
-      ) : null}
     </PortalFrame>
   );
 }

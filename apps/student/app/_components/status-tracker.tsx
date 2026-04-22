@@ -42,9 +42,9 @@ export function StatusTracker({ currentStep }: { currentStep: StatusStep }) {
               className={cn(
                 "flex h-8 w-8 items-center justify-center rounded-full border text-xs font-semibold transition-colors",
                 state === "done" &&
-                  "border-[var(--color-interactive-brand)] bg-[var(--color-interactive-brand)] text-[var(--color-text-inverse)] shadow-[var(--shadow-sm)]",
+                  "border-[var(--color-interactive-primary)] bg-[var(--color-interactive-primary)] text-[var(--color-text-on-brand)] shadow-[var(--shadow-sm)]",
                 state === "current" &&
-                  "border-[var(--color-interactive-brand)] bg-[var(--color-surface)] text-[var(--color-text-brand)] shadow-[0_0_0_4px_var(--color-background-brand-subtle)]",
+                  "border-[var(--color-interactive-primary)] bg-[var(--color-surface)] text-[var(--color-text-brand)] shadow-[var(--shadow-halo-brand)]",
                 state === "upcoming" &&
                   "border-[var(--color-border)] bg-[var(--color-surface)] text-[var(--color-text-tertiary)]",
               )}
@@ -53,7 +53,7 @@ export function StatusTracker({ currentStep }: { currentStep: StatusStep }) {
             </span>
             <span
               className={cn(
-                "mt-1.5 text-[10px] sm:text-[11px]",
+                "mt-2 text-[10px] sm:text-[11px]",
                 state === "upcoming"
                   ? "text-[var(--color-text-tertiary)]"
                   : "text-[var(--color-text-secondary)]",

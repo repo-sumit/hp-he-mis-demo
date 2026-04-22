@@ -27,13 +27,13 @@ export function StepProgress({ step, className }: { step: Step; className?: stri
       <div className="mt-1 flex gap-1">
         <span
           aria-hidden="true"
-          className="h-1.5 flex-1 rounded-[var(--radius-pill)] bg-[var(--color-interactive-brand)]"
+          className="h-1.5 flex-1 rounded-[var(--radius-pill)] bg-[var(--color-interactive-primary)]"
         />
         <span
           aria-hidden="true"
           className={cn(
             "h-1.5 flex-1 rounded-[var(--radius-pill)]",
-            step === 2 ? "bg-[var(--color-interactive-brand)]" : "bg-[var(--color-background-muted)]",
+            step === 2 ? "bg-[var(--color-interactive-primary)]" : "bg-[var(--color-background-muted)]",
           )}
         />
       </div>

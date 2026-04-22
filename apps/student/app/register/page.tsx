@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState, type FormEvent } from "react";
+import { Checkbox } from "@hp-mis/ui";
 import { PageShell } from "../_components/page-shell";
 import { Field } from "../_components/field";
 import { PrimaryButton } from "../_components/primary-button";
@@ -124,18 +125,14 @@ export default function RegisterPage() {
           error={errors.confirmPassword}
         />
 
-        <label className="mt-2 flex cursor-pointer items-start gap-3 rounded-[var(--radius-lg)] border border-[var(--color-border)] bg-[var(--color-background-subtle)] p-3">
-          <input
-            type="checkbox"
+        <div className="mt-2 rounded-[var(--radius-lg)] border border-[var(--color-border)] bg-[var(--color-background-subtle)] p-4">
+          <Checkbox
             checked={accepted}
             onChange={(event) => setAccepted(event.target.checked)}
-            className="mt-1 h-5 w-5 flex-none accent-[var(--color-interactive-brand)]"
             aria-describedby="declaration-error"
+            label={t("screen.register.declaration")}
           />
-          <span className="text-[var(--text-sm)] leading-[var(--leading-relaxed)] text-[var(--color-text-primary)]">
-            {t("screen.register.declaration")}
-          </span>
-        </label>
+        </div>
         {errors.declaration ? (
           <p
             id="declaration-error"

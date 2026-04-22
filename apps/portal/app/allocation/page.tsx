@@ -16,6 +16,7 @@ import {
   THead,
   TR,
   cn,
+  useToast,
 } from "@hp-mis/ui";
 import {
   ALLOCATION_STORAGE_KEY,
@@ -175,7 +176,7 @@ export default function SeatAllocationPage() {
 
   const [meritMap, setMeritMap] = useState<MeritOverlayMap>({});
   const [allocationMap, setAllocationMap] = useState<AllocationOverlayMap>({});
-  const [toast, setToast] = useState<string | null>(null);
+  const { toast } = useToast();
 
   useEffect(() => {
     // Hydration read from localStorage — synchronous setState here is the
@@ -196,12 +197,6 @@ export default function SeatAllocationPage() {
     window.addEventListener("storage", onStorage);
     return () => window.removeEventListener("storage", onStorage);
   }, []);
-
-  useEffect(() => {
-    if (!toast) return;
-    const timer = window.setTimeout(() => setToast(null), 3500);
-    return () => window.clearTimeout(timer);
-  }, [toast]);
 
   const rows = useMemo(() => buildCourseRows(), []);
 
@@ -230,9 +225,11 @@ export default function SeatAllocationPage() {
       const updated = { ...allocationMap, [row.courseId]: overlay };
       setAllocationMap(updated);
       persistAllocationMap(updated);
-      setToast(t("portal.allocation.toastRun", { course: row.courseCode }));
+      toast(t("portal.allocation.toastRun", { course: row.courseCode }), {
+        tone: "success",
+      });
     },
-    [meritMap, allocationMap, session.name],
+    [meritMap, allocationMap, session.name, toast],
   );
 
   if (sessionHydrated && session.role !== "state_admin") {
@@ -318,15 +315,6 @@ export default function SeatAllocationPage() {
         })}
       </div>
 
-      {toast ? (
-        <div
-          role="status"
-          aria-live="polite"
-          className="fixed bottom-6 left-1/2 z-50 -translate-x-1/2 rounded-[var(--radius-md)] bg-[var(--color-text-primary)] px-4 py-2 text-[var(--text-sm)] font-[var(--weight-medium)] text-[var(--color-text-inverse)] shadow-[var(--shadow-lg)]"
-        >
-          ✓ {toast}
-        </div>
-      ) : null}
     </PortalFrame>
   );
 }

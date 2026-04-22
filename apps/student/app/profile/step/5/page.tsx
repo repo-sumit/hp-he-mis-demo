@@ -94,7 +94,7 @@ export default function Step5Page() {
       <section className="mb-5 flex items-start gap-3 rounded-[var(--radius-lg)] border border-[var(--color-interactive-success)] bg-[var(--color-status-success-bg)] p-4">
         <span
           aria-hidden="true"
-          className="flex h-8 w-8 flex-none items-center justify-center rounded-[var(--radius-pill)] bg-[var(--color-interactive-success)] text-[var(--color-text-inverse)]"
+          className="flex h-8 w-8 flex-none items-center justify-center rounded-[var(--radius-pill)] bg-[var(--color-interactive-success)] text-[var(--color-text-on-brand)]"
         >
           ✓
         </span>

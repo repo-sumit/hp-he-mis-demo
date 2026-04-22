@@ -38,7 +38,7 @@ export function RadioCards({
   // regular inputs.
   const anchorId = name ? `field-${name}` : groupId;
   return (
-    <div className="flex flex-col gap-1.5">
+    <div className="flex flex-col gap-2">
       <span
         id={groupId}
         className="text-[var(--text-sm)] font-[var(--weight-medium)] text-[var(--color-text-primary)]"
@@ -61,7 +61,7 @@ export function RadioCards({
             <label
               key={opt.value}
               className={cn(
-                "flex min-h-[52px] cursor-pointer items-center gap-3 rounded-[var(--radius-md)] border px-3 py-2.5 transition-colors",
+                "flex min-h-[var(--tap-target-min)] cursor-pointer items-center gap-3 rounded-[var(--radius-md)] border px-3 py-3 transition-colors",
                 active
                   ? "border-[var(--color-border-brand)] bg-[var(--color-background-brand-subtle)]"
                   : "border-[var(--color-border-strong)] bg-[var(--color-surface)] hover:bg-[var(--color-background-subtle)]",
@@ -73,7 +73,7 @@ export function RadioCards({
                 value={opt.value}
                 checked={active}
                 onChange={() => onChange(opt.value)}
-                className="h-5 w-5 flex-none accent-[var(--color-interactive-brand)]"
+                className="h-5 w-5 flex-none accent-[var(--color-interactive-primary)]"
               />
               <span className="min-w-0 flex-1">
                 <span className="block text-[var(--text-sm)] font-[var(--weight-medium)] text-[var(--color-text-primary)]">

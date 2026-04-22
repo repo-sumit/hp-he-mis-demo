@@ -95,7 +95,7 @@ export default function ApplicationsListPage() {
           </p>
           <Link
             href="/discover"
-            className="mt-4 inline-flex h-11 items-center justify-center rounded-[var(--radius-md)] bg-[var(--color-interactive-brand)] px-4 text-[var(--text-sm)] font-[var(--weight-semibold)] text-[var(--color-text-inverse)] hover:bg-[var(--color-interactive-brand-hover)]"
+            className="mt-4 inline-flex h-11 items-center justify-center rounded-[var(--radius-md)] bg-[var(--color-interactive-primary)] px-4 text-[var(--text-sm)] font-[var(--weight-semibold)] text-[var(--color-text-on-brand)] hover:bg-[var(--color-interactive-primary-hover)]"
           >
             {t("cta.exploreCourses")}
           </Link>
@@ -200,7 +200,7 @@ export default function ApplicationsListPage() {
                 </dl>
 
                 {submitted ? (
-                  <div className="mt-2 inline-flex items-center gap-1.5 rounded-[var(--radius-pill)] bg-[var(--color-status-success-bg)] px-2.5 py-0.5 text-[var(--text-xs)] font-[var(--weight-semibold)] text-[var(--color-status-success-fg)]">
+                  <div className="mt-2 inline-flex items-center gap-2 rounded-[var(--radius-pill)] bg-[var(--color-status-success-bg)] px-2.5 py-0.5 text-[var(--text-xs)] font-[var(--weight-semibold)] text-[var(--color-status-success-fg)]">
                     <span aria-hidden="true">✓</span>
                     {t("apply.myApps.feePaid", {
                       amount: feeFor(row.courseId),
@@ -220,7 +220,7 @@ export default function ApplicationsListPage() {
                     className={cn(
                       "inline-flex h-10 items-center justify-center rounded-[var(--radius-md)] px-4 text-[var(--text-sm)] font-[var(--weight-semibold)]",
                       issueCount > 0 || !submitted
-                        ? "bg-[var(--color-interactive-brand)] text-[var(--color-text-inverse)]"
+                        ? "bg-[var(--color-interactive-primary)] text-[var(--color-text-on-brand)]"
                         : "border border-[var(--color-border-strong)] bg-[var(--color-surface)] text-[var(--color-text-primary)]",
                     )}
                   >

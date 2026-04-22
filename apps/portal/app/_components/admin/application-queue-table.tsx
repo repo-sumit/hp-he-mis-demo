@@ -46,7 +46,7 @@ export function ApplicationQueueTable({ rows, emptyMessage }: Props) {
 
   return (
     <TableShell>
-      <Table className="min-w-[720px]">
+      <Table className="min-w-[var(--table-min-width-narrow)]">
         <THead>
           <TR>
             <TH>Student</TH>
@@ -102,7 +102,7 @@ export function ApplicationQueueTable({ rows, emptyMessage }: Props) {
                   </Badge>
                 </TD>
                 <TD className="align-top">
-                  <div className="flex flex-wrap items-center gap-1.5">
+                  <div className="flex flex-wrap items-center gap-2">
                     <StatusPill status={status} />
                     {discrepancyCount > 0 ? (
                       <Badge tone="warning">
@@ -121,7 +121,7 @@ export function ApplicationQueueTable({ rows, emptyMessage }: Props) {
                   <Link
                     href={`/applications/${app.id}`}
                     aria-label={`Open application ${app.id}`}
-                    className="inline-flex h-9 items-center justify-center gap-1 rounded-[var(--radius-pill)] bg-[var(--color-interactive-brand)] px-3 text-[var(--text-xs)] font-[var(--weight-semibold)] text-[var(--color-text-inverse)] shadow-[var(--shadow-sm)] transition-colors hover:bg-[var(--color-interactive-brand-hover)] focus-visible:outline-none focus-visible:shadow-[var(--focus-ring)]"
+                    className="inline-flex h-9 items-center justify-center gap-1 rounded-[var(--radius-pill)] bg-[var(--color-interactive-primary)] px-3 text-[var(--text-xs)] font-[var(--weight-semibold)] text-[var(--color-text-on-brand)] shadow-[var(--shadow-sm)] transition-colors hover:bg-[var(--color-interactive-primary-hover)] focus-visible:outline-none focus-visible:shadow-[var(--focus-ring)]"
                   >
                     Open
                     <span aria-hidden="true">→</span>

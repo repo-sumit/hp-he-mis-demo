@@ -38,7 +38,7 @@ export function PreviewCard({ entry, name }: Props) {
         {t("document.preview.noPreview")}
       </div>
 
-      <dl className="mt-4 grid grid-cols-1 gap-1.5 text-[var(--text-sm)]">
+      <dl className="mt-4 grid grid-cols-1 gap-2 text-[var(--text-sm)]">
         {entry.fileName ? (
           <div className="flex gap-2">
             <dt className="w-[40%] text-[var(--color-text-tertiary)]">

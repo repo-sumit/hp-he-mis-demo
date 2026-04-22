@@ -78,7 +78,7 @@ export default function RankPage({ params }: { params: Promise<Params> }) {
           </p>
           <Link
             href={`/apply/${courseId}/preferences`}
-            className="mt-3 inline-flex h-10 items-center justify-center rounded-[var(--radius-md)] bg-[var(--color-interactive-brand)] px-4 text-[var(--text-sm)] font-[var(--weight-semibold)] text-[var(--color-text-inverse)]"
+            className="mt-3 inline-flex h-10 items-center justify-center rounded-[var(--radius-md)] bg-[var(--color-interactive-primary)] px-4 text-[var(--text-sm)] font-[var(--weight-semibold)] text-[var(--color-text-on-brand)]"
           >
             {t("cta.add")}
           </Link>

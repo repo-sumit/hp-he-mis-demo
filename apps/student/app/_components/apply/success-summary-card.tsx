@@ -34,7 +34,7 @@ export function SuccessSummaryCard({
       <div className="flex items-start gap-3">
         <span
           aria-hidden="true"
-          className="flex h-10 w-10 flex-none items-center justify-center rounded-[var(--radius-pill)] bg-[var(--color-interactive-success)] text-[var(--color-text-inverse)] text-lg"
+          className="flex h-10 w-10 flex-none items-center justify-center rounded-[var(--radius-pill)] bg-[var(--color-interactive-success)] text-[var(--color-text-on-brand)] text-lg"
         >
           ✓
         </span>

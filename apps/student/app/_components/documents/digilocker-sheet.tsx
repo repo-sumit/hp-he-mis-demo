@@ -97,13 +97,13 @@ export function DigiLockerSheet({ open, preferredCode, onClose, onSelect }: Prop
         aria-modal="true"
         aria-label={t("document.digilocker.title")}
         className={cn(
-          "relative mx-auto mt-auto flex max-h-[90dvh] w-full max-w-[520px] flex-col overflow-hidden rounded-t-[var(--radius-xl)] bg-[var(--color-surface)] shadow-[var(--shadow-lg)] transition-transform duration-200 sm:mb-auto sm:mt-16 sm:rounded-[var(--radius-xl)]",
+          "relative mx-auto mt-auto flex max-h-[90dvh] w-full max-w-[var(--content-mobile-sheet)] flex-col overflow-hidden rounded-t-[var(--radius-xl)] bg-[var(--color-surface)] shadow-[var(--shadow-lg)] transition-transform duration-200 sm:mb-auto sm:mt-16 sm:rounded-[var(--radius-xl)]",
           open ? "translate-y-0" : "translate-y-full",
         )}
       >
         <header
-          className="flex items-start gap-3 px-5 pb-5 pt-6 text-white"
-          style={{ background: "linear-gradient(135deg, #4527a0 0%, #5e3ec0 100%)" }}
+          className="flex items-start gap-3 px-5 pb-5 pt-6 text-[var(--color-text-on-brand)]"
+          style={{ background: "var(--gradient-digilocker)" }}
         >
           <Image
             src="/digilocker.png"

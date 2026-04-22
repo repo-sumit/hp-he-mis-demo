@@ -16,7 +16,7 @@ import {
 } from "../../../_components/profile/profile-provider";
 import { IssueBanner } from "../../../_components/scrutiny-bridge/issue-banner";
 import { useReviewReturn } from "../../../_components/profile/use-review-return";
-import { Select } from "../../../_components/form/select";
+import { FieldGroup, Select } from "@hp-mis/ui";
 import { RadioCards } from "../../../_components/form/radio-cards";
 
 type Errors = Record<string, string>;
@@ -166,26 +166,44 @@ export default function Step3Page() {
           <h3 className="text-[var(--text-xs)] font-[var(--weight-semibold)] uppercase tracking-wide text-[var(--color-text-tertiary)]">
             {t("profile.step3.boardSection")}
           </h3>
-          <Select
-            name="board"
+          <FieldGroup
             label={t("field.board.label")}
             helper={t("field.board.helper")}
-            placeholder={t("field.board.label")}
-            options={boardOptions}
-            value={draft.board}
-            onChange={(event) => update("board", event.target.value as typeof draft.board)}
             error={errors.board}
-          />
-          <Select
-            name="yearOfPassing"
+          >
+            <Select
+              name="board"
+              placeholder={t("field.board.label")}
+              value={draft.board}
+              onChange={(event) =>
+                update("board", event.target.value as typeof draft.board)
+              }
+            >
+              {boardOptions.map((opt) => (
+                <option key={opt.value} value={opt.value}>
+                  {opt.label}
+                </option>
+              ))}
+            </Select>
+          </FieldGroup>
+          <FieldGroup
             label={t("field.yearOfPassing.label")}
             helper={t("field.yearOfPassing.helper")}
-            placeholder={t("field.yearOfPassing.placeholder")}
-            options={yearOptions}
-            value={draft.yearOfPassing}
-            onChange={(event) => update("yearOfPassing", event.target.value)}
             error={errors.yearOfPassing}
-          />
+          >
+            <Select
+              name="yearOfPassing"
+              placeholder={t("field.yearOfPassing.placeholder")}
+              value={draft.yearOfPassing}
+              onChange={(event) => update("yearOfPassing", event.target.value)}
+            >
+              {yearOptions.map((opt) => (
+                <option key={opt.value} value={opt.value}>
+                  {opt.label}
+                </option>
+              ))}
+            </Select>
+          </FieldGroup>
           <Field
             name="rollNumber"
             inputMode="numeric"

@@ -164,8 +164,8 @@ export default function SeatMatrixPage() {
         <Card>
           <CardTitle>Role required</CardTitle>
           <CardBody>
-            Seat matrix is scoped to your college — switch to College Admin or College
-            Operator to view it.
+            Seat matrix is scoped to your college — switch to College Admin to
+            view it.
           </CardBody>
         </Card>
       </PortalFrame>
@@ -242,7 +242,7 @@ export default function SeatMatrixPage() {
             <Badge tone="neutral">Effective {COLLEGE_META.effectiveFrom}</Badge>
           </div>
           <TableShell className="rounded-none border-0 shadow-none">
-            <Table className="min-w-[960px]">
+            <Table className="min-w-[var(--table-min-width-wide)]">
               <THead>
                 <TR>
                   <TH className="min-w-[220px]">Course · Track</TH>

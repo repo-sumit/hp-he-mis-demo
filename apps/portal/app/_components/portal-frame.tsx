@@ -167,7 +167,7 @@ export function PortalFrame({
                 item.href ??
                 "/";
               const base =
-                "group flex items-center gap-3 rounded-[var(--radius-pill)] px-4 py-2.5 text-[var(--text-sm)]";
+                "group flex items-center gap-3 rounded-[var(--radius-pill)] px-4 py-3 text-[var(--text-sm)]";
               return (
                 <li key={item.key}>
                   <Link

@@ -34,15 +34,15 @@ const variants: Record<Variant, string> = {
   ghost:
     "text-[var(--color-text-brand)] hover:bg-[var(--color-background-brand-subtle)]",
   danger:
-    "bg-[var(--color-interactive-danger)] text-[var(--color-text-inverse)] shadow-[var(--shadow-sm)] " +
+    "bg-[var(--color-interactive-danger)] text-[var(--color-text-on-brand)] shadow-[var(--shadow-sm)] " +
     "hover:bg-[var(--color-interactive-danger-hover)] hover:shadow-[var(--shadow-md)] " +
     "focus-visible:shadow-[var(--focus-ring-danger)]",
   success:
-    "bg-[var(--color-interactive-success)] text-[var(--color-text-inverse)] shadow-[var(--shadow-sm)] " +
+    "bg-[var(--color-interactive-success)] text-[var(--color-text-on-brand)] shadow-[var(--shadow-sm)] " +
     "hover:bg-[var(--color-interactive-success-hover)] hover:shadow-[var(--shadow-md)]",
   warning:
     "bg-[var(--color-status-warning-bg)] text-[var(--color-status-warning-fg)] border border-[var(--color-status-warning-fg)] " +
-    "hover:bg-[var(--color-status-warning-fg)] hover:text-[var(--color-text-inverse)]",
+    "hover:bg-[var(--color-status-warning-fg)] hover:text-[var(--color-text-on-brand)]",
 };
 
 const sizes: Record<Size, string> = {

@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Noto_Sans, Noto_Sans_Devanagari } from "next/font/google";
+import { ToastProvider } from "@hp-mis/ui";
 import { LocaleProvider } from "./_components/locale-provider";
 import { ProfileProvider } from "./_components/profile/profile-provider";
 import { DocumentsProvider } from "./_components/documents/documents-provider";
@@ -34,7 +35,7 @@ export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   maximumScale: 1,
-  themeColor: "#2f5fea",
+  themeColor: "#1976d2",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -45,15 +46,17 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     >
       <body className="min-h-full bg-[var(--color-background)]">
         <LocaleProvider>
-          <ProfileProvider>
-            <DocumentsProvider>
-              <ApplicationsProvider>
-                <ScrutinyBridgeProvider>
-                  <AllotmentBridgeProvider>{children}</AllotmentBridgeProvider>
-                </ScrutinyBridgeProvider>
-              </ApplicationsProvider>
-            </DocumentsProvider>
-          </ProfileProvider>
+          <ToastProvider>
+            <ProfileProvider>
+              <DocumentsProvider>
+                <ApplicationsProvider>
+                  <ScrutinyBridgeProvider>
+                    <AllotmentBridgeProvider>{children}</AllotmentBridgeProvider>
+                  </ScrutinyBridgeProvider>
+                </ApplicationsProvider>
+              </DocumentsProvider>
+            </ProfileProvider>
+          </ToastProvider>
         </LocaleProvider>
       </body>
     </html>

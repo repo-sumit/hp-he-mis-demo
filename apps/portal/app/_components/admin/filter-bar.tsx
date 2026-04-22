@@ -1,6 +1,6 @@
 "use client";
 
-import { Card, Input, Select, cn } from "@hp-mis/ui";
+import { Card, Checkbox, Input, Select, cn } from "@hp-mis/ui";
 import type { AppBaseStatus } from "../data/mock-applications";
 
 export interface QueueFilters {
@@ -90,15 +90,13 @@ export function FilterBar({
             className="pl-9"
           />
         </label>
-        <label className="flex items-center gap-2 whitespace-nowrap rounded-[var(--radius-pill)] border border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-2 text-[var(--text-sm)] text-[var(--color-text-primary)]">
-          <input
-            type="checkbox"
-            checked={filters.discrepancyPending}
-            onChange={(event) => update("discrepancyPending", event.target.checked)}
-            className="h-4 w-4 accent-[var(--color-interactive-brand)]"
-          />
-          Only discrepancy pending
-        </label>
+        <Checkbox
+          size="sm"
+          checked={filters.discrepancyPending}
+          onChange={(event) => update("discrepancyPending", event.target.checked)}
+          label="Only discrepancy pending"
+          className="whitespace-nowrap"
+        />
       </div>
 
       <div className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">

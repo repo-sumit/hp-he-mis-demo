@@ -1,5 +1,6 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Noto_Sans, Noto_Sans_Devanagari } from "next/font/google";
+import { ToastProvider } from "@hp-mis/ui";
 import { SessionProvider } from "./_components/data/session-provider";
 import "./globals.css";
 
@@ -25,6 +26,10 @@ export const metadata: Metadata = {
     "Official admin portal for undergraduate admissions to colleges affiliated to Himachal Pradesh University.",
 };
 
+export const viewport: Viewport = {
+  themeColor: "#1976d2",
+};
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html
@@ -32,7 +37,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       className={`${notoSans.variable} ${notoDevanagari.variable} h-full antialiased`}
     >
       <body className="min-h-full">
-        <SessionProvider>{children}</SessionProvider>
+        <SessionProvider>
+          <ToastProvider>{children}</ToastProvider>
+        </SessionProvider>
       </body>
     </html>
   );

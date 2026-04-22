@@ -1,6 +1,6 @@
 "use client";
 
-import { cn } from "@hp-mis/ui";
+import { Checkbox, cn } from "@hp-mis/ui";
 import { useLocale } from "../locale-provider";
 
 interface Props {
@@ -23,26 +23,22 @@ export function DeclarationBlock({ accepted, onChange, error, className }: Props
           {t("declaration.body")}
         </p>
       </div>
-      <label
+      <div
         className={cn(
-          "flex cursor-pointer items-start gap-3 rounded-[var(--radius-lg)] border p-3",
+          "rounded-[var(--radius-lg)] border p-4",
           accepted
             ? "border-[var(--color-border-brand)] bg-[var(--color-background-brand-subtle)]"
             : "border-[var(--color-border-strong)] bg-[var(--color-surface)]",
           error && !accepted ? "!border-[var(--color-text-danger)]" : "",
         )}
       >
-        <input
-          type="checkbox"
+        <Checkbox
           checked={accepted}
           onChange={(event) => onChange(event.target.checked)}
           aria-describedby="declaration-error"
-          className="mt-1 h-5 w-5 flex-none accent-[var(--color-interactive-brand)]"
+          label={t("declaration.acceptLabel")}
         />
-        <span className="text-[var(--text-sm)] font-[var(--weight-medium)] text-[var(--color-text-primary)]">
-          {t("declaration.acceptLabel")}
-        </span>
-      </label>
+      </div>
       {error ? (
         <p
           id="declaration-error"

@@ -63,7 +63,7 @@ export function ApplicationTypeCard({ courseId, optionCount, selectedCount }: Pr
         <div className="mt-3">
           <Link
             href={hasDraft ? `/apply/${courseId}/rank` : `/apply/${courseId}/preferences`}
-            className="inline-flex h-10 items-center justify-center rounded-[var(--radius-md)] bg-[var(--color-interactive-brand)] px-4 text-[var(--text-sm)] font-[var(--weight-semibold)] text-[var(--color-text-inverse)] hover:bg-[var(--color-interactive-brand-hover)]"
+            className="inline-flex h-10 items-center justify-center rounded-[var(--radius-md)] bg-[var(--color-interactive-primary)] px-4 text-[var(--text-sm)] font-[var(--weight-semibold)] text-[var(--color-text-on-brand)] hover:bg-[var(--color-interactive-primary-hover)]"
           >
             {hasDraft ? t("cta.continue") : t("cta.startApplication")}
           </Link>

@@ -40,7 +40,7 @@ export function MaxPreferenceGuidanceBlock({ courseLabel, max, current, classNam
       <div className="mt-2 h-2 w-full overflow-hidden rounded-[var(--radius-pill)] bg-[var(--color-background-muted)]">
         <div
           style={{ width: `${pct}%` }}
-          className="h-full bg-[var(--color-interactive-brand)] transition-[width] duration-200"
+          className="h-full bg-[var(--color-interactive-primary)] transition-[width] duration-200"
         />
       </div>
       <p className="mt-2 text-[var(--text-xs)] text-[var(--color-text-tertiary)]">

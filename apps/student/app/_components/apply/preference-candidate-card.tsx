@@ -81,7 +81,7 @@ export function PreferenceCandidateCard({ candidate, selected, canAdd, onToggle 
             "inline-flex h-10 items-center justify-center rounded-[var(--radius-md)] px-4 text-[var(--text-sm)] font-[var(--weight-semibold)]",
             selected
               ? "border border-[var(--color-border-strong)] bg-[var(--color-surface)] text-[var(--color-text-primary)]"
-              : "bg-[var(--color-interactive-brand)] text-[var(--color-text-inverse)] hover:bg-[var(--color-interactive-brand-hover)]",
+              : "bg-[var(--color-interactive-primary)] text-[var(--color-text-on-brand)] hover:bg-[var(--color-interactive-primary-hover)]",
             disabled && "cursor-not-allowed opacity-60",
           )}
         >

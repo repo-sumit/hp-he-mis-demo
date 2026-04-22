@@ -69,7 +69,7 @@ export default function LanguagePage() {
                   className={cn(
                     "flex h-12 w-12 flex-none items-center justify-center rounded-[var(--radius-md)] text-[var(--text-2xl)] font-[var(--weight-bold)]",
                     active
-                      ? "bg-[var(--color-interactive-brand)] text-[var(--color-text-inverse)]"
+                      ? "bg-[var(--color-interactive-primary)] text-[var(--color-text-on-brand)]"
                       : "bg-[var(--color-background-subtle)] text-[var(--color-text-primary)]",
                   )}
                 >
@@ -94,7 +94,7 @@ export default function LanguagePage() {
                   className={cn(
                     "flex h-6 w-6 flex-none items-center justify-center rounded-full border-2",
                     active
-                      ? "border-[var(--color-interactive-brand)] bg-[var(--color-interactive-brand)] text-[var(--color-text-inverse)]"
+                      ? "border-[var(--color-interactive-primary)] bg-[var(--color-interactive-primary)] text-[var(--color-text-on-brand)]"
                       : "border-[var(--color-border-strong)]",
                   )}
                 >

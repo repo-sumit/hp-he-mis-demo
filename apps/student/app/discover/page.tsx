@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useMemo, useState } from "react";
-import { cn } from "@hp-mis/ui";
+import { Input, Select, cn } from "@hp-mis/ui";
 import { PageShell } from "../_components/page-shell";
 import { useLocale } from "../_components/locale-provider";
 import { useProfile } from "../_components/profile/profile-provider";
@@ -147,7 +147,7 @@ export default function DiscoverPage() {
           </p>
           <Link
             href="/profile/step/3"
-            className="mt-5 inline-flex h-11 items-center justify-center rounded-[var(--radius-md)] bg-[var(--color-interactive-brand)] px-5 text-[var(--text-sm)] font-[var(--weight-semibold)] text-[var(--color-text-inverse)] hover:bg-[var(--color-interactive-brand-hover)]"
+            className="mt-5 inline-flex h-11 items-center justify-center rounded-[var(--radius-md)] bg-[var(--color-interactive-primary)] px-5 text-[var(--text-sm)] font-[var(--weight-semibold)] text-[var(--color-text-on-brand)] hover:bg-[var(--color-interactive-primary-hover)]"
           >
             {t("discover.empty.profileCta")}
           </Link>
@@ -193,13 +193,13 @@ export default function DiscoverPage() {
           >
             🔍
           </span>
-          <input
+          <Input
             id="discover-search"
             type="search"
             value={search}
             onChange={(event) => setSearch(event.target.value)}
             placeholder={t("discover.searchPlaceholder")}
-            className="h-11 w-full rounded-[var(--radius-md)] border border-[var(--color-border-strong)] bg-[var(--color-surface)] pl-9 pr-3 text-[var(--text-sm)] text-[var(--color-text-primary)] outline-none placeholder:text-[var(--color-text-tertiary)] focus:border-[var(--color-border-focus)] focus:ring-2 focus:ring-[var(--color-border-focus)]/30"
+            className="pl-9"
           />
         </div>
 
@@ -209,7 +209,7 @@ export default function DiscoverPage() {
             onClick={() => setSheetOpen(true)}
             aria-haspopup="dialog"
             className={cn(
-              "inline-flex h-10 flex-1 items-center justify-center gap-1.5 rounded-[var(--radius-md)] border px-3 text-[var(--text-sm)] font-[var(--weight-medium)]",
+              "inline-flex h-10 flex-1 items-center justify-center gap-2 rounded-[var(--radius-md)] border px-3 text-[var(--text-sm)] font-[var(--weight-medium)]",
               activeFilterCount > 0
                 ? "border-[var(--color-border-brand)] bg-[var(--color-background-brand-subtle)] text-[var(--color-text-brand)]"
                 : "border-[var(--color-border-strong)] bg-[var(--color-surface)] text-[var(--color-text-primary)] hover:bg-[var(--color-background-subtle)]",
@@ -220,21 +220,21 @@ export default function DiscoverPage() {
             {activeFilterCount > 0 ? (
               <span
                 aria-hidden="true"
-                className="ml-1 rounded-[var(--radius-pill)] bg-[var(--color-interactive-brand)] px-1.5 text-[var(--text-xs)] text-[var(--color-text-inverse)]"
+                className="ml-1 rounded-[var(--radius-pill)] bg-[var(--color-interactive-primary)] px-1.5 text-[var(--text-xs)] text-[var(--color-text-on-brand)]"
               >
                 {activeFilterCount}
               </span>
             ) : null}
           </button>
-          <select
+          <Select
             aria-label={t("discover.sort.label")}
             value={sort}
             onChange={(event) => setSort(event.target.value as SortOption)}
-            className="h-10 rounded-[var(--radius-md)] border border-[var(--color-border-strong)] bg-[var(--color-surface)] px-3 text-[var(--text-sm)] text-[var(--color-text-primary)] focus:border-[var(--color-border-focus)] focus:ring-2 focus:ring-[var(--color-border-focus)]/30"
+            className="min-w-[10rem]"
           >
             <option value="bestMatch">{t("discover.sort.bestMatch")}</option>
             <option value="mostSeats">{t("discover.sort.mostSeats")}</option>
-          </select>
+          </Select>
         </div>
       </section>
 

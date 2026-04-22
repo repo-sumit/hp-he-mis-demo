@@ -72,7 +72,7 @@ export function CertificateSubForm({ code, label }: Props) {
           onChange={(event) =>
             updateCertificate(code, { willUploadLater: event.target.checked })
           }
-          className="h-5 w-5 flex-none accent-[var(--color-interactive-brand)]"
+          className="h-5 w-5 flex-none accent-[var(--color-interactive-primary)]"
         />
         <span>{t("certificate.willUploadLater")}</span>
       </label>

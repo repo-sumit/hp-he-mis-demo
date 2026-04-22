@@ -55,7 +55,7 @@ export function FieldGroup({
 
   return (
     <FieldContext.Provider value={{ id: resolvedId, describedBy, invalid }}>
-      <div className={cn("flex min-w-0 flex-col gap-1.5", className)}>
+      <div className={cn("flex min-w-0 flex-col gap-2", className)}>
         <label
           htmlFor={resolvedId}
           className="text-[var(--text-sm)] font-[var(--weight-semibold)] text-[var(--color-text-primary)]"

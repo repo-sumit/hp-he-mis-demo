@@ -51,7 +51,7 @@ export default function HowItWorksPage() {
             </span>
             <div className="min-w-0 flex-1">
               <p className="text-[var(--text-base)] font-[var(--weight-semibold)] text-[var(--color-text-primary)]">
-                <span aria-hidden="true" className="mr-1.5">
+                <span aria-hidden="true" className="mr-2">
                   {step.icon}
                 </span>
                 {t(`preLogin.howItWorks.steps.${step.key}Title`)}

@@ -25,7 +25,7 @@ export function Toggle({ label, helper, value, onChange, yesLabel, noLabel }: Pr
   const no = noLabel ?? t("common.no");
 
   return (
-    <div className="flex flex-col gap-1.5">
+    <div className="flex flex-col gap-2">
       <span
         id={groupId}
         className="text-[var(--text-sm)] font-[var(--weight-medium)] text-[var(--color-text-primary)]"

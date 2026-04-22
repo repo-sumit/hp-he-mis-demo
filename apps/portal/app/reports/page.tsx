@@ -208,7 +208,7 @@ export default function ReportsPage() {
                       style={{ width: `${pct}%` }}
                     />
                   </span>
-                  <span className="flex items-baseline justify-end gap-1.5 tabular-nums">
+                  <span className="flex items-baseline justify-end gap-2 tabular-nums">
                     <span className="font-[var(--weight-semibold)] text-[var(--color-text-primary)]">
                       {n}
                     </span>
@@ -266,7 +266,7 @@ export default function ReportsPage() {
                       style={{ width: `${pct}%` }}
                     />
                   </span>
-                  <span className="flex items-baseline justify-end gap-1.5 tabular-nums">
+                  <span className="flex items-baseline justify-end gap-2 tabular-nums">
                     <span className="font-[var(--weight-semibold)] text-[var(--color-text-primary)]">
                       {n}
                     </span>
@@ -304,7 +304,7 @@ export default function ReportsPage() {
                       aria-hidden="true"
                     >
                       <span
-                        className="absolute inset-y-0 left-0 rounded-full bg-[var(--color-interactive-brand)]"
+                        className="absolute inset-y-0 left-0 rounded-full bg-[var(--color-interactive-primary)]"
                         style={{ width: `${pct}%` }}
                       />
                     </span>
@@ -386,7 +386,7 @@ export default function ReportsPage() {
 
 function LegendDot({ className, label }: { className: string; label: string }) {
   return (
-    <span className="inline-flex items-center gap-1.5">
+    <span className="inline-flex items-center gap-2">
       <span
         aria-hidden="true"
         className={cn("inline-block h-2 w-2 rounded-full", className)}

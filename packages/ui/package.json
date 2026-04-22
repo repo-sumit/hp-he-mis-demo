@@ -21,6 +21,9 @@
     "./section-banner": "./src/section-banner.tsx",
     "./tabs": "./src/tabs.tsx",
     "./footer": "./src/footer.tsx",
+    "./checkbox": "./src/checkbox.tsx",
+    "./segmented-options": "./src/segmented-options.tsx",
+    "./toast": "./src/toast.tsx",
     "./language-switcher": "./src/language-switcher.tsx"
   },
   "files": ["src"],

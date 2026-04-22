@@ -186,7 +186,7 @@ export function FilterSheet({ open, value, onChange, onClose, onApply, onClear }
           <button
             type="button"
             onClick={onApply}
-            className="inline-flex h-11 flex-[2] items-center justify-center rounded-[var(--radius-md)] bg-[var(--color-interactive-brand)] px-4 text-[var(--text-sm)] font-[var(--weight-semibold)] text-[var(--color-text-inverse)] hover:bg-[var(--color-interactive-brand-hover)]"
+            className="inline-flex h-11 flex-[2] items-center justify-center rounded-[var(--radius-md)] bg-[var(--color-interactive-primary)] px-4 text-[var(--text-sm)] font-[var(--weight-semibold)] text-[var(--color-text-on-brand)] hover:bg-[var(--color-interactive-primary-hover)]"
           >
             {t("cta.apply")}
           </button>

@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { cn } from "@hp-mis/ui";
+import { Button, cn } from "@hp-mis/ui";
 import type { AppDocument, DocScrutinyStatus } from "../data/mock-applications";
 import { formatSize, formatTimestamp } from "./format";
 
@@ -127,36 +127,24 @@ export function DocumentReviewCard({
       </div>
 
       {interactive ? (
-        <div className="flex flex-col gap-2 sm:min-w-[168px]">
+        <div className="flex flex-col gap-2 sm:min-w-[10rem]">
           {onVerify ? (
-            <button
-              type="button"
-              onClick={onVerify}
-              className="inline-flex h-9 items-center justify-center gap-1 rounded-[var(--radius-md)] bg-[var(--color-interactive-success)] px-3 text-[var(--text-xs)] font-[var(--weight-semibold)] text-[var(--color-text-inverse)]"
-            >
+            <Button variant="success" size="sm" onClick={onVerify}>
               <span aria-hidden="true">✓</span>
               Verify
-            </button>
+            </Button>
           ) : null}
           {onRaiseDiscrepancy ? (
-            <button
-              type="button"
-              onClick={onRaiseDiscrepancy}
-              className="inline-flex h-9 items-center justify-center gap-1 rounded-[var(--radius-md)] border border-[var(--color-status-warning-fg)] bg-[var(--color-status-warning-bg)] px-3 text-[var(--text-xs)] font-[var(--weight-semibold)] text-[var(--color-status-warning-fg)]"
-            >
+            <Button variant="warning" size="sm" onClick={onRaiseDiscrepancy}>
               <span aria-hidden="true">⚠</span>
               Raise discrepancy
-            </button>
+            </Button>
           ) : null}
           {onReject ? (
-            <button
-              type="button"
-              onClick={onReject}
-              className="inline-flex h-9 items-center justify-center gap-1 rounded-[var(--radius-md)] border border-[var(--color-text-danger)] bg-[var(--color-status-danger-bg)] px-3 text-[var(--text-xs)] font-[var(--weight-semibold)] text-[var(--color-status-danger-fg)]"
-            >
+            <Button variant="danger" size="sm" onClick={onReject}>
               <span aria-hidden="true">✕</span>
               Reject
-            </button>
+            </Button>
           ) : null}
         </div>
       ) : null}

@@ -126,7 +126,7 @@ export default function PaymentPage({
           <div className="flex items-start gap-3">
             <span
               aria-hidden="true"
-              className="flex h-11 w-11 flex-none items-center justify-center rounded-[var(--radius-pill)] bg-[var(--color-interactive-success)] text-[var(--text-xl)] text-[var(--color-text-inverse)]"
+              className="flex h-11 w-11 flex-none items-center justify-center rounded-[var(--radius-pill)] bg-[var(--color-interactive-success)] text-[var(--text-xl)] text-[var(--color-text-on-brand)]"
             >
               🎓
             </span>
@@ -134,7 +134,7 @@ export default function PaymentPage({
               <h2 className="text-[var(--text-lg)] font-[var(--weight-bold)] text-[var(--color-status-success-fg)] sm:text-[var(--text-xl)]">
                 {t("student.payment.successTitle")}
               </h2>
-              <p className="mt-1.5 text-[var(--text-sm)] leading-[var(--leading-relaxed)] text-[var(--color-text-primary)]">
+              <p className="mt-2 text-[var(--text-sm)] leading-[var(--leading-relaxed)] text-[var(--color-text-primary)]">
                 {t("student.payment.successBody", {
                   college: entry.offer.collegeName,
                 })}

@@ -55,7 +55,7 @@ export function SummaryHeader({
       <p className="text-[var(--text-sm)] font-[var(--weight-semibold)] text-[var(--color-text-primary)]">
         {t("discover.summary.total", { n: total })}
       </p>
-      <ul className="mt-2 flex flex-wrap gap-1.5">
+      <ul className="mt-2 flex flex-wrap gap-2">
         {pills.map((pill) => (
           <li
             key={pill.label}

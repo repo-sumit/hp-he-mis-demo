@@ -66,7 +66,7 @@ export default function CollegeDetailPage({ params }: { params: Promise<Params> 
             </dt>
           </div>
         </dl>
-        <ul className="mt-3 flex flex-wrap gap-1.5">
+        <ul className="mt-3 flex flex-wrap gap-2">
           <li className="rounded-[var(--radius-pill)] border border-[var(--color-border-subtle)] bg-[var(--color-background-subtle)] px-2.5 py-0.5 text-[var(--text-xs)] text-[var(--color-text-secondary)]">
             {t(`discover.college.coEd.${college.coEdStatus}`)}
           </li>
@@ -90,7 +90,7 @@ export default function CollegeDetailPage({ params }: { params: Promise<Params> 
         <p className="text-[11px] font-[var(--weight-semibold)] uppercase tracking-[var(--tracking-wide)] text-[var(--color-text-tertiary)]">
           {t("discover.college.departments")}
         </p>
-        <ul className="mt-2 flex flex-wrap gap-1.5">
+        <ul className="mt-2 flex flex-wrap gap-2">
           {college.departments.map((dep) => (
             <li
               key={dep}
