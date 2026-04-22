@@ -54,7 +54,7 @@ export function Footer({
   return (
     <footer
       className={cn(
-        "mt-12 border-t border-[var(--color-border-subtle)] bg-[var(--color-background-subtle)]",
+        "mt-12 border-t border-[var(--color-border-subtle)] bg-[var(--color-background-brand-subtle)]",
         className,
       )}
     >
