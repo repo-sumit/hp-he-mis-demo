@@ -131,16 +131,18 @@
   --color-status-info-fg: var(--hp-info-700);
 
   /*
-   * Sidebar (portal) — light-blue wash with white text; active row flips
-   * to a white pill card with brand text, matching the Figma reference.
+   * Sidebar (portal) — light-blue wash; nav text is dark navy so it clears
+   * WCAG AA on the pale background (pure-white text on #a6d0f5 ran at
+   * ~1.7:1, which failed). Active row flips to a white pill card with
+   * brand text, matching the Samagra Shiksha / HP govt Figma reference.
    */
-  --color-sidebar-bg: #a6d0f5;
-  --color-sidebar-fg: #ffffff;
-  --color-sidebar-fg-muted: rgba(255, 255, 255, 0.82);
+  --color-sidebar-bg: #bfdcf4;
+  --color-sidebar-fg: var(--hp-primary-900);
+  --color-sidebar-fg-muted: var(--hp-primary-700);
   --color-sidebar-active-bg: #ffffff;
   --color-sidebar-active-fg: var(--hp-primary-700);
-  --color-sidebar-hover-bg: rgba(255, 255, 255, 0.28);
-  --color-sidebar-border: rgba(255, 255, 255, 0.55);
+  --color-sidebar-hover-bg: rgba(255, 255, 255, 0.55);
+  --color-sidebar-border: rgba(11, 58, 128, 0.18);
 
   /*
    * Section banner — the full-width saturated-blue band used as a page

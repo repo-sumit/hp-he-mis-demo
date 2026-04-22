@@ -28,7 +28,7 @@ export default function HomePage() {
               <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
                 <Link
                   href="/register"
-                  className="inline-flex h-12 min-w-[10rem] items-center justify-center rounded-[var(--radius-md)] bg-[var(--color-interactive-brand)] px-6 text-[var(--text-sm)] font-[var(--weight-semibold)] text-white shadow-[var(--shadow-md)] transition-all hover:bg-[var(--color-interactive-brand-hover)] hover:shadow-[var(--shadow-lg)] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-white/60 active:bg-[var(--color-interactive-brand-pressed)]"
+                  className="inline-flex h-12 min-w-[10rem] items-center justify-center rounded-[var(--radius-pill)] bg-[var(--color-interactive-brand)] px-6 text-[var(--text-sm)] font-[var(--weight-semibold)] text-[var(--color-text-inverse)] shadow-[var(--shadow-md)] transition-all hover:bg-[var(--color-interactive-brand-hover)] hover:shadow-[var(--shadow-lg)] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-white/60 active:bg-[var(--color-interactive-brand-pressed)]"
                 >
                   {t("cta.register")}
                 </Link>

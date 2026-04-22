@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import type { ReactNode } from "react";
-import { cn } from "@hp-mis/ui";
+import { Footer, cn } from "@hp-mis/ui";
 import { LocaleToggle } from "./locale-toggle";
 import { useLocale } from "./locale-provider";
 
@@ -108,6 +108,44 @@ export function PageShell({
       >
         {children}
       </main>
+
+      <Footer
+        columns={[
+          {
+            heading: t("footer.headings.help"),
+            links: [
+              { label: t("footer.links.help"), href: "/help" },
+              { label: t("footer.links.howItWorks"), href: "/how-it-works" },
+              { label: t("footer.links.dates"), href: "/dates" },
+            ],
+          },
+          {
+            heading: t("footer.headings.apply"),
+            links: [
+              { label: t("footer.links.eligibility"), href: "/discover" },
+              { label: t("footer.links.meritLookup"), href: "/merit-lookup" },
+              { label: t("footer.links.login"), href: "/login" },
+            ],
+          },
+          {
+            heading: t("footer.headings.legal"),
+            links: [
+              { label: t("footer.links.privacy"), href: "#" },
+              { label: t("footer.links.terms"), href: "#" },
+              { label: t("footer.links.accessibility"), href: "#" },
+            ],
+          },
+        ]}
+        brand={
+          <>
+            <p className="font-[var(--weight-semibold)] text-[var(--color-text-secondary)]">
+              {t("app.name")}
+            </p>
+            <p className="mt-1">{t("footer.brand.org")}</p>
+          </>
+        }
+        note={t("footer.note")}
+      />
 
       {footer ? (
         <div className="sticky bottom-0 z-10 border-t border-[var(--color-border-subtle)] bg-[var(--color-surface)]/95 backdrop-blur">

@@ -28,3 +28,9 @@ export { Stepper, type Step, type StepState, type StepperProps } from "./stepper
 export { Breadcrumbs, type Crumb, type BreadcrumbsProps } from "./breadcrumbs";
 export { SectionBanner, type SectionBannerProps } from "./section-banner";
 export { Tabs, type Tab, type TabsProps } from "./tabs";
+export {
+  Footer,
+  type FooterLink,
+  type FooterColumn,
+  type FooterProps,
+} from "./footer";

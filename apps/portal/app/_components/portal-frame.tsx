@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { t } from "@hp-mis/i18n";
-import { cn, Breadcrumbs, SectionBanner, type Crumb } from "@hp-mis/ui";
+import { cn, Breadcrumbs, Footer, SectionBanner, type Crumb } from "@hp-mis/ui";
 import { useSession, type PortalRole } from "./data/session-provider";
 import { RoleSwitcher } from "./admin/role-switcher";
 
@@ -13,6 +13,7 @@ export type PortalNavKey =
   | "applications"
   | "convenor_queue"
   | "college_dashboard"
+  | "cycle"
   | "finance"
   | "leadership"
   | "colleges"
@@ -82,6 +83,13 @@ const NAV_ITEMS: readonly NavItem[] = [
     labelKey: "portal.sidebar.collegeDashboard",
   },
   {
+    key: "cycle",
+    icon: "🗓",
+    roles: ["state_admin"],
+    href: "/state/cycle",
+    labelKey: "portal.sidebar.cycle",
+  },
+  {
     key: "finance",
     icon: "💳",
     roles: ["finance"],
@@ -114,9 +122,8 @@ const NAV_ITEMS: readonly NavItem[] = [
   {
     key: "seats",
     icon: "🎫",
-    roles: ["state_admin", "college_admin"],
-    href: "/seats",
-    disabled: true,
+    roles: ["college_admin"],
+    href: "/college/seats",
     labelKey: "portal.sidebar.seats",
   },
   {
@@ -136,9 +143,8 @@ const NAV_ITEMS: readonly NavItem[] = [
   {
     key: "reports",
     icon: "📈",
-    roles: ["state_admin", "college_admin", "finance", "leadership"],
+    roles: ["state_admin", "college_admin"],
     href: "/reports",
-    disabled: true,
     labelKey: "portal.sidebar.reports",
   },
   {
@@ -242,7 +248,7 @@ export function PortalFrame({
                     >
                       <span aria-hidden="true">{item.icon}</span>
                       <span className="flex-1 truncate">{t("en", item.labelKey)}</span>
-                      <span className="rounded-[var(--radius-pill)] bg-white/30 px-2 py-0.5 text-[10px] font-[var(--weight-semibold)] uppercase tracking-wide text-white">
+                      <span className="rounded-[var(--radius-pill)] bg-[var(--hp-primary-700)] px-2 py-0.5 text-[10px] font-[var(--weight-semibold)] uppercase tracking-wide text-[var(--color-text-inverse)]">
                         Soon
                       </span>
                     </div>
@@ -318,6 +324,47 @@ export function PortalFrame({
           ) : null}
           {children}
         </main>
+
+        <Footer
+          columns={[
+            {
+              heading: "Support",
+              links: [
+                { label: "Helpdesk", href: "mailto:helpdesk@hpu.admission.gov.in" },
+                { label: "Contact DHE", href: "mailto:dhe@hp.gov.in" },
+                { label: "Report an issue", href: "mailto:helpdesk@hpu.admission.gov.in" },
+              ],
+            },
+            {
+              heading: "Resources",
+              links: [
+                { label: "Scrutiny SOP", href: "#" },
+                { label: "Cycle calendar", href: "#" },
+                { label: "Audit log", href: "#" },
+              ],
+            },
+            {
+              heading: "Legal",
+              links: [
+                { label: "Privacy", href: "#" },
+                { label: "Terms of use", href: "#" },
+                { label: "Accessibility", href: "#" },
+              ],
+            },
+          ]}
+          brand={
+            <>
+              <p className="font-[var(--weight-semibold)] text-[var(--color-text-secondary)]">
+                HPU Admission · Admin portal
+              </p>
+              <p className="mt-1">
+                Department of Higher Education, Government of Himachal Pradesh. Cycle
+                2026-27.
+              </p>
+            </>
+          }
+          note="© 2026 Government of Himachal Pradesh. All rights reserved. For official admission use only."
+        />
       </div>
     </div>
   );

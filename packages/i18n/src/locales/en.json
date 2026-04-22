@@ -181,6 +181,7 @@
     "sidebar": {
       "overview": "Overview",
       "applications": "Applications",
+      "cycle": "Cycle setup",
       "colleges": "Colleges",
       "courses": "Courses",
       "seats": "Seat matrix",
@@ -376,7 +377,6 @@
       "viewAllNotifications": "View all",
       "quickLinksTitle": "Quick links",
       "mockNotifications": {
-        "welcome": "Welcome to HPU Admission. Finish your profile to apply.",
         "dates": "Applications close 24 June 2026, 5:00 PM.",
         "language": "Tip: switch language any time from the top of the screen."
       }
@@ -464,7 +464,7 @@
       "title": "CGPA → Percentage",
       "subtitle": "CBSE reports CGPA. Most colleges expect a percentage — we multiply by 9.5."
     },
-    "placeholder": "We'll plug in the interactive tool in the next sprint. For now, enter your best-of-five percentage manually on Step 3."
+    "placeholder": "The interactive calculator is coming soon. For now, enter your best-of-five percentage on Step 3."
   },
   "field": {
     "email": {
@@ -568,7 +568,7 @@
     },
     "correspondenceSame": {
       "label": "Correspondence address is the same as permanent",
-      "helper": "We'll skip re-entering it."
+      "helper": "Your permanent address will be used for all letters and updates."
     },
     "correspondenceAddress": {
       "label": "Correspondence address",
@@ -1289,5 +1289,27 @@
       "notPublishedBody": "We'll open this lookup on Friday, 26 June 2026. Meanwhile, keep your application details handy.",
       "backHint": "Back to home"
     }
+  },
+  "footer": {
+    "brand": {
+      "org": "Himachal Pradesh University · Cycle 2026-27"
+    },
+    "headings": {
+      "help": "Help",
+      "apply": "Apply",
+      "legal": "Legal"
+    },
+    "links": {
+      "help": "Helpdesk",
+      "howItWorks": "How it works",
+      "dates": "Important dates",
+      "eligibility": "Eligibility check",
+      "meritLookup": "Merit list lookup",
+      "login": "Sign in",
+      "privacy": "Privacy",
+      "terms": "Terms of use",
+      "accessibility": "Accessibility"
+    },
+    "note": "© 2026 Government of Himachal Pradesh. This platform serves official undergraduate admissions to HPU-affiliated colleges."
   }
 }

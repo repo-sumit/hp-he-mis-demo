@@ -20,6 +20,7 @@
     "./breadcrumbs": "./src/breadcrumbs.tsx",
     "./section-banner": "./src/section-banner.tsx",
     "./tabs": "./src/tabs.tsx",
+    "./footer": "./src/footer.tsx",
     "./language-switcher": "./src/language-switcher.tsx"
   },
   "files": ["src"],

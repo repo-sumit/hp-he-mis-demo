@@ -15,14 +15,15 @@ import { useScrutinyBridge } from "../_components/scrutiny-bridge/scrutiny-bridg
 import { DiscrepancySummaryCard } from "../_components/scrutiny-bridge/discrepancy-summary-card";
 import { useAllotmentBridge } from "../_components/allotment-bridge/allotment-bridge-provider";
 
+// Helpdesk moved into the footer — the body list keeps the two journey-
+// specific shortcuts (documents, eligibility) so the dashboard stays
+// focused on what the student needs to act on next.
 const QUICK_LINKS = [
   { key: "documents", icon: "📄", href: "/profile/step/4" },
   { key: "eligibility", icon: "✓", href: "/discover" },
-  { key: "helpdesk", icon: "💬", href: "/help" },
 ] as const;
 
 const BASE_NOTIFICATIONS = [
-  { key: "welcome", time: "2 min ago", unread: true },
   { key: "dates", time: "1 hr ago", unread: true },
 ] as const;
 
@@ -75,7 +76,12 @@ export default function DashboardPage() {
   const firstMeritPublished =
     firstSubmitted && allotment.meritPublishedFor(firstSubmitted.courseId);
 
-  // Current step: walk backwards from the most advanced state.
+  // Current step: walk backwards from the most advanced state. Once the
+  // profile meets the submission bar, the "Profile complete" step is done —
+  // the student is now sitting at the submission stage waiting to pick a
+  // course. Previously this case collapsed back into "profileComplete",
+  // which left the Profile Complete node perpetually un-ticked even after
+  // the profile was actually complete.
   const currentStep: StatusStep = (() => {
     if (
       firstAllocation?.status === "fee_paid" ||
@@ -86,6 +92,7 @@ export default function DashboardPage() {
     if (firstAllocation) return "allotted";
     if (firstMeritPublished) return "meritPublished";
     if (hasSubmitted) return "submitted";
+    if (hasEnoughProfile(draft)) return "submitted";
     return "profileComplete";
   })();
 
