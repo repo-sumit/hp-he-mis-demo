@@ -1,31 +1,37 @@
 /*
  * HP MIS design tokens
- * Derived from SwiftChat Color System + Typography System.
- * Primitives drive the semantic layer; consumers should prefer semantic tokens.
+ *
+ * V2 visual refresh: primitives retuned toward a brighter, sky-blue brand
+ * (Figma "Samagra Shiksha" / government MIS reference) while preserving the
+ * semantic token layer and every existing variable name. Consumers that use
+ * the semantic layer keep working; only the hues shift.
  */
 
 :root {
   /* ---------- Primitive palette ---------- */
-  /* Primary (HPU brand — lighter, modern indigo/blue) */
-  --hp-primary-50: #eef4ff;
-  --hp-primary-100: #dde7ff;
-  --hp-primary-200: #c3d4ff;
-  --hp-primary-300: #97b3ff;
-  --hp-primary-400: #6989ff;
-  --hp-primary-500: #4a6dfa;
-  --hp-primary-600: #2f5fea;
-  --hp-primary-700: #2a4ec2;
-  --hp-primary-800: #2a4299;
-  --hp-primary-900: #1b2e6a;
-  --hp-primary-950: #0f1a3d;
+  /*
+   * Primary (HPU brand — bright sky blue).
+   * 600 is the core interactive; 900 is the navy used in modal titles and
+   * large headings; 100 / 50 tint sidebars, banners and subtle cards.
+   */
+  --hp-primary-50: #e8f3fd;
+  --hp-primary-100: #d0e6fb;
+  --hp-primary-200: #a6d0f5;
+  --hp-primary-300: #73b3ee;
+  --hp-primary-400: #4597e6;
+  --hp-primary-500: #1f88de;
+  --hp-primary-600: #1976d2;
+  --hp-primary-700: #1565c0;
+  --hp-primary-800: #0f4fa0;
+  --hp-primary-900: #0b3a80;
+  --hp-primary-950: #06265a;
 
   /*
-   * Neutral scale tuned toward true grays (inspired by UX4G's warmer
-   * gray-50..900). Keeps a very slight cool cast so the brand indigo reads
-   * naturally on neutral surfaces.
+   * Neutral scale — true cool grays. Form inputs in the Figma are filled
+   * with a soft gray (~#ebedf1) which maps to neutral-100.
    */
   --hp-neutral-0: #ffffff;
-  --hp-neutral-50: #f5f6f8;
+  --hp-neutral-50: #f6f8fb;
   --hp-neutral-100: #ebedf1;
   --hp-neutral-200: #dbdee5;
   --hp-neutral-300: #bec2cc;
@@ -37,25 +43,29 @@
   --hp-neutral-900: #14161b;
   --hp-neutral-950: #0a0b0e;
 
-  /*
-   * Status colors nudged toward UX4G's more muted, government-appropriate
-   * tones: olive-green success, warm ochre warning, darker formal danger.
-   */
-  --hp-success-100: #e3f2d9;
-  --hp-success-500: #4ea820;
-  --hp-success-700: #2f7616;
+  /* Status — brighter, Google/Material-leaning so pill buttons sing. */
+  --hp-success-50: #e6f4ea;
+  --hp-success-100: #ceead6;
+  --hp-success-500: #34a853;
+  --hp-success-600: #2c9048;
+  --hp-success-700: #1e7a38;
 
-  --hp-warning-100: #fbe9d6;
-  --hp-warning-500: #d08637;
-  --hp-warning-700: #8f5a22;
+  --hp-warning-50: #fff4e0;
+  --hp-warning-100: #ffe6bf;
+  --hp-warning-500: #f4a017;
+  --hp-warning-600: #d58807;
+  --hp-warning-700: #9a6306;
 
-  --hp-danger-100: #fbddde;
-  --hp-danger-500: #d11d24;
-  --hp-danger-700: #961217;
+  --hp-danger-50: #fde8e7;
+  --hp-danger-100: #fbd1ce;
+  --hp-danger-500: #ea4335;
+  --hp-danger-600: #d93a2c;
+  --hp-danger-700: #b3261e;
 
-  --hp-info-100: #d7ecff;
-  --hp-info-500: #1e8dff;
-  --hp-info-700: #1567c1;
+  --hp-info-50: #e3f1fd;
+  --hp-info-100: #c5e2fb;
+  --hp-info-500: #1e88e5;
+  --hp-info-700: #1565c0;
 
   /* ---------- Semantic tokens (light) ---------- */
   /*
@@ -65,17 +75,17 @@
    *   --color-background-muted  input / chip tint
    *   --color-surface           cards, sheets
    */
-  --color-background: #fbfbfe;
+  --color-background: #f8fbff;
   --color-background-subtle: var(--hp-neutral-50);
   --color-background-muted: var(--hp-neutral-100);
   --color-background-inverse: var(--hp-neutral-900);
   --color-background-brand: var(--hp-primary-600);
   --color-background-brand-subtle: var(--hp-primary-50);
-  --color-background-brand-softer: #f4f7ff;
+  --color-background-brand-softer: #f1f7fd;
 
   --color-surface: var(--hp-neutral-0);
   --color-surface-raised: var(--hp-neutral-0);
-  --color-surface-overlay: rgba(18, 24, 38, 0.55);
+  --color-surface-overlay: rgba(11, 58, 128, 0.55);
 
   --color-border: var(--hp-neutral-200);
   --color-border-subtle: #eef0f5;
@@ -88,6 +98,7 @@
   --color-text-tertiary: var(--hp-neutral-500);
   --color-text-inverse: var(--hp-neutral-0);
   --color-text-brand: var(--hp-primary-700);
+  --color-text-brand-strong: var(--hp-primary-900);
   --color-text-link: var(--hp-primary-700);
   --color-text-danger: var(--hp-danger-700);
   --color-text-success: var(--hp-success-700);
@@ -97,16 +108,17 @@
   --color-interactive-brand-hover: var(--hp-primary-700);
   --color-interactive-brand-pressed: var(--hp-primary-800);
   --color-interactive-danger: var(--hp-danger-500);
+  --color-interactive-danger-hover: var(--hp-danger-600);
   --color-interactive-success: var(--hp-success-500);
+  --color-interactive-success-hover: var(--hp-success-600);
   --color-interactive-disabled: var(--hp-neutral-200);
 
-  /* Gradient used on marquee hero surfaces so the brand is prominent without
-   * the flat-blue, toy-like feel of a single solid fill. */
+  /* Gradient used on marquee hero surfaces */
   --gradient-brand-hero: linear-gradient(
     135deg,
-    #1b2e6a 0%,
-    #2a4299 40%,
-    #4a6dfa 100%
+    #0b3a80 0%,
+    #1565c0 40%,
+    #1f88de 100%
   );
 
   --color-status-success-bg: var(--hp-success-100);
@@ -117,6 +129,58 @@
   --color-status-danger-fg: var(--hp-danger-700);
   --color-status-info-bg: var(--hp-info-100);
   --color-status-info-fg: var(--hp-info-700);
+
+  /*
+   * Sidebar (portal) — light-blue wash with white text; active row flips
+   * to a white pill card with brand text, matching the Figma reference.
+   */
+  --color-sidebar-bg: #a6d0f5;
+  --color-sidebar-fg: #ffffff;
+  --color-sidebar-fg-muted: rgba(255, 255, 255, 0.82);
+  --color-sidebar-active-bg: #ffffff;
+  --color-sidebar-active-fg: var(--hp-primary-700);
+  --color-sidebar-hover-bg: rgba(255, 255, 255, 0.28);
+  --color-sidebar-border: rgba(255, 255, 255, 0.55);
+
+  /*
+   * Section banner — the full-width saturated-blue band used as a page
+   * sub-header in the Figma (e.g. "Employee Details"). White text, pill
+   * actions sit on it at the right edge.
+   */
+  --color-banner-bg: var(--hp-primary-600);
+  --color-banner-fg: #ffffff;
+
+  /*
+   * Table — light-blue header tint, zebra rows use neutral-50. Action
+   * icon buttons inherit brand.
+   */
+  --color-table-header-bg: var(--hp-primary-50);
+  --color-table-header-fg: var(--hp-primary-900);
+  --color-table-row-alt-bg: var(--hp-neutral-50);
+  --color-table-border: var(--hp-neutral-200);
+
+  /*
+   * Stepper — filled brand for active, gray for idle, lighter brand for
+   * completed (so the progression reads at a glance).
+   */
+  --color-stepper-idle-bg: var(--hp-neutral-200);
+  --color-stepper-idle-fg: var(--hp-neutral-600);
+  --color-stepper-active-bg: var(--hp-primary-600);
+  --color-stepper-active-fg: #ffffff;
+  --color-stepper-done-bg: var(--hp-primary-100);
+  --color-stepper-done-fg: var(--hp-primary-700);
+  --color-stepper-connector: var(--hp-neutral-200);
+  --color-stepper-connector-done: var(--hp-primary-500);
+
+  /*
+   * Input (filled) — light-gray surface matching the Figma. Bordered
+   * variant is controlled by components; both draw focus from the same
+   * brand ring.
+   */
+  --color-input-bg: var(--hp-neutral-100);
+  --color-input-bg-focus: var(--hp-neutral-0);
+  --color-input-border: var(--hp-neutral-200);
+  --color-input-border-focus: var(--hp-primary-500);
 
   /* ---------- Typography ---------- */
   --font-sans: var(--font-montserrat), "Segoe UI", system-ui, -apple-system, sans-serif;
@@ -150,6 +214,7 @@
   --weight-bold: 700;
 
   /* ---------- Spacing & radius ---------- */
+  /* 8pt-aligned; 1 & 3 kept for tight internal gaps. */
   --space-1: 0.25rem;
   --space-2: 0.5rem;
   --space-3: 0.75rem;
@@ -165,26 +230,31 @@
   --radius-md: 0.5rem;
   --radius-lg: 0.75rem;
   --radius-xl: 1rem;
+  --radius-2xl: 1.5rem;
   --radius-pill: 9999px;
+  /* Component-level radius aliases — Figma uses pills for buttons & banner,
+   * rounded-lg for cards/inputs. Change here to restyle system-wide. */
+  --radius-button: var(--radius-pill);
+  --radius-input: var(--radius-md);
+  --radius-card: var(--radius-lg);
+  --radius-banner: var(--radius-md);
+  --radius-modal: var(--radius-lg);
 
   /* ---------- Elevation ---------- */
-  /*
-   * Two-part shadows inspired by UX4G — a crisp 1px key plus a softer
-   * ambient so buttons and cards feel tactile without looking toy-like.
-   */
-  --shadow-sm: 0 1px 2px rgba(20, 22, 27, 0.12), 0 1px 3px rgba(20, 22, 27, 0.06);
-  --shadow-md: 0 2px 4px rgba(20, 22, 27, 0.10), 0 6px 14px rgba(20, 22, 27, 0.08);
-  --shadow-lg: 0 6px 10px rgba(20, 22, 27, 0.10), 0 20px 40px rgba(20, 22, 27, 0.14);
+  --shadow-sm: 0 1px 2px rgba(11, 58, 128, 0.10), 0 1px 3px rgba(11, 58, 128, 0.06);
+  --shadow-md: 0 2px 4px rgba(11, 58, 128, 0.09), 0 6px 14px rgba(11, 58, 128, 0.08);
+  --shadow-lg: 0 6px 10px rgba(11, 58, 128, 0.10), 0 20px 40px rgba(11, 58, 128, 0.14);
+  --shadow-banner: 0 1px 0 rgba(11, 58, 128, 0.08);
 
   /* ---------- Interaction ---------- */
-  /* Focus ring applied by `:focus-visible` on buttons, inputs, and links. */
-  --focus-ring: 0 0 0 4px rgba(47, 95, 234, 0.35);
-  --focus-ring-danger: 0 0 0 4px rgba(209, 29, 36, 0.30);
+  --focus-ring: 0 0 0 4px rgba(25, 118, 210, 0.32);
+  --focus-ring-danger: 0 0 0 4px rgba(234, 67, 53, 0.30);
 
   /* ---------- Layout constants ---------- */
   --tap-target-min: 44px;
-  --button-height: 48px;
-  --input-height: 52px;
+  --button-height: 44px;
+  --button-height-sm: 36px;
+  --input-height: 48px;
   --mobile-max: 430px;
   /*
    * Content-width scale used by PageShell. Forms sit at "narrow"; reading
@@ -193,7 +263,9 @@
   --content-narrow: 36rem;      /* 576px */
   --content-comfortable: 46rem; /* 736px */
   --content-wide: 72rem;        /* 1152px */
-  --header-height: 56px;
+  --content-ultra: 80rem;       /* 1280px — portal dashboards */
+  --header-height: 64px;
+  --sidebar-width: 240px;
 
   color-scheme: light;
 }
@@ -205,7 +277,7 @@
   --color-background-muted: var(--hp-neutral-800);
   --color-background-inverse: var(--hp-neutral-0);
   --color-background-brand: var(--hp-primary-500);
-  --color-background-brand-subtle: rgba(51, 96, 245, 0.12);
+  --color-background-brand-subtle: rgba(31, 136, 222, 0.12);
 
   --color-surface: var(--hp-neutral-900);
   --color-surface-raised: var(--hp-neutral-800);
@@ -218,7 +290,16 @@
   --color-text-tertiary: var(--hp-neutral-400);
   --color-text-inverse: var(--hp-neutral-900);
   --color-text-brand: var(--hp-primary-300);
+  --color-text-brand-strong: var(--hp-primary-200);
   --color-text-link: var(--hp-primary-300);
+
+  --color-sidebar-bg: var(--hp-primary-900);
+  --color-sidebar-active-bg: var(--hp-neutral-0);
+  --color-sidebar-active-fg: var(--hp-primary-700);
+
+  --color-input-bg: var(--hp-neutral-800);
+  --color-input-bg-focus: var(--hp-neutral-900);
+  --color-input-border: var(--hp-neutral-700);
 
   color-scheme: dark;
 }

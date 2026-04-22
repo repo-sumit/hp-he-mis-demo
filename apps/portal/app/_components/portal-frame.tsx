@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { t } from "@hp-mis/i18n";
-import { cn } from "@hp-mis/ui";
+import { cn, Breadcrumbs, SectionBanner, type Crumb } from "@hp-mis/ui";
 import { useSession, type PortalRole } from "./data/session-provider";
 import { RoleSwitcher } from "./admin/role-switcher";
 
@@ -27,15 +27,10 @@ export type PortalNavKey =
 type NavItem = {
   key: PortalNavKey;
   icon: string;
-  /** Who sees this item. */
   roles: PortalRole[];
-  /** Static href used by all roles; overridden by `hrefByRole` when present. */
   href?: string;
-  /** Per-role href override — used by Overview to land each role on their own home. */
   hrefByRole?: Partial<Record<PortalRole, string>>;
-  /** i18n key under `portal.sidebar.*`. */
   labelKey: string;
-  /** Routes that exist but haven't been built — render as non-clickable "Soon". */
   disabled?: boolean;
 };
 
@@ -48,10 +43,6 @@ const ALL_ROLES: PortalRole[] = [
   "leadership",
 ];
 
-/**
- * Overview lands each role on their own "home" so a college operator doesn't
- * have to scroll past state-wide KPIs to reach their queue.
- */
 const OVERVIEW_HREF_BY_ROLE: Partial<Record<PortalRole, string>> = {
   state_admin: "/",
   college_admin: "/college/dashboard",
@@ -104,8 +95,6 @@ const NAV_ITEMS: readonly NavItem[] = [
     href: "/leadership",
     labelKey: "portal.sidebar.leadership",
   },
-  // Placeholders — built in later sprints. Role-filtered so each persona only
-  // sees the "Soon" items they'll eventually use.
   {
     key: "colleges",
     icon: "🏛️",
@@ -171,32 +160,38 @@ const NAV_ITEMS: readonly NavItem[] = [
 ];
 
 interface Props {
-  /** Highlights the matching sidebar item. */
   active: PortalNavKey;
-  /** Top-bar eyebrow text (small, above the title). */
   eyebrow?: string;
-  /** Top-bar title (h1). */
   title: string;
-  /** Optional right-aligned node in the top bar. Defaults to the role switcher. */
   headerRight?: ReactNode;
-  /** Page content. Main gets standard padding; pages can override via `contentClassName`. */
+  /** Optional breadcrumb trail — rendered between header and banner. */
+  breadcrumbs?: readonly Crumb[];
+  /** Optional back-arrow chip for the breadcrumb trail (blue square, matches Figma). */
+  breadcrumbsBackHref?: string;
+  /** Optional saturated-blue page sub-header. Use for detail screens. */
+  banner?: {
+    title: ReactNode;
+    eyebrow?: ReactNode;
+    actions?: ReactNode;
+  };
   children: ReactNode;
-  /** Swap content padding when a page wants an edge-to-edge layout. */
   contentClassName?: string;
 }
 
 /**
- * Shared admin shell — left sidebar, top bar, main content. Desktop-first;
- * collapses to a single column under 1024px and hides the sidebar below 768px
- * (admin traffic is desktop but tablet reviewers exist). Sidebar items are
- * filtered by the session's role, and the Overview item's href flips per
- * role so each persona lands on their own dashboard.
+ * Shared admin shell — left sidebar on light-blue wash, white top bar,
+ * optional breadcrumbs + saturated-blue SectionBanner slot. Role logic is
+ * unchanged from V1: items are filtered by session role, and the Overview
+ * link's href flips per role.
  */
 export function PortalFrame({
   active,
   eyebrow,
   title,
   headerRight,
+  breadcrumbs,
+  breadcrumbsBackHref,
+  banner,
   children,
   contentClassName,
 }: Props) {
@@ -206,27 +201,25 @@ export function PortalFrame({
   const visibleItems = NAV_ITEMS.filter((item) => item.roles.includes(role));
 
   return (
-    <div className="flex min-h-dvh flex-col md:grid md:grid-cols-[240px_1fr]">
-      <aside className="hidden flex-col border-r border-[var(--color-border)] bg-[var(--color-surface)] md:flex">
-        <div className="flex items-center gap-3 border-b border-[var(--color-border)] px-5 py-4">
+    <div className="flex min-h-dvh flex-col md:grid md:grid-cols-[var(--sidebar-width)_1fr]">
+      <aside className="hidden flex-col bg-[var(--color-sidebar-bg)] text-[var(--color-sidebar-fg)] md:flex">
+        <div className="flex flex-col items-center gap-2 border-b border-[var(--color-sidebar-border)] px-5 py-5 text-center">
           <Image
             src="/hpu-logo.png"
             alt="HPU"
-            width={36}
-            height={36}
+            width={72}
+            height={72}
             priority
-            className="h-9 w-9 flex-none rounded-[var(--radius-sm)]"
+            className="h-14 w-14 flex-none rounded-[var(--radius-pill)] bg-white p-1 shadow-[var(--shadow-sm)]"
           />
-          <div className="min-w-0">
-            <p className="text-[var(--text-xs)] uppercase tracking-wide text-[var(--color-text-tertiary)]">
-              Admin portal
-            </p>
-            <p className="truncate text-[var(--text-base)] font-[var(--weight-semibold)] text-[var(--color-text-primary)]">
-              {t("en", "app.name")}
-            </p>
-          </div>
+          <p className="text-[11px] font-[var(--weight-semibold)] uppercase tracking-[var(--tracking-wide)] text-[var(--color-sidebar-fg-muted)]">
+            {t("en", "app.name")}
+          </p>
+          <p className="text-[var(--text-xs)] font-[var(--weight-semibold)] text-[var(--color-sidebar-fg)]">
+            Cycle 2026-27
+          </p>
         </div>
-        <nav className="flex-1 px-2 py-3">
+        <nav className="flex-1 px-3 py-4">
           <ul className="space-y-1">
             {visibleItems.map((item) => {
               const isActive = item.key === active;
@@ -234,6 +227,8 @@ export function PortalFrame({
                 item.hrefByRole?.[role] ??
                 item.href ??
                 "/";
+              const base =
+                "group flex items-center gap-3 rounded-[var(--radius-pill)] px-4 py-2.5 text-[var(--text-sm)]";
               if (item.disabled) {
                 return (
                   <li key={item.key}>
@@ -241,12 +236,13 @@ export function PortalFrame({
                       aria-disabled="true"
                       title="Coming soon"
                       className={cn(
-                        "flex cursor-not-allowed items-center gap-3 rounded-[var(--radius-md)] px-3 py-2 text-[var(--text-sm)] text-[var(--color-text-tertiary)] opacity-70",
+                        base,
+                        "cursor-not-allowed text-[var(--color-sidebar-fg-muted)] opacity-80",
                       )}
                     >
                       <span aria-hidden="true">{item.icon}</span>
-                      <span className="flex-1">{t("en", item.labelKey)}</span>
-                      <span className="rounded-[var(--radius-pill)] bg-[var(--color-background-muted)] px-2 py-0.5 text-[10px] font-[var(--weight-semibold)] uppercase tracking-wide text-[var(--color-text-tertiary)]">
+                      <span className="flex-1 truncate">{t("en", item.labelKey)}</span>
+                      <span className="rounded-[var(--radius-pill)] bg-white/30 px-2 py-0.5 text-[10px] font-[var(--weight-semibold)] uppercase tracking-wide text-white">
                         Soon
                       </span>
                     </div>
@@ -259,27 +255,28 @@ export function PortalFrame({
                     href={href}
                     aria-current={isActive ? "page" : undefined}
                     className={cn(
-                      "flex items-center gap-3 rounded-[var(--radius-md)] px-3 py-2 text-[var(--text-sm)]",
+                      base,
+                      "transition-[background-color,color,box-shadow]",
                       isActive
-                        ? "bg-[var(--color-background-brand-subtle)] font-[var(--weight-semibold)] text-[var(--color-text-brand)]"
-                        : "text-[var(--color-text-secondary)] hover:bg-[var(--color-background-subtle)]",
+                        ? "bg-[var(--color-sidebar-active-bg)] font-[var(--weight-semibold)] text-[var(--color-sidebar-active-fg)] shadow-[var(--shadow-sm)]"
+                        : "text-[var(--color-sidebar-fg)] hover:bg-[var(--color-sidebar-hover-bg)]",
                     )}
                   >
                     <span aria-hidden="true">{item.icon}</span>
-                    <span>{t("en", item.labelKey)}</span>
+                    <span className="truncate">{t("en", item.labelKey)}</span>
                   </Link>
                 </li>
               );
             })}
           </ul>
         </nav>
-        <div className="border-t border-[var(--color-border)] px-5 py-3 text-[var(--text-xs)] text-[var(--color-text-tertiary)]">
-          Demo build · HPU Admission V1
+        <div className="border-t border-[var(--color-sidebar-border)] px-5 py-3 text-[var(--text-xs)] text-[var(--color-sidebar-fg-muted)]">
+          Demo build · HPU V1
         </div>
       </aside>
 
-      <div className="flex min-w-0 flex-col">
-        <header className="flex items-center justify-between gap-4 border-b border-[var(--color-border)] bg-[var(--color-surface)] px-4 py-3 md:px-6">
+      <div className="flex min-w-0 flex-col bg-[var(--color-background)]">
+        <header className="sticky top-0 z-20 flex h-[var(--header-height)] items-center justify-between gap-4 border-b border-[var(--color-border-subtle)] bg-[var(--color-surface)] px-4 md:px-6">
           <div className="flex min-w-0 items-center gap-3">
             <Image
               src="/hpu-logo.png"
@@ -287,10 +284,10 @@ export function PortalFrame({
               width={32}
               height={32}
               priority
-              className="h-8 w-8 flex-none rounded-[var(--radius-sm)] md:hidden"
+              className="h-8 w-8 flex-none rounded-[var(--radius-pill)] bg-white p-0.5 shadow-[var(--shadow-sm)] md:hidden"
             />
             <div className="min-w-0">
-              <p className="text-[var(--text-xs)] uppercase tracking-wide text-[var(--color-text-tertiary)]">
+              <p className="text-[11px] font-[var(--weight-medium)] uppercase tracking-[var(--tracking-wide)] text-[var(--color-text-tertiary)]">
                 {eyebrow ?? "HPU Admission · Cycle 2026-27"}
               </p>
               <h1 className="truncate text-[var(--text-lg)] font-[var(--weight-semibold)] text-[var(--color-text-primary)] md:text-[var(--text-xl)]">
@@ -304,6 +301,21 @@ export function PortalFrame({
         </header>
 
         <main className={cn("flex-1 px-4 py-5 md:px-6 md:py-6", contentClassName)}>
+          {breadcrumbs ? (
+            <Breadcrumbs
+              items={breadcrumbs}
+              backHref={breadcrumbsBackHref}
+              className="mb-4"
+            />
+          ) : null}
+          {banner ? (
+            <SectionBanner
+              title={banner.title}
+              eyebrow={banner.eyebrow}
+              actions={banner.actions}
+              className="mb-5"
+            />
+          ) : null}
           {children}
         </main>
       </div>

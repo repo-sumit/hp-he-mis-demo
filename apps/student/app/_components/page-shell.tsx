@@ -63,14 +63,14 @@ export function PageShell({
 
   return (
     <div className="flex min-h-dvh flex-col bg-[var(--color-background)] text-[var(--color-text-primary)]">
-      <header className="sticky top-0 z-20 border-b border-[var(--color-border-subtle)] bg-[var(--color-surface)]/90 backdrop-blur supports-[backdrop-filter]:bg-[var(--color-surface)]/75">
+      <header className="sticky top-0 z-20 border-b border-[var(--color-border-subtle)] bg-[var(--color-surface)]/92 backdrop-blur supports-[backdrop-filter]:bg-[var(--color-surface)]/80">
         <div className={cn("flex items-center justify-between gap-3 py-3", containerClass)}>
           <div className="flex min-w-0 items-center gap-3">
             {backHref ? (
               <Link
                 href={backHref}
                 aria-label={t("cta.back")}
-                className="inline-flex h-10 w-10 flex-none items-center justify-center rounded-[var(--radius-pill)] border border-[var(--color-border-subtle)] bg-[var(--color-surface)] text-[var(--color-text-primary)] transition-colors hover:bg-[var(--color-background-subtle)]"
+                className="inline-flex h-10 w-10 flex-none items-center justify-center rounded-[var(--radius-pill)] bg-[var(--color-interactive-brand)] text-[var(--color-text-inverse)] shadow-[var(--shadow-sm)] transition-colors hover:bg-[var(--color-interactive-brand-hover)]"
               >
                 <span aria-hidden="true">←</span>
               </Link>
@@ -78,10 +78,10 @@ export function PageShell({
               <Image
                 src="/hpu-logo.png"
                 alt="HPU"
-                width={36}
-                height={36}
+                width={40}
+                height={40}
                 priority
-                className="h-9 w-9 flex-none rounded-[var(--radius-sm)]"
+                className="h-10 w-10 flex-none rounded-[var(--radius-pill)] bg-white p-0.5 shadow-[var(--shadow-sm)]"
               />
             )}
             <div className="min-w-0">

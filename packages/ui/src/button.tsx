@@ -1,44 +1,74 @@
 import type { ButtonHTMLAttributes } from "react";
 import { cn } from "./cn";
 
-type Variant = "primary" | "secondary" | "ghost";
-type Size = "md" | "lg";
+type Variant = "primary" | "secondary" | "ghost" | "danger" | "success";
+type Size = "sm" | "md" | "lg";
+type Shape = "pill" | "md";
 
 export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: Variant;
   size?: Size;
+  shape?: Shape;
   fullWidth?: boolean;
 }
 
 const base =
-  "inline-flex items-center justify-center rounded-[var(--radius-md)] font-[var(--weight-semibold)] " +
-  "transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 " +
-  "focus-visible:outline-[var(--color-border-focus)] disabled:cursor-not-allowed disabled:opacity-60";
+  "inline-flex items-center justify-center gap-2 font-[var(--weight-semibold)] " +
+  "tracking-[var(--tracking-snug)] transition-[background-color,box-shadow,border-color,color] " +
+  "duration-150 select-none focus-visible:outline-none focus-visible:shadow-[var(--focus-ring)] " +
+  "disabled:cursor-not-allowed disabled:opacity-55";
 
 const variants: Record<Variant, string> = {
   primary:
-    "bg-[var(--color-interactive-brand)] text-[var(--color-text-inverse)] hover:bg-[var(--color-interactive-brand-hover)] active:bg-[var(--color-interactive-brand-pressed)]",
+    "bg-[var(--color-interactive-brand)] text-[var(--color-text-inverse)] shadow-[var(--shadow-sm)] " +
+    "hover:bg-[var(--color-interactive-brand-hover)] hover:shadow-[var(--shadow-md)] " +
+    "active:bg-[var(--color-interactive-brand-pressed)] active:shadow-none",
   secondary:
-    "border border-[var(--color-border-strong)] bg-[var(--color-surface)] text-[var(--color-text-primary)] hover:bg-[var(--color-background-subtle)]",
+    "border border-[var(--color-border-strong)] bg-[var(--color-surface)] text-[var(--color-text-primary)] " +
+    "hover:border-[var(--color-border-brand)] hover:bg-[var(--color-background-brand-softer)] " +
+    "hover:text-[var(--color-text-brand)]",
   ghost:
-    "text-[var(--color-text-primary)] hover:bg-[var(--color-background-subtle)]",
+    "text-[var(--color-text-brand)] hover:bg-[var(--color-background-brand-subtle)]",
+  danger:
+    "bg-[var(--color-interactive-danger)] text-[var(--color-text-inverse)] shadow-[var(--shadow-sm)] " +
+    "hover:bg-[var(--color-interactive-danger-hover)] hover:shadow-[var(--shadow-md)] " +
+    "focus-visible:shadow-[var(--focus-ring-danger)]",
+  success:
+    "bg-[var(--color-interactive-success)] text-[var(--color-text-inverse)] shadow-[var(--shadow-sm)] " +
+    "hover:bg-[var(--color-interactive-success-hover)] hover:shadow-[var(--shadow-md)]",
 };
 
 const sizes: Record<Size, string> = {
-  md: "h-11 px-4 text-[var(--text-sm)]",
-  lg: "h-[var(--button-height)] px-6 text-[var(--text-base)]",
+  sm: "h-[var(--button-height-sm)] px-4 text-[var(--text-xs)]",
+  md: "h-[var(--button-height)] px-5 text-[var(--text-sm)]",
+  lg: "h-12 px-6 text-[var(--text-base)]",
+};
+
+const shapes: Record<Shape, string> = {
+  pill: "rounded-[var(--radius-pill)]",
+  md: "rounded-[var(--radius-md)]",
 };
 
 export function Button({
   variant = "primary",
-  size = "lg",
+  size = "md",
+  shape = "pill",
   fullWidth,
   className,
+  type,
   ...props
 }: ButtonProps) {
   return (
     <button
-      className={cn(base, variants[variant], sizes[size], fullWidth && "w-full", className)}
+      type={type ?? "button"}
+      className={cn(
+        base,
+        variants[variant],
+        sizes[size],
+        shapes[shape],
+        fullWidth && "w-full",
+        className,
+      )}
       {...props}
     />
   );

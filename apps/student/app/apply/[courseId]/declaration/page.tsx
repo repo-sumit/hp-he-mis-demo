@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { use, useMemo, useState } from "react";
 import { notFound, useRouter } from "next/navigation";
+import { Stepper, type Step } from "@hp-mis/ui";
 import { PageShell } from "../../../_components/page-shell";
 import { PrimaryButton } from "../../../_components/primary-button";
 import { useLocale } from "../../../_components/locale-provider";
@@ -51,20 +52,33 @@ export default function DeclarationPage({ params }: { params: Promise<Params> })
     router.push(`/apply/${courseId}/submit`);
   }
 
+  // Compact numeric stepper — labels would need new bilingual keys; the
+  // page title already provides context.
+  const applySteps: readonly Step[] = [
+    { number: 1, state: "done" },
+    { number: 2, state: "done" },
+    { number: 3, state: "done" },
+    { number: 4, state: "active" },
+    { number: 5, state: "idle" },
+  ];
+
   return (
     <PageShell
       eyebrow={t("apply.hub.title")}
       title={courseLabel}
       backHref={`/apply/${courseId}/review`}
     >
-      <section>
-        <h2 className="text-[var(--text-xl)] font-[var(--weight-bold)] text-[var(--color-text-primary)]">
-          {t("declaration.title")}
-        </h2>
-        <p className="mt-1 text-[var(--text-sm)] text-[var(--color-text-secondary)]">
-          {t("declaration.subtitle")}
-        </p>
-      </section>
+      <div className="mx-auto max-w-3xl">
+        <Stepper steps={applySteps} variant="compact" className="mb-6" />
+
+        <section>
+          <h2 className="text-[var(--text-xl)] font-[var(--weight-bold)] text-[var(--color-text-primary)]">
+            {t("declaration.title")}
+          </h2>
+          <p className="mt-1 text-[var(--text-sm)] text-[var(--color-text-secondary)]">
+            {t("declaration.subtitle")}
+          </p>
+        </section>
 
       <section className="mt-5 rounded-[var(--radius-lg)] border border-[var(--color-border)] bg-[var(--color-background-brand-subtle)] p-4">
         <p className="text-[var(--text-xs)] uppercase tracking-wide text-[var(--color-text-tertiary)]">
@@ -106,6 +120,7 @@ export default function DeclarationPage({ params }: { params: Promise<Params> })
           {" · "}
           {t("declaration.backHint")}
         </p>
+      </div>
       </div>
     </PageShell>
   );

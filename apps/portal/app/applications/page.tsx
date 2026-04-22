@@ -210,6 +210,10 @@ export default function ApplicationsQueuePage() {
           : "Scrutiny · Cycle 2026-27"
       }
       title="Application queue"
+      banner={{
+        title: session.collegeName ?? "All colleges · HPU-167",
+        eyebrow: "Scrutiny workbench",
+      }}
     >
       <SummaryStrip
         tiles={[
