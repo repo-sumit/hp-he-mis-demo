@@ -16,7 +16,7 @@ export default function HomePage() {
         >
           <div className="grid gap-8 lg:grid-cols-[1.2fr_1fr] lg:items-end">
             <div>
-              <p className="text-[11px] font-[var(--weight-semibold)] uppercase tracking-[var(--tracking-wide)] text-white/70">
+              <p className="text-[var(--text-xxs)] font-[var(--weight-semibold)] uppercase tracking-[var(--tracking-wide)] text-white/85">
                 {t("screen.home.cycleTag")}
               </p>
               <h2 className="mt-3 text-[var(--text-3xl)] font-[var(--weight-bold)] leading-[var(--leading-tight)] tracking-[var(--tracking-tight)] sm:text-[var(--text-4xl)] lg:text-[var(--text-display)]">
@@ -41,7 +41,7 @@ export default function HomePage() {
               </div>
             </div>
             <div className="rounded-[var(--radius-lg)] border border-white/20 bg-white/10 p-4 text-[var(--text-sm)] leading-[var(--leading-relaxed)] text-white/90 backdrop-blur">
-              <p className="text-[11px] font-[var(--weight-semibold)] uppercase tracking-[var(--tracking-wide)] text-white/70">
+              <p className="text-[var(--text-xxs)] font-[var(--weight-semibold)] uppercase tracking-[var(--tracking-wide)] text-white/85">
                 {t("screen.home.cycleBannerLabel")}
               </p>
               <p className="mt-2 text-[var(--text-base)] font-[var(--weight-semibold)] text-white">
@@ -58,7 +58,7 @@ export default function HomePage() {
       <section className="mt-10">
         <div className="flex flex-wrap items-end justify-between gap-2">
           <div>
-            <p className="text-[11px] font-[var(--weight-semibold)] uppercase tracking-[var(--tracking-wide)] text-[var(--color-text-tertiary)]">
+            <p className="text-[var(--text-xxs)] font-[var(--weight-semibold)] uppercase tracking-[var(--tracking-wide)] text-[var(--color-text-tertiary)]">
               {t("preLogin.learnBeforeApplying.title")}
             </p>
             <h3 className="mt-1 text-[var(--text-xl)] font-[var(--weight-semibold)] text-[var(--color-text-primary)] sm:text-[var(--text-2xl)]">

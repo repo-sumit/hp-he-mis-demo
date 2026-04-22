@@ -128,7 +128,7 @@ export default function LoginPage() {
     <PageShell backHref="/" eyebrow={t("app.name")} title={t("screen.login.title")}>
      <div className="mx-auto w-full max-w-xl">
       <section>
-        <p className="text-[11px] font-[var(--weight-semibold)] uppercase tracking-[var(--tracking-wide)] text-[var(--color-text-tertiary)]">
+        <p className="text-[var(--text-xxs)] font-[var(--weight-semibold)] uppercase tracking-[var(--tracking-wide)] text-[var(--color-text-tertiary)]">
           {t("screen.login.eyebrow")}
         </p>
         <h2 className="mt-2 text-[var(--text-2xl)] font-[var(--weight-bold)] leading-[var(--leading-tight)] tracking-[var(--tracking-tight)] text-[var(--color-text-primary)] sm:text-[var(--text-3xl)]">

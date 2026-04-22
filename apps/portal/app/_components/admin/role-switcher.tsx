@@ -26,7 +26,7 @@ export function RoleSwitcher() {
         >
           👤
         </span>
-        <span className="max-w-[10rem] truncate">{ROLE_LABELS[session.role]}</span>
+        <span className="max-w-[var(--content-chip)] truncate">{ROLE_LABELS[session.role]}</span>
         <span className="absolute right-3 text-[var(--text-xs)]">▾</span>
       </span>
       <select

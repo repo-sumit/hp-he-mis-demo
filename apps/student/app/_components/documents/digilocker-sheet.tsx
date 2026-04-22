@@ -113,7 +113,7 @@ export function DigiLockerSheet({ open, preferredCode, onClose, onSelect }: Prop
             className="h-10 w-10 flex-none rounded-[var(--radius-sm)] bg-white/10 p-1"
           />
           <div className="min-w-0 flex-1">
-            <p className="text-[11px] font-[var(--weight-semibold)] uppercase tracking-[var(--tracking-wide)] text-white/70">
+            <p className="text-[var(--text-xxs)] font-[var(--weight-semibold)] uppercase tracking-[var(--tracking-wide)] text-white/85">
               DigiLocker
             </p>
             <h3 className="mt-0.5 text-[var(--text-lg)] font-[var(--weight-bold)]">
@@ -159,7 +159,7 @@ export function DigiLockerSheet({ open, preferredCode, onClose, onSelect }: Prop
                 onClick={() => {
                   onSelect(doc);
                 }}
-                className="flex w-full items-start gap-3 px-5 py-3.5 text-left transition-colors hover:bg-[var(--color-background-brand-softer)]"
+                className="flex w-full items-start gap-3 px-5 py-3 text-left transition-colors hover:bg-[var(--color-background-brand-softer)]"
               >
                 <span
                   aria-hidden="true"

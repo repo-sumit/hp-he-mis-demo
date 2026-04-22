@@ -48,7 +48,7 @@ export default function CollegeDetailPage({ params }: { params: Promise<Params> 
       width="wide"
     >
       <section>
-        <p className="text-[11px] font-[var(--weight-semibold)] uppercase tracking-[var(--tracking-wide)] text-[var(--color-text-tertiary)]">
+        <p className="text-[var(--text-xxs)] font-[var(--weight-semibold)] uppercase tracking-[var(--tracking-wide)] text-[var(--color-text-tertiary)]">
           {t(`discover.college.type.${college.type}`)}
         </p>
         <h2 className="mt-2 text-[var(--text-2xl)] font-[var(--weight-bold)] leading-[var(--leading-tight)] tracking-[var(--tracking-tight)] text-[var(--color-text-primary)] sm:text-[var(--text-3xl)]">
@@ -87,7 +87,7 @@ export default function CollegeDetailPage({ params }: { params: Promise<Params> 
       </section>
 
       <section className="mt-6 rounded-[var(--radius-lg)] border border-[var(--color-border-subtle)] bg-[var(--color-surface)] p-4 sm:p-5">
-        <p className="text-[11px] font-[var(--weight-semibold)] uppercase tracking-[var(--tracking-wide)] text-[var(--color-text-tertiary)]">
+        <p className="text-[var(--text-xxs)] font-[var(--weight-semibold)] uppercase tracking-[var(--tracking-wide)] text-[var(--color-text-tertiary)]">
           {t("discover.college.departments")}
         </p>
         <ul className="mt-2 flex flex-wrap gap-2">
@@ -116,7 +116,7 @@ export default function CollegeDetailPage({ params }: { params: Promise<Params> 
 
       {ready && results.length > 0 ? (
         <section className="mt-8">
-          <h3 className="text-[11px] font-[var(--weight-semibold)] uppercase tracking-[var(--tracking-wide)] text-[var(--color-text-tertiary)]">
+          <h3 className="text-[var(--text-xxs)] font-[var(--weight-semibold)] uppercase tracking-[var(--tracking-wide)] text-[var(--color-text-tertiary)]">
             {t("discover.college.coursesHere")}
           </h3>
           <div className="mt-3 grid gap-3 md:grid-cols-2">
@@ -129,7 +129,7 @@ export default function CollegeDetailPage({ params }: { params: Promise<Params> 
 
       {ready && baResult ? (
         <section className="mt-8">
-          <h3 className="text-[11px] font-[var(--weight-semibold)] uppercase tracking-[var(--tracking-wide)] text-[var(--color-text-tertiary)]">
+          <h3 className="text-[var(--text-xxs)] font-[var(--weight-semibold)] uppercase tracking-[var(--tracking-wide)] text-[var(--color-text-tertiary)]">
             {t("discover.college.combinationsHere")}
           </h3>
           <p className="mt-1 text-[var(--text-sm)] text-[var(--color-text-secondary)]">

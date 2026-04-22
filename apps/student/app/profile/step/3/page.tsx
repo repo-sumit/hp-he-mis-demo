@@ -254,7 +254,7 @@ export default function Step3Page() {
             return (
               <div className="overflow-hidden rounded-[var(--radius-lg)] border border-[var(--color-border)] bg-[var(--color-surface)]">
                 <div
-                  className={`grid ${gridCols} gap-2 border-b border-[var(--color-border)] bg-[var(--color-background-subtle)] px-3 py-2 text-[10px] font-[var(--weight-semibold)] uppercase tracking-wide text-[var(--color-text-tertiary)] sm:text-[var(--text-xs)]`}
+                  className={`grid ${gridCols} gap-2 border-b border-[var(--color-border)] bg-[var(--color-background-subtle)] px-3 py-2 text-[var(--text-2xs)] font-[var(--weight-semibold)] uppercase tracking-wide text-[var(--color-text-tertiary)] sm:text-[var(--text-xs)]`}
                 >
                   <span className="pl-2">{t("profile.step3.table.subject")}</span>
                   <span className="pl-2">{t("profile.step3.table.obtained")}</span>

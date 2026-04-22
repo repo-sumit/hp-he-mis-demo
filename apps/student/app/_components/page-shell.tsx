@@ -85,7 +85,7 @@ export function PageShell({
               />
             )}
             <div className="min-w-0">
-              <p className="truncate text-[11px] font-[var(--weight-semibold)] uppercase tracking-[var(--tracking-wide)] text-[var(--color-text-tertiary)]">
+              <p className="truncate text-[var(--text-xxs)] font-[var(--weight-semibold)] uppercase tracking-[var(--tracking-wide)] text-[var(--color-text-tertiary)]">
                 {eyebrow ?? t("app.name")}
               </p>
               {title ? (

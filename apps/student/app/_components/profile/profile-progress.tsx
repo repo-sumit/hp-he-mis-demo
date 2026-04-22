@@ -24,7 +24,7 @@ export function ProfileProgress({
   return (
     <section className={cn("mb-5", className)} aria-label={t("profile.header.title")}>
       <div className="flex items-baseline justify-between">
-        <p className="text-[11px] font-[var(--weight-semibold)] uppercase tracking-[var(--tracking-wide)] text-[var(--color-text-tertiary)]">
+        <p className="text-[var(--text-xxs)] font-[var(--weight-semibold)] uppercase tracking-[var(--tracking-wide)] text-[var(--color-text-tertiary)]">
           {t("profile.header.progress", { step })}
         </p>
         <span className="text-[var(--text-xs)] font-[var(--weight-medium)] text-[var(--color-text-secondary)]">

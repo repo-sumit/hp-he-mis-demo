@@ -108,7 +108,7 @@ export default function UploadPage({ params }: { params: Promise<Params> }) {
       <section className="rounded-[var(--radius-lg)] border border-[var(--color-border-subtle)] bg-[var(--color-surface)] p-4 sm:p-5">
         <div className="flex items-start justify-between gap-3">
           <div>
-            <p className="text-[11px] font-[var(--weight-semibold)] uppercase tracking-[var(--tracking-wide)] text-[var(--color-text-tertiary)]">
+            <p className="text-[var(--text-xxs)] font-[var(--weight-semibold)] uppercase tracking-[var(--tracking-wide)] text-[var(--color-text-tertiary)]">
               {t("document.checklist.title")}
             </p>
             <h2 className="mt-0.5 text-[var(--text-lg)] font-[var(--weight-semibold)] text-[var(--color-text-primary)]">
@@ -158,7 +158,7 @@ export default function UploadPage({ params }: { params: Promise<Params> }) {
             <span className="min-w-0 flex-1">
               <span className="flex items-center gap-2 text-[var(--text-sm)] font-[var(--weight-semibold)] text-[var(--color-text-primary)]">
                 {t("document.upload.sources.digilockerTitle")}
-                <span className="rounded-[var(--radius-pill)] bg-[var(--color-status-success-bg)] px-2 py-0.5 text-[10px] font-[var(--weight-semibold)] uppercase tracking-[var(--tracking-wide)] text-[var(--color-status-success-fg)]">
+                <span className="rounded-[var(--radius-pill)] bg-[var(--color-status-success-bg)] px-2 py-0.5 text-[var(--text-2xs)] font-[var(--weight-semibold)] uppercase tracking-[var(--tracking-wide)] text-[var(--color-status-success-fg)]">
                   {t("common.recommended")}
                 </span>
               </span>

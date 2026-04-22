@@ -275,7 +275,7 @@ function PublishedBlock({ overlay }: { overlay: MeritOverlay }) {
                 </TD>
                 <TD>
                   <div>{entry.studentName}</div>
-                  <div className="font-mono text-[10px] text-[var(--color-text-tertiary)]">
+                  <div className="font-mono text-[var(--text-2xs)] text-[var(--color-text-tertiary)]">
                     {entry.applicationId}
                   </div>
                 </TD>

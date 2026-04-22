@@ -35,7 +35,7 @@ export function StatusTracker({ currentStep }: { currentStep: StatusStep }) {
         return (
           <li
             key={step}
-            className="relative flex flex-col items-center text-center text-[10px] leading-[var(--leading-tight)]"
+            className="relative flex flex-col items-center text-center text-[var(--text-2xs)] leading-[var(--leading-tight)]"
           >
             <span
               aria-hidden="true"
@@ -53,7 +53,7 @@ export function StatusTracker({ currentStep }: { currentStep: StatusStep }) {
             </span>
             <span
               className={cn(
-                "mt-2 text-[10px] sm:text-[11px]",
+                "mt-2 text-[var(--text-2xs)] sm:text-[var(--text-xxs)]",
                 state === "upcoming"
                   ? "text-[var(--color-text-tertiary)]"
                   : "text-[var(--color-text-secondary)]",

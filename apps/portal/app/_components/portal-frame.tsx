@@ -151,7 +151,7 @@ export function PortalFrame({
             priority
             className="h-14 w-14 flex-none rounded-[var(--radius-pill)] bg-white p-1 shadow-[var(--shadow-sm)]"
           />
-          <p className="text-[11px] font-[var(--weight-semibold)] uppercase tracking-[var(--tracking-wide)] text-[var(--color-sidebar-fg-muted)]">
+          <p className="text-[var(--text-xxs)] font-[var(--weight-semibold)] uppercase tracking-[var(--tracking-wide)] text-[var(--color-sidebar-fg-muted)]">
             {t("en", "app.name")}
           </p>
           <p className="text-[var(--text-xs)] font-[var(--weight-semibold)] text-[var(--color-sidebar-fg)]">
@@ -206,7 +206,7 @@ export function PortalFrame({
               className="h-8 w-8 flex-none rounded-[var(--radius-pill)] bg-white p-0.5 shadow-[var(--shadow-sm)] md:hidden"
             />
             <div className="min-w-0">
-              <p className="text-[11px] font-[var(--weight-medium)] uppercase tracking-[var(--tracking-wide)] text-[var(--color-text-tertiary)]">
+              <p className="text-[var(--text-xxs)] font-[var(--weight-medium)] uppercase tracking-[var(--tracking-wide)] text-[var(--color-text-tertiary)]">
                 {eyebrow ?? "HPU Admission · Cycle 2026-27"}
               </p>
               <h1 className="truncate text-[var(--text-lg)] font-[var(--weight-semibold)] text-[var(--color-text-primary)] md:text-[var(--text-xl)]">

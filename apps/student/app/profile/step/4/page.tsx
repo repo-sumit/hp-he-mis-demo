@@ -122,7 +122,7 @@ export default function Step4Page() {
                     <p className="text-[var(--text-sm)] font-[var(--weight-semibold)] text-[var(--color-text-primary)]">
                       {t(`document.name.${code}`)}
                       {item.conditional ? (
-                        <span className="ml-2 rounded-[var(--radius-pill)] border border-[var(--color-border-subtle)] bg-[var(--color-background-subtle)] px-2 py-0.5 text-[10px] font-[var(--weight-semibold)] uppercase tracking-[var(--tracking-wide)] text-[var(--color-text-tertiary)]">
+                        <span className="ml-2 rounded-[var(--radius-pill)] border border-[var(--color-border-subtle)] bg-[var(--color-background-subtle)] px-2 py-0.5 text-[var(--text-2xs)] font-[var(--weight-semibold)] uppercase tracking-[var(--tracking-wide)] text-[var(--color-text-tertiary)]">
                           {t("common.optional")}
                         </span>
                       ) : null}

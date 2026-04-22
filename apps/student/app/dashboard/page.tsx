@@ -124,7 +124,7 @@ export default function DashboardPage() {
       footer={<BottomTabBar />}
     >
       <section>
-        <p className="text-[11px] font-[var(--weight-semibold)] uppercase tracking-[var(--tracking-wide)] text-[var(--color-text-tertiary)]">
+        <p className="text-[var(--text-xxs)] font-[var(--weight-semibold)] uppercase tracking-[var(--tracking-wide)] text-[var(--color-text-tertiary)]">
           {t("nav.home")}
         </p>
         <h2 className="mt-2 text-[var(--text-2xl)] font-[var(--weight-bold)] leading-[var(--leading-tight)] tracking-[var(--tracking-tight)] text-[var(--color-text-primary)] sm:text-[var(--text-3xl)]">
@@ -149,7 +149,7 @@ export default function DashboardPage() {
 
       <div className="mt-6 grid gap-5 lg:grid-cols-[2fr_1fr] lg:gap-6">
         <section className="rounded-[var(--radius-lg)] border border-[var(--color-border-subtle)] bg-[var(--color-surface)] p-5">
-          <h3 className="text-[11px] font-[var(--weight-semibold)] uppercase tracking-[var(--tracking-wide)] text-[var(--color-text-tertiary)]">
+          <h3 className="text-[var(--text-xxs)] font-[var(--weight-semibold)] uppercase tracking-[var(--tracking-wide)] text-[var(--color-text-tertiary)]">
             {t("screen.dashboard.statusTitle")}
           </h3>
           <div className="mt-4">
@@ -159,7 +159,7 @@ export default function DashboardPage() {
 
         {!hasOpenDiscrepancy ? (
           <section>
-            <h3 className="text-[11px] font-[var(--weight-semibold)] uppercase tracking-[var(--tracking-wide)] text-[var(--color-text-tertiary)]">
+            <h3 className="text-[var(--text-xxs)] font-[var(--weight-semibold)] uppercase tracking-[var(--tracking-wide)] text-[var(--color-text-tertiary)]">
               {t("screen.dashboard.nextActionTitle")}
             </h3>
             <div className="mt-3">
@@ -231,7 +231,7 @@ export default function DashboardPage() {
 
       <div className="mt-6 grid gap-5 lg:grid-cols-[2fr_1fr] lg:gap-6">
         <section>
-          <h3 className="text-[11px] font-[var(--weight-semibold)] uppercase tracking-[var(--tracking-wide)] text-[var(--color-text-tertiary)]">
+          <h3 className="text-[var(--text-xxs)] font-[var(--weight-semibold)] uppercase tracking-[var(--tracking-wide)] text-[var(--color-text-tertiary)]">
             {t("screen.dashboard.quickLinksTitle")}
           </h3>
           <ul className="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
@@ -263,7 +263,7 @@ export default function DashboardPage() {
         </section>
 
         <section>
-          <h3 className="text-[11px] font-[var(--weight-semibold)] uppercase tracking-[var(--tracking-wide)] text-[var(--color-text-tertiary)]">
+          <h3 className="text-[var(--text-xxs)] font-[var(--weight-semibold)] uppercase tracking-[var(--tracking-wide)] text-[var(--color-text-tertiary)]">
             {t("screen.dashboard.notificationsTitle")}
           </h3>
           <ul className="mt-3 divide-y divide-[var(--color-border-subtle)] rounded-[var(--radius-lg)] border border-[var(--color-border-subtle)] bg-[var(--color-surface)] px-4">
