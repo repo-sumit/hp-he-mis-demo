@@ -81,7 +81,7 @@ export default function HomePage() {
             <li key={item.key}>
               <Link
                 href={item.href}
-                className="group flex h-full items-start gap-4 rounded-[var(--radius-lg)] border border-[var(--color-border-subtle)] bg-[var(--color-surface)] p-5 transition-colors hover:border-[var(--color-border-brand)] hover:bg-[var(--color-background-brand-softer)]"
+                className="group flex h-full items-start gap-4 rounded-[var(--radius-lg)] border border-[var(--color-border-subtle)] bg-[var(--color-surface)] p-5 transition-[background-color,border-color,box-shadow] duration-150 ease-out hover:border-[var(--color-border-brand)] hover:bg-[var(--color-background-brand-softer)] hover:shadow-[var(--shadow-md)] focus-visible:outline-none focus-visible:shadow-[var(--focus-ring)]"
               >
                 <span
                   aria-hidden="true"
@@ -99,7 +99,7 @@ export default function HomePage() {
                 </span>
                 <span
                   aria-hidden="true"
-                  className="mt-1 flex-none text-[var(--color-text-tertiary)] transition-transform group-hover:translate-x-0.5"
+                  className="mt-1 flex-none text-[var(--color-text-tertiary)] transition-transform duration-150 ease-out group-hover:translate-x-0.5 group-hover:text-[var(--color-text-brand)]"
                 >
                   →
                 </span>

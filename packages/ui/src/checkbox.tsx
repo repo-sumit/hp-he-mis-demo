@@ -61,8 +61,9 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
     return (
       <label
         className={cn(
-          "flex cursor-pointer items-start gap-3",
-          disabled && "cursor-not-allowed opacity-60",
+          "group flex cursor-pointer items-start gap-3 rounded-[var(--radius-sm)] transition-colors duration-150 ease-out",
+          "hover:text-[var(--color-text-brand)]",
+          disabled && "cursor-not-allowed opacity-60 hover:text-[var(--color-text-primary)]",
         )}
       >
         <span className="mt-0.5 flex flex-none items-center">{box}</span>

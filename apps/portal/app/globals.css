@@ -41,3 +41,20 @@ textarea:focus-visible,
   box-shadow: var(--focus-ring);
   border-radius: var(--radius-md);
 }
+
+/*
+ * Respect the user's OS-level motion preference. Interactive feedback stays
+ * (color/border shifts are instant) but any timed transition or animation
+ * collapses so nothing moves. Focus rings are untouched because they don't
+ * rely on motion.
+ */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+  }
+}

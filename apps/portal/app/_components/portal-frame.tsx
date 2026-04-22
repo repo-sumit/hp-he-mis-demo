@@ -175,10 +175,10 @@ export function PortalFrame({
                     aria-current={isActive ? "page" : undefined}
                     className={cn(
                       base,
-                      "transition-[background-color,color,box-shadow]",
+                      "transition-[background-color,color,box-shadow] duration-150 ease-out",
                       isActive
                         ? "bg-[var(--color-sidebar-active-bg)] font-[var(--weight-semibold)] text-[var(--color-sidebar-active-fg)] shadow-[var(--shadow-sm)]"
-                        : "text-[var(--color-sidebar-fg)] hover:bg-[var(--color-sidebar-hover-bg)]",
+                        : "text-[var(--color-sidebar-fg)] hover:bg-[var(--color-sidebar-hover-bg)] hover:text-[var(--color-sidebar-active-fg)]",
                     )}
                   >
                     <span aria-hidden="true">{item.icon}</span>

@@ -14,11 +14,19 @@ const variants: Record<Variant, string> = {
 export interface CardProps extends HTMLAttributes<HTMLDivElement> {
   variant?: Variant;
   padded?: boolean;
+  /**
+   * Opt-in hover treatment for cards that are themselves clickable
+   * (e.g. wrapped in a <Link> or rendered as an anchor). Adds a calm
+   * border + shadow lift that matches every other interactive surface
+   * in the system.
+   */
+  interactive?: boolean;
 }
 
 export function Card({
   variant = "default",
   padded = true,
+  interactive = false,
   className,
   ...props
 }: CardProps) {
@@ -28,6 +36,8 @@ export function Card({
         "rounded-[var(--radius-card)]",
         variants[variant],
         padded && "p-5",
+        interactive &&
+          "cursor-pointer transition-[background-color,border-color,box-shadow] duration-150 ease-out hover:border-[var(--color-border-brand)] hover:bg-[var(--color-background-brand-softer)] hover:shadow-[var(--shadow-md)] focus-visible:shadow-[var(--focus-ring)] focus-visible:outline-none",
         className,
       )}
       {...props}

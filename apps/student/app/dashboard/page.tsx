@@ -239,11 +239,11 @@ export default function DashboardPage() {
               <li key={link.key}>
                 <Link
                   href={link.href}
-                  className="group flex h-full items-center gap-3 rounded-[var(--radius-lg)] border border-[var(--color-border-subtle)] bg-[var(--color-surface)] p-4 transition-colors hover:border-[var(--color-border-brand)] hover:bg-[var(--color-background-brand-softer)]"
+                  className="group flex h-full items-center gap-3 rounded-[var(--radius-lg)] border border-[var(--color-border-subtle)] bg-[var(--color-surface)] p-4 transition-[background-color,border-color,box-shadow] duration-150 ease-out hover:border-[var(--color-border-brand)] hover:bg-[var(--color-background-brand-softer)] hover:shadow-[var(--shadow-md)] focus-visible:outline-none focus-visible:shadow-[var(--focus-ring)]"
                 >
                   <span
                     aria-hidden="true"
-                    className="flex h-10 w-10 flex-none items-center justify-center rounded-[var(--radius-md)] bg-[var(--color-background-brand-subtle)] text-[var(--color-text-brand)]"
+                    className="flex h-10 w-10 flex-none items-center justify-center rounded-[var(--radius-md)] bg-[var(--color-background-brand-subtle)] text-[var(--color-text-brand)] transition-colors duration-150 ease-out group-hover:bg-[var(--color-interactive-primary)] group-hover:text-[var(--color-text-on-brand)]"
                   >
                     {link.icon}
                   </span>
@@ -252,7 +252,7 @@ export default function DashboardPage() {
                   </span>
                   <span
                     aria-hidden="true"
-                    className="flex-none text-[var(--color-text-tertiary)] transition-transform group-hover:translate-x-0.5"
+                    className="flex-none text-[var(--color-text-tertiary)] transition-transform duration-150 ease-out group-hover:translate-x-0.5 group-hover:text-[var(--color-text-brand)]"
                   >
                     →
                   </span>

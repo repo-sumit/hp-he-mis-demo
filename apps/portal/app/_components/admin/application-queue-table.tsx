@@ -121,10 +121,15 @@ export function ApplicationQueueTable({ rows, emptyMessage }: Props) {
                   <Link
                     href={`/applications/${app.id}`}
                     aria-label={`Open application ${app.id}`}
-                    className="inline-flex h-9 items-center justify-center gap-1 rounded-[var(--radius-pill)] bg-[var(--color-interactive-primary)] px-3 text-[var(--text-xs)] font-[var(--weight-semibold)] text-[var(--color-text-on-brand)] shadow-[var(--shadow-sm)] transition-colors hover:bg-[var(--color-interactive-primary-hover)] focus-visible:outline-none focus-visible:shadow-[var(--focus-ring)]"
+                    className="group/action inline-flex h-9 items-center justify-center gap-2 rounded-[var(--radius-pill)] bg-[var(--color-interactive-primary)] px-3 text-[var(--text-xs)] font-[var(--weight-semibold)] text-[var(--color-text-on-brand)] shadow-[var(--shadow-sm)] transition-[background-color,box-shadow] duration-150 ease-out hover:bg-[var(--color-interactive-primary-hover)] hover:shadow-[var(--shadow-md)] focus-visible:outline-none focus-visible:shadow-[var(--focus-ring)]"
                   >
                     Open
-                    <span aria-hidden="true">→</span>
+                    <span
+                      aria-hidden="true"
+                      className="transition-transform duration-150 ease-out group-hover/action:translate-x-0.5"
+                    >
+                      →
+                    </span>
                   </Link>
                 </TD>
               </TR>

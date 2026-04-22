@@ -14,15 +14,27 @@ import { cn } from "./cn";
  * Callers render their own rows so this stays usable across the portal.
  */
 
+export interface TableShellProps extends HTMLAttributes<HTMLDivElement> {
+  /**
+   * Keep the horizontal overflow indicator (a soft inner shadow on the
+   * right edge) on dense tables so users notice they can scroll. Defaults
+   * to true — safe to leave on because it only renders when content
+   * actually overflows.
+   */
+  overflowHint?: boolean;
+}
+
 export function TableShell({
   className,
   children,
+  overflowHint = true,
   ...props
-}: HTMLAttributes<HTMLDivElement>) {
+}: TableShellProps) {
   return (
     <div
       className={cn(
         "overflow-x-auto rounded-[var(--radius-card)] border border-[var(--color-table-border)] bg-[var(--color-surface)] shadow-[var(--shadow-sm)]",
+        overflowHint && "[scrollbar-gutter:stable]",
         className,
       )}
       {...props}
@@ -44,11 +56,17 @@ export function Table({ className, ...props }: TableHTMLAttributes<HTMLTableElem
   );
 }
 
-export function THead({ className, ...props }: HTMLAttributes<HTMLTableSectionElement>) {
+export interface THeadProps extends HTMLAttributes<HTMLTableSectionElement> {
+  /** Pin the header row while the table body scrolls. Use sparingly. */
+  sticky?: boolean;
+}
+
+export function THead({ className, sticky, ...props }: THeadProps) {
   return (
     <thead
       className={cn(
         "bg-[var(--color-table-header-bg)] text-[var(--color-table-header-fg)]",
+        sticky && "sticky top-0 z-10 shadow-[inset_0_-1px_0_var(--color-table-border)]",
         className,
       )}
       {...props}
@@ -68,11 +86,24 @@ export function TBody({ className, ...props }: HTMLAttributes<HTMLTableSectionEl
   );
 }
 
-export function TR({ className, ...props }: HTMLAttributes<HTMLTableRowElement>) {
+export interface TRProps extends HTMLAttributes<HTMLTableRowElement> {
+  /**
+   * Marks the row as interactive (wraps a navigation or opens a detail
+   * view). Adds a slightly stronger hover + cursor affordance. Rows that
+   * only contain inline actions should leave this off.
+   */
+  clickable?: boolean;
+}
+
+export function TR({ className, clickable, ...props }: TRProps) {
   return (
     <tr
+      data-clickable={clickable ? "" : undefined}
       className={cn(
-        "transition-colors hover:bg-[var(--color-background-brand-softer)]",
+        "transition-colors duration-150 ease-out",
+        clickable
+          ? "cursor-pointer hover:bg-[var(--color-background-brand-softer)]"
+          : "hover:bg-[var(--color-background-brand-softer)]",
         className,
       )}
       {...props}

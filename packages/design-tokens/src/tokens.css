@@ -299,6 +299,14 @@
   --focus-ring: 0 0 0 4px rgba(25, 118, 210, 0.32);
   --focus-ring-danger: 0 0 0 4px rgba(234, 67, 53, 0.30);
 
+  /* Motion tokens — calm, fast, institutional. `fast` is the default for
+   * hover/color/border changes; `base` is reserved for larger shape
+   * changes (shadow lift on interactive cards). Easing curve matches
+   * Material's "standard" curve for a neutral, professional feel. */
+  --ease-out: cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-fast: 150ms var(--ease-out);
+  --transition-base: 200ms var(--ease-out);
+
   /* ---------- Layout constants ---------- */
   --tap-target-min: 44px;
   --button-height: 44px;

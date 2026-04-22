@@ -64,3 +64,20 @@ textarea:focus-visible,
 [role="button"]:focus-visible {
   outline: none;
 }
+
+/*
+ * Respect the user's OS-level motion preference. Hover/color feedback
+ * stays visible (it's just state, not motion) but timed transitions and
+ * animations collapse so nothing decorative moves. Focus rings are
+ * unaffected because they aren't motion-driven.
+ */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+  }
+}
