@@ -25,6 +25,10 @@ const QUICK_LINKS = [
 
 const BASE_NOTIFICATIONS = [
   { key: "dates", time: "1 hr ago", unread: true },
+  { key: "phaseOpen", time: "Today, 10:00 AM", unread: true },
+  { key: "digilocker", time: "Yesterday", unread: false },
+  { key: "helpdesk", time: "2 days ago", unread: false },
+  { key: "language", time: "3 days ago", unread: false },
 ] as const;
 
 type NextActionVariant =

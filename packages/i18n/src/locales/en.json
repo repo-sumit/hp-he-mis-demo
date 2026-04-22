@@ -378,6 +378,9 @@
       "quickLinksTitle": "Quick links",
       "mockNotifications": {
         "dates": "Applications close 24 June 2026, 5:00 PM.",
+        "phaseOpen": "Cycle 2026-27 is now open. You can register and start your profile.",
+        "digilocker": "Use DigiLocker to fetch your marksheet and domicile certificate in one tap.",
+        "helpdesk": "Stuck on a step? The helpdesk is live 9 AM–6 PM on weekdays.",
         "language": "Tip: switch language any time from the top of the screen."
       }
     }
