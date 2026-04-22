@@ -72,16 +72,27 @@ export default function ApplicationsListPage() {
       width="comfortable"
       footer={<BottomTabBar />}
     >
-      <section>
-        <p className="text-[var(--text-xxs)] font-[var(--weight-semibold)] uppercase tracking-[var(--tracking-wide)] text-[var(--color-text-tertiary)]">
-          {t("nav.myApplications")}
-        </p>
-        <h2 className="mt-2 text-[var(--text-2xl)] font-[var(--weight-bold)] leading-[var(--leading-tight)] tracking-[var(--tracking-tight)] text-[var(--color-text-primary)] sm:text-[var(--text-3xl)]">
-          {t("apply.myApps.title")}
-        </h2>
-        <p className="mt-1 text-[var(--text-sm)] text-[var(--color-text-secondary)] sm:text-[var(--text-base)]">
-          {t("apply.myApps.subtitle")}
-        </p>
+      <section className="flex flex-wrap items-start justify-between gap-4">
+        <div className="min-w-0 flex-1">
+          <p className="text-[var(--text-xxs)] font-[var(--weight-semibold)] uppercase tracking-[var(--tracking-wide)] text-[var(--color-text-tertiary)]">
+            {t("nav.myApplications")}
+          </p>
+          <h2 className="mt-2 text-[var(--text-2xl)] font-[var(--weight-bold)] leading-[var(--leading-tight)] tracking-[var(--tracking-tight)] text-[var(--color-text-primary)] sm:text-[var(--text-3xl)]">
+            {t("apply.myApps.title")}
+          </h2>
+          <p className="mt-1 text-[var(--text-sm)] text-[var(--color-text-secondary)] sm:text-[var(--text-base)]">
+            {t("apply.myApps.subtitle")}
+          </p>
+        </div>
+        {hydrated && rows.length > 0 ? (
+          <Link
+            href="/discover"
+            className="inline-flex h-11 items-center justify-center gap-2 rounded-[var(--radius-pill)] bg-[var(--color-interactive-primary)] px-5 text-[var(--text-sm)] font-[var(--weight-semibold)] text-[var(--color-text-on-brand)] shadow-[var(--shadow-sm)] transition-[background-color,box-shadow] duration-150 ease-out hover:bg-[var(--color-interactive-primary-hover)] hover:shadow-[var(--shadow-md)] focus-visible:outline-none focus-visible:shadow-[var(--focus-ring)]"
+          >
+            <span aria-hidden="true">＋</span>
+            {t("cta.applyToMore")}
+          </Link>
+        ) : null}
       </section>
 
       {!hydrated ? (

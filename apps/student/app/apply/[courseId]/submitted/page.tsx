@@ -98,13 +98,20 @@ export default function SubmittedPage({ params }: { params: Promise<Params> }) {
       </section>
 
       <div className="sticky bottom-0 -mx-4 mt-5 space-y-2 border-t border-[var(--color-border)] bg-[var(--color-surface)] px-4 py-3">
-        <PrimaryLink href="/dashboard">{t("cta.backToDashboard")}</PrimaryLink>
-        <p className="text-center text-[var(--text-xs)]">
+        <PrimaryLink href="/discover">{t("cta.applyToAnother")}</PrimaryLink>
+        <p className="flex items-center justify-center gap-3 text-center text-[var(--text-xs)]">
           <Link
             href="/applications"
-            className="font-[var(--weight-medium)] text-[var(--color-text-link)]"
+            className="font-[var(--weight-medium)] text-[var(--color-text-link)] hover:underline underline-offset-4"
           >
             {t("cta.viewApplications")}
+          </Link>
+          <span aria-hidden="true" className="text-[var(--color-text-tertiary)]">·</span>
+          <Link
+            href="/dashboard"
+            className="font-[var(--weight-medium)] text-[var(--color-text-link)] hover:underline underline-offset-4"
+          >
+            {t("cta.backToDashboard")}
           </Link>
         </p>
       </div>

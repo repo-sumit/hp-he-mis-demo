@@ -43,11 +43,16 @@ export default function SubmitPage({ params }: { params: Promise<Params> }) {
       return;
     }
 
+    // Fire the submission and navigate after a short success-card beat.
+    // Important: no cleanup `clearTimeout` here. `submit()` mutates the
+    // provider state, which re-identifies the `submit` / `getDraft` deps,
+    // which retriggers this effect. A cleanup that cancels the timer on
+    // re-run would swallow the redirect and leave the user stuck on the
+    // "Processing…" screen forever.
     submit(courseId);
-    const timer = window.setTimeout(() => {
+    window.setTimeout(() => {
       router.replace(`/apply/${courseId}/submitted`);
     }, 1200);
-    return () => window.clearTimeout(timer);
   }, [hydrated, courseId, getDraft, submit, router]);
 
   return (
