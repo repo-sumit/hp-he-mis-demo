@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Card, CardBody, CardTitle } from "@hp-mis/ui";
+import { Badge, Card, CardBody, CardTitle } from "@hp-mis/ui";
 import { PortalFrame } from "../../_components/portal-frame";
 import { SummaryStrip } from "../../_components/admin/summary-strip";
 import {
@@ -38,6 +38,17 @@ function ConvenorQueueInner() {
       active="convenor_queue"
       eyebrow="Convenor · Second-level review"
       title="Convenor queue"
+      banner={{
+        title: "Flagged for convenor review",
+        eyebrow: "Second-level review",
+        actions: (
+          <Badge tone={flagged.length > 0 ? "warning" : "success"} dot>
+            {flagged.length > 0
+              ? `${flagged.length} waiting`
+              : "Nothing waiting"}
+          </Badge>
+        ),
+      }}
     >
       <SummaryStrip
         tiles={[
@@ -67,41 +78,42 @@ function ConvenorQueueInner() {
       </section>
 
       <section className="mt-6 space-y-3">
-        <h3 className="text-[var(--text-sm)] font-[var(--weight-semibold)] uppercase tracking-wide text-[var(--color-text-tertiary)]">
+        <h3 className="text-[var(--text-xs)] font-[var(--weight-semibold)] uppercase tracking-[var(--tracking-wide)] text-[var(--color-text-tertiary)]">
           Flagged applications
         </h3>
         {flagged.length === 0 ? (
-          <p className="rounded-[var(--radius-lg)] border border-dashed border-[var(--color-border-strong)] bg-[var(--color-background-subtle)] px-4 py-5 text-center text-[var(--text-sm)] text-[var(--color-text-secondary)]">
-            Nothing waiting — colleges haven't forwarded anything to the convenor yet.
-          </p>
+          <Card variant="flat" className="border-dashed text-center">
+            <p className="text-[var(--text-sm)] text-[var(--color-text-secondary)]">
+              Nothing waiting — colleges haven't forwarded anything to the convenor yet.
+            </p>
+          </Card>
         ) : (
           flagged.map((app) => (
-            <article
-              key={app.id}
-              className="flex flex-wrap items-start justify-between gap-3 rounded-[var(--radius-lg)] border border-[var(--color-border)] bg-[var(--color-surface)] p-4"
-            >
-              <div className="min-w-0 flex-1">
-                <p className="font-[var(--weight-semibold)] text-[var(--color-text-primary)]">
-                  {app.studentName}
-                </p>
-                <p className="font-mono text-[var(--text-xs)] text-[var(--color-text-tertiary)]">
-                  {app.id}
-                </p>
-                <p className="mt-1 text-[var(--text-xs)] text-[var(--color-text-secondary)]">
-                  {app.courseCode} · {app.collegeName} ·{" "}
-                  {formatRelative(app.submittedAt)}
-                </p>
-              </div>
-              <div className="flex items-center gap-2">
-                <StatusPill status={effectiveStatus(app.id)} />
-                <Link
-                  href={`/applications/${app.id}`}
-                  className="inline-flex h-9 items-center justify-center rounded-[var(--radius-md)] bg-[var(--color-interactive-brand)] px-3 text-[var(--text-xs)] font-[var(--weight-semibold)] text-[var(--color-text-inverse)] hover:bg-[var(--color-interactive-brand-hover)]"
-                >
-                  Review →
-                </Link>
-              </div>
-            </article>
+            <Card key={app.id} padded={false}>
+              <article className="flex flex-wrap items-start justify-between gap-3 p-4">
+                <div className="min-w-0 flex-1">
+                  <p className="font-[var(--weight-semibold)] text-[var(--color-text-primary)]">
+                    {app.studentName}
+                  </p>
+                  <p className="font-mono text-[var(--text-xs)] text-[var(--color-text-tertiary)]">
+                    {app.id}
+                  </p>
+                  <p className="mt-1 text-[var(--text-xs)] text-[var(--color-text-secondary)]">
+                    {app.courseCode} · {app.collegeName} ·{" "}
+                    {formatRelative(app.submittedAt)}
+                  </p>
+                </div>
+                <div className="flex items-center gap-2">
+                  <StatusPill status={effectiveStatus(app.id)} />
+                  <Link
+                    href={`/applications/${app.id}`}
+                    className="inline-flex h-[var(--button-height-sm)] items-center justify-center gap-1.5 rounded-[var(--radius-pill)] bg-[var(--color-interactive-brand)] px-4 text-[var(--text-xs)] font-[var(--weight-semibold)] text-[var(--color-text-inverse)] shadow-[var(--shadow-sm)] transition-[background-color,box-shadow] hover:bg-[var(--color-interactive-brand-hover)] hover:shadow-[var(--shadow-md)]"
+                  >
+                    Review <span aria-hidden="true">→</span>
+                  </Link>
+                </div>
+              </article>
+            </Card>
           ))
         )}
       </section>

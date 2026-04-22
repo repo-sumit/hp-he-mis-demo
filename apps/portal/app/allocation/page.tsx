@@ -2,7 +2,21 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { t as translate } from "@hp-mis/i18n";
-import { Card, CardBody, CardTitle, cn } from "@hp-mis/ui";
+import {
+  Badge,
+  Button,
+  Card,
+  CardBody,
+  CardTitle,
+  Table,
+  TableShell,
+  TBody,
+  TD,
+  TH,
+  THead,
+  TR,
+  cn,
+} from "@hp-mis/ui";
 import {
   ALLOCATION_STORAGE_KEY,
   MERIT_STORAGE_KEY,
@@ -276,21 +290,15 @@ export default function SeatAllocationPage() {
                   : t("portal.allocation.noMerit")
               }
               action={
-                <button
-                  type="button"
+                <Button
+                  variant="primary"
                   onClick={() => run(row)}
                   disabled={!meritReady}
-                  className={cn(
-                    "inline-flex h-10 items-center justify-center rounded-[var(--radius-md)] px-4 text-[var(--text-sm)] font-[var(--weight-semibold)]",
-                    meritReady
-                      ? "bg-[var(--color-interactive-brand)] text-[var(--color-text-inverse)] hover:bg-[var(--color-interactive-brand-hover)]"
-                      : "cursor-not-allowed bg-[var(--color-background-muted)] text-[var(--color-text-tertiary)]",
-                  )}
                 >
                   {overlay
                     ? t("portal.allocation.rerunCta")
                     : t("portal.allocation.runCta")}
-                </button>
+                </Button>
               }
             >
               {!meritReady ? (
@@ -326,7 +334,7 @@ export default function SeatAllocationPage() {
 function AllocationResultBlock({ overlay }: { overlay: AllocationOverlay }) {
   return (
     <div>
-      <div className="flex flex-wrap items-center gap-3 text-[var(--text-xs)] text-[var(--color-text-tertiary)]">
+      <div className="flex flex-wrap items-center gap-2 text-[var(--text-xs)] text-[var(--color-text-tertiary)]">
         <span title={formatTimestamp(overlay.runAt)}>
           {t("portal.allocation.runAt", {
             n: overlay.roundNumber,
@@ -334,50 +342,39 @@ function AllocationResultBlock({ overlay }: { overlay: AllocationOverlay }) {
           })}
         </span>
         <span>· {overlay.runBy}</span>
-        <span className="rounded-[var(--radius-pill)] bg-[var(--color-status-success-bg)] px-2 py-0.5 font-[var(--weight-semibold)] text-[var(--color-status-success-fg)]">
+        <Badge tone="success">
           {t("portal.allocation.seatsOffered", { n: overlay.seatsOffered })}
-        </span>
-        <span className="rounded-[var(--radius-pill)] bg-[var(--color-background-muted)] px-2 py-0.5 font-[var(--weight-semibold)] text-[var(--color-text-secondary)]">
+        </Badge>
+        <Badge tone="neutral">
           {t("portal.allocation.seatsVacant", { n: overlay.seatsVacantAfterRound })}
-        </span>
+        </Badge>
       </div>
 
-      <div className="mt-3 overflow-x-auto rounded-[var(--radius-md)] border border-[var(--color-border)]">
-        <table className="w-full text-left text-[var(--text-sm)]">
-          <thead className="bg-[var(--color-background-subtle)] text-[var(--text-xs)] uppercase tracking-wide text-[var(--color-text-tertiary)]">
-            <tr>
-              <th className="px-3 py-2 font-[var(--weight-semibold)]">
-                {t("portal.allocation.rankHeader")}
-              </th>
-              <th className="px-3 py-2 font-[var(--weight-semibold)]">
-                {t("portal.allocation.studentHeader")}
-              </th>
-              <th className="px-3 py-2 font-[var(--weight-semibold)]">
-                {t("portal.allocation.offerHeader")}
-              </th>
-              <th className="px-3 py-2 font-[var(--weight-semibold)]">
-                {t("portal.allocation.responseHeader")}
-              </th>
-            </tr>
-          </thead>
-          <tbody>
+      <TableShell className="mt-3">
+        <Table>
+          <THead>
+            <TR>
+              <TH>{t("portal.allocation.rankHeader")}</TH>
+              <TH>{t("portal.allocation.studentHeader")}</TH>
+              <TH>{t("portal.allocation.offerHeader")}</TH>
+              <TH>{t("portal.allocation.responseHeader")}</TH>
+            </TR>
+          </THead>
+          <TBody>
             {overlay.allocations.map((entry) => {
               const tone = RESPONSE_TONE[entry.status];
               return (
-                <tr
-                  key={entry.applicationId}
-                  className="border-t border-[var(--color-border)]"
-                >
-                  <td className="px-3 py-2 font-[var(--weight-semibold)] text-[var(--color-text-primary)]">
+                <TR key={entry.applicationId}>
+                  <TD className="font-[var(--weight-semibold)] text-[var(--color-text-primary)]">
                     {entry.rank}
-                  </td>
-                  <td className="px-3 py-2 text-[var(--color-text-primary)]">
+                  </TD>
+                  <TD>
                     <div>{entry.studentName}</div>
                     <div className="font-mono text-[10px] text-[var(--color-text-tertiary)]">
                       {entry.applicationId}
                     </div>
-                  </td>
-                  <td className="px-3 py-2 text-[var(--color-text-primary)]">
+                  </TD>
+                  <TD>
                     <div>{entry.offer.collegeName}</div>
                     {entry.offer.combinationLabel ? (
                       <div className="text-[var(--text-xs)] text-[var(--color-text-tertiary)]">
@@ -387,23 +384,23 @@ function AllocationResultBlock({ overlay }: { overlay: AllocationOverlay }) {
                     <div className="text-[var(--text-xs)] text-[var(--color-text-tertiary)]">
                       ₹{entry.offer.feeAmount}
                     </div>
-                  </td>
-                  <td className="px-3 py-2">
+                  </TD>
+                  <TD>
                     <span
                       className={cn(
-                        "rounded-[var(--radius-pill)] px-2 py-0.5 text-[var(--text-xs)] font-[var(--weight-semibold)]",
+                        "inline-flex rounded-[var(--radius-pill)] px-2.5 py-0.5 text-[var(--text-xs)] font-[var(--weight-semibold)]",
                         tone.className,
                       )}
                     >
                       {t(tone.key)}
                     </span>
-                  </td>
-                </tr>
+                  </TD>
+                </TR>
               );
             })}
-          </tbody>
-        </table>
-      </div>
+          </TBody>
+        </Table>
+      </TableShell>
     </div>
   );
 }

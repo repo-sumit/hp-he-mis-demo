@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { notFound, useRouter, useSearchParams } from "next/navigation";
 import { use, useMemo, useState } from "react";
+import { Badge, Button, Input, Select, Textarea } from "@hp-mis/ui";
 import { PortalFrame } from "../../../_components/portal-frame";
 import { ApplicationSummaryHeader } from "../../../_components/admin/application-summary-header";
 import { ReviewSectionCard } from "../../../_components/admin/review-section-card";
@@ -46,6 +47,9 @@ const SCOPE_OPTIONS: Array<{ value: DiscrepancyScope; label: string; hint: strin
 ];
 
 const DEFAULT_DEADLINE = "Friday, 26 June 2026, 5:00 PM";
+
+const FIELD_LABEL_CLASS =
+  "text-[var(--text-xs)] font-[var(--weight-semibold)] uppercase tracking-[var(--tracking-wide)] text-[var(--color-text-tertiary)]";
 
 export default function DiscrepancyPage({ params }: { params: Promise<Params> }) {
   const { applicationId } = use(params);
@@ -120,12 +124,18 @@ export default function DiscrepancyPage({ params }: { params: Promise<Params> })
       active="applications"
       eyebrow="Raise discrepancy"
       title={app.studentName}
+      breadcrumbs={[
+        { label: "Applications", href: "/applications" },
+        { label: app.studentName, href: `/applications/${applicationId}` },
+        { label: "Discrepancy" },
+      ]}
+      breadcrumbsBackHref={`/applications/${applicationId}/scrutiny`}
       headerRight={
         <Link
           href={`/applications/${applicationId}/scrutiny`}
-          className="inline-flex h-9 items-center justify-center rounded-[var(--radius-md)] border border-[var(--color-border-strong)] bg-[var(--color-surface)] px-3 text-[var(--text-sm)] font-[var(--weight-medium)] text-[var(--color-text-primary)] hover:bg-[var(--color-background-subtle)]"
+          className="inline-flex h-[var(--button-height-sm)] items-center gap-2 rounded-[var(--radius-pill)] border border-[var(--color-border-strong)] bg-[var(--color-surface)] px-4 text-[var(--text-xs)] font-[var(--weight-semibold)] text-[var(--color-text-primary)] transition-colors hover:border-[var(--color-border-brand)] hover:bg-[var(--color-background-brand-softer)] hover:text-[var(--color-text-brand)]"
         >
-          ← Back to scrutiny
+          <span aria-hidden="true">←</span> Back to scrutiny
         </Link>
       }
     >
@@ -150,7 +160,7 @@ export default function DiscrepancyPage({ params }: { params: Promise<Params> })
                     type="button"
                     onClick={() => setScope(opt.value)}
                     aria-pressed={active}
-                    className={`flex min-h-[60px] items-start gap-3 rounded-[var(--radius-md)] border px-3 py-2.5 text-left transition-colors ${
+                    className={`flex min-h-[60px] items-start gap-3 rounded-[var(--radius-md)] border px-3 py-2.5 text-left transition-colors focus-visible:outline-none focus-visible:shadow-[var(--focus-ring)] ${
                       active
                         ? "border-[var(--color-border-brand)] bg-[var(--color-background-brand-subtle)]"
                         : "border-[var(--color-border-strong)] bg-[var(--color-surface)] hover:bg-[var(--color-background-subtle)]"
@@ -182,19 +192,19 @@ export default function DiscrepancyPage({ params }: { params: Promise<Params> })
 
           {scope === "document" ? (
             <ReviewSectionCard title="Which document?">
-              <label className="flex flex-col gap-1 text-[var(--text-xs)] text-[var(--color-text-secondary)]">
-                Document
-                <select
+              <label className="flex flex-col gap-1.5">
+                <span className={FIELD_LABEL_CLASS}>Document</span>
+                <Select
+                  variant="filled"
                   value={docCode}
                   onChange={(event) => setDocCode(event.target.value)}
-                  className="h-10 rounded-[var(--radius-md)] border border-[var(--color-border-strong)] bg-[var(--color-surface)] px-2 text-[var(--text-sm)] text-[var(--color-text-primary)] focus:border-[var(--color-border-focus)] focus:ring-2 focus:ring-[var(--color-border-focus)]/30"
                 >
                   {app.documents.map((doc) => (
                     <option key={doc.code} value={doc.code}>
                       {docNameFor(doc.code)} — {doc.fileName}
                     </option>
                   ))}
-                </select>
+                </Select>
               </label>
             </ReviewSectionCard>
           ) : null}
@@ -203,12 +213,12 @@ export default function DiscrepancyPage({ params }: { params: Promise<Params> })
             title="Reason"
             description="Start from a template so the student sees a clear Hindi + English message, or write a custom reason."
           >
-            <label className="flex flex-col gap-1 text-[var(--text-xs)] text-[var(--color-text-secondary)]">
-              Template
-              <select
+            <label className="flex flex-col gap-1.5">
+              <span className={FIELD_LABEL_CLASS}>Template</span>
+              <Select
+                variant="filled"
                 value={templateId}
                 onChange={(event) => setTemplateId(event.target.value)}
-                className="h-10 rounded-[var(--radius-md)] border border-[var(--color-border-strong)] bg-[var(--color-surface)] px-2 text-[var(--text-sm)] text-[var(--color-text-primary)] focus:border-[var(--color-border-focus)] focus:ring-2 focus:ring-[var(--color-border-focus)]/30"
               >
                 {availableTemplates.map((tmpl) => (
                   <option key={tmpl.id} value={tmpl.id}>
@@ -216,40 +226,44 @@ export default function DiscrepancyPage({ params }: { params: Promise<Params> })
                   </option>
                 ))}
                 <option value="__custom__">Custom reason</option>
-              </select>
+              </Select>
             </label>
 
             {templateId === "__custom__" ? (
               <div className="mt-3 space-y-3">
-                <label className="flex flex-col gap-1 text-[var(--text-xs)] text-[var(--color-text-secondary)]">
-                  English
-                  <textarea
+                <label className="flex flex-col gap-1.5">
+                  <span className={FIELD_LABEL_CLASS}>English</span>
+                  <Textarea
+                    variant="filled"
                     value={customReasonEn}
                     onChange={(event) => setCustomReasonEn(event.target.value)}
                     rows={2}
-                    className="min-h-[72px] w-full rounded-[var(--radius-md)] border border-[var(--color-border-strong)] bg-[var(--color-surface)] px-3 py-2 text-[var(--text-sm)] text-[var(--color-text-primary)] focus:border-[var(--color-border-focus)] focus:ring-2 focus:ring-[var(--color-border-focus)]/30"
+                    className="min-h-[72px]"
                   />
                 </label>
-                <label className="flex flex-col gap-1 text-[var(--text-xs)] text-[var(--color-text-secondary)]">
-                  हिन्दी
-                  <textarea
+                <label className="flex flex-col gap-1.5">
+                  <span className={FIELD_LABEL_CLASS}>हिन्दी</span>
+                  <Textarea
+                    variant="filled"
                     value={customReasonHi}
                     onChange={(event) => setCustomReasonHi(event.target.value)}
                     rows={2}
                     lang="hi"
-                    className="min-h-[72px] w-full rounded-[var(--radius-md)] border border-[var(--color-border-strong)] bg-[var(--color-surface)] px-3 py-2 text-[var(--text-sm)] leading-[var(--leading-devanagari)] text-[var(--color-text-primary)] focus:border-[var(--color-border-focus)] focus:ring-2 focus:ring-[var(--color-border-focus)]/30"
+                    className="min-h-[72px] leading-[var(--leading-devanagari)]"
                   />
                 </label>
               </div>
             ) : null}
 
-            <label className="mt-4 flex flex-col gap-1 text-[var(--text-xs)] text-[var(--color-text-secondary)]">
-              Deadline (shown to the student exactly as written)
-              <input
+            <label className="mt-4 flex flex-col gap-1.5">
+              <span className={FIELD_LABEL_CLASS}>
+                Deadline (shown to the student exactly as written)
+              </span>
+              <Input
+                variant="filled"
                 type="text"
                 value={deadline}
                 onChange={(event) => setDeadline(event.target.value)}
-                className="h-10 rounded-[var(--radius-md)] border border-[var(--color-border-strong)] bg-[var(--color-surface)] px-2 text-[var(--text-sm)] text-[var(--color-text-primary)] focus:border-[var(--color-border-focus)] focus:ring-2 focus:ring-[var(--color-border-focus)]/30"
               />
             </label>
           </ReviewSectionCard>
@@ -258,9 +272,10 @@ export default function DiscrepancyPage({ params }: { params: Promise<Params> })
         <div className="space-y-4 lg:sticky lg:top-4 lg:self-start">
           <StudentMessagePreview reasonEn={reasonEn} reasonHi={reasonHi} deadline={deadline} />
           {error ? (
-            <p className="rounded-[var(--radius-md)] bg-[var(--color-status-danger-bg)] px-3 py-2 text-[var(--text-xs)] text-[var(--color-status-danger-fg)]">
-              ⚠ {error}
-            </p>
+            <Badge tone="danger" className="w-full justify-start whitespace-normal rounded-[var(--radius-md)] px-3 py-2 text-[var(--text-xs)]">
+              <span aria-hidden="true">⚠</span>
+              {error}
+            </Badge>
           ) : null}
         </div>
       </div>
@@ -275,17 +290,13 @@ export default function DiscrepancyPage({ params }: { params: Promise<Params> })
       >
         <Link
           href={`/applications/${applicationId}`}
-          className="inline-flex h-10 items-center justify-center rounded-[var(--radius-md)] border border-[var(--color-border-strong)] bg-[var(--color-surface)] px-3 text-[var(--text-sm)] font-[var(--weight-medium)] text-[var(--color-text-primary)] hover:bg-[var(--color-background-subtle)]"
+          className="inline-flex h-[var(--button-height)] items-center justify-center rounded-[var(--radius-pill)] border border-[var(--color-border-strong)] bg-[var(--color-surface)] px-5 text-[var(--text-sm)] font-[var(--weight-semibold)] text-[var(--color-text-primary)] transition-colors hover:border-[var(--color-border-brand)] hover:bg-[var(--color-background-brand-softer)] hover:text-[var(--color-text-brand)]"
         >
           Cancel
         </Link>
-        <button
-          type="button"
-          onClick={handleSubmit}
-          className="inline-flex h-10 items-center justify-center rounded-[var(--radius-md)] border border-[var(--color-status-warning-fg)] bg-[var(--color-status-warning-bg)] px-4 text-[var(--text-sm)] font-[var(--weight-semibold)] text-[var(--color-status-warning-fg)]"
-        >
-          Raise discrepancy →
-        </button>
+        <Button variant="warning" onClick={handleSubmit}>
+          Raise discrepancy <span aria-hidden="true">→</span>
+        </Button>
       </ActionFooter>
     </PortalFrame>
   );

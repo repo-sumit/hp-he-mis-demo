@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Card, CardBody, CardTitle } from "@hp-mis/ui";
+import { Badge, Card, CardBody, CardTitle } from "@hp-mis/ui";
 import { PortalFrame } from "../../_components/portal-frame";
 import { SummaryStrip } from "../../_components/admin/summary-strip";
 import { useSession } from "../../_components/data/session-provider";
@@ -32,6 +32,15 @@ export default function CollegeDashboardPage() {
       active="college_dashboard"
       eyebrow={`Cycle 2026-27 · ${collegeName}`}
       title="My college"
+      banner={{
+        title: collegeName,
+        eyebrow: "College dashboard",
+        actions: (
+          <Badge tone={pending > 0 ? "warning" : "success"} dot>
+            {pending > 0 ? `${pending} pending scrutiny` : "Queue clear"}
+          </Badge>
+        ),
+      }}
     >
       <SummaryStrip
         tiles={[
@@ -61,9 +70,9 @@ export default function CollegeDashboardPage() {
             <div className="mt-4">
               <Link
                 href="/applications"
-                className="inline-flex h-10 items-center justify-center rounded-[var(--radius-md)] bg-[var(--color-interactive-brand)] px-4 text-[var(--text-sm)] font-[var(--weight-semibold)] text-[var(--color-text-inverse)] hover:bg-[var(--color-interactive-brand-hover)]"
+                className="inline-flex h-[var(--button-height)] items-center justify-center gap-1.5 rounded-[var(--radius-pill)] bg-[var(--color-interactive-brand)] px-6 text-[var(--text-sm)] font-[var(--weight-semibold)] text-[var(--color-text-inverse)] shadow-[var(--shadow-sm)] transition-[background-color,box-shadow] hover:bg-[var(--color-interactive-brand-hover)] hover:shadow-[var(--shadow-md)]"
               >
-                Open queue →
+                Open queue <span aria-hidden="true">→</span>
               </Link>
             </div>
           </CardBody>
@@ -71,9 +80,14 @@ export default function CollegeDashboardPage() {
 
         <Card>
           <CardTitle>Your role</CardTitle>
-          <CardBody>
-            Signed in as <strong>{session.name}</strong> — {roleLabel(session.role)}. Your
-            queue and actions are scoped to {collegeName}.
+          <CardBody className="mt-3 space-y-2">
+            <div className="flex items-center gap-2">
+              <Badge tone="brand">{roleLabel(session.role)}</Badge>
+            </div>
+            <p>
+              Signed in as <strong>{session.name}</strong>. Your queue and actions are
+              scoped to {collegeName}.
+            </p>
           </CardBody>
         </Card>
       </section>
@@ -82,7 +96,7 @@ export default function CollegeDashboardPage() {
 }
 
 function roleLabel(role: string): string {
-  if (role === "college_admin") return "College Admin (Principal)";
+  if (role === "college_admin") return "College Admin · Principal";
   if (role === "college_operator") return "College Operator";
   return role;
 }

@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { notFound, useRouter } from "next/navigation";
 import { use, useState } from "react";
+import { Button, Modal, Textarea } from "@hp-mis/ui";
 import { PortalFrame } from "../../../_components/portal-frame";
 import { ApplicationSummaryHeader } from "../../../_components/admin/application-summary-header";
 import { ReviewSectionCard } from "../../../_components/admin/review-section-card";
@@ -35,6 +36,7 @@ export default function ScrutinyWorkbenchPage({ params }: { params: Promise<Para
   } = useScrutiny();
 
   const [actionNote, setActionNote] = useState("");
+  const [showRejectConfirm, setShowRejectConfirm] = useState(false);
 
   const app = effective(applicationId);
   if (!app) notFound();
@@ -106,17 +108,29 @@ export default function ScrutinyWorkbenchPage({ params }: { params: Promise<Para
     setFieldOutcome(applicationId, key, outcome);
   }
 
+  function confirmReject() {
+    setStatus(applicationId, "rejected", actionNote || undefined);
+    setActionNote("");
+    setShowRejectConfirm(false);
+  }
+
   return (
     <PortalFrame
       active="applications"
       eyebrow="Scrutiny workbench"
       title={app.studentName}
+      breadcrumbs={[
+        { label: "Applications", href: "/applications" },
+        { label: app.studentName, href: `/applications/${applicationId}` },
+        { label: "Scrutiny" },
+      ]}
+      breadcrumbsBackHref={`/applications/${applicationId}`}
       headerRight={
         <Link
           href={`/applications/${applicationId}`}
-          className="inline-flex h-9 items-center justify-center rounded-[var(--radius-md)] border border-[var(--color-border-strong)] bg-[var(--color-surface)] px-3 text-[var(--text-sm)] font-[var(--weight-medium)] text-[var(--color-text-primary)] hover:bg-[var(--color-background-subtle)]"
+          className="inline-flex h-[var(--button-height-sm)] items-center gap-2 rounded-[var(--radius-pill)] border border-[var(--color-border-strong)] bg-[var(--color-surface)] px-4 text-[var(--text-xs)] font-[var(--weight-semibold)] text-[var(--color-text-primary)] transition-colors hover:border-[var(--color-border-brand)] hover:bg-[var(--color-background-brand-softer)] hover:text-[var(--color-text-brand)]"
         >
-          ← Application detail
+          <span aria-hidden="true">←</span> Application detail
         </Link>
       }
     >
@@ -212,12 +226,12 @@ export default function ScrutinyWorkbenchPage({ params }: { params: Promise<Para
           title="Outcome note"
           description="Optional — gets attached to the audit trail alongside the action you pick below."
         >
-          <textarea
+          <Textarea
+            variant="outline"
             value={actionNote}
             onChange={(event) => setActionNote(event.target.value)}
             rows={3}
             placeholder="e.g. BoF matches marksheet; SC certificate verified against district roster."
-            className="min-h-[84px] w-full rounded-[var(--radius-md)] border border-[var(--color-border-strong)] bg-[var(--color-surface)] px-3 py-2 text-[var(--text-sm)] text-[var(--color-text-primary)] outline-none placeholder:text-[var(--color-text-tertiary)] focus:border-[var(--color-border-focus)] focus:ring-2 focus:ring-[var(--color-border-focus)]/30"
           />
         </ReviewSectionCard>
       </div>
@@ -238,54 +252,74 @@ export default function ScrutinyWorkbenchPage({ params }: { params: Promise<Para
       >
         <Link
           href={`/applications/${applicationId}`}
-          className="inline-flex h-10 items-center justify-center rounded-[var(--radius-md)] border border-[var(--color-border-strong)] bg-[var(--color-surface)] px-3 text-[var(--text-sm)] font-[var(--weight-medium)] text-[var(--color-text-primary)] hover:bg-[var(--color-background-subtle)]"
+          className="inline-flex h-[var(--button-height)] items-center justify-center rounded-[var(--radius-pill)] border border-[var(--color-border-strong)] bg-[var(--color-surface)] px-5 text-[var(--text-sm)] font-[var(--weight-semibold)] text-[var(--color-text-primary)] transition-colors hover:border-[var(--color-border-brand)] hover:bg-[var(--color-background-brand-softer)] hover:text-[var(--color-text-brand)]"
         >
           Back
         </Link>
-        <button
-          type="button"
-          onClick={() =>
-            router.push(`/applications/${applicationId}/discrepancy`)
-          }
-          className="inline-flex h-10 items-center justify-center gap-1 rounded-[var(--radius-md)] border border-[var(--color-status-warning-fg)] bg-[var(--color-status-warning-bg)] px-3 text-[var(--text-sm)] font-[var(--weight-semibold)] text-[var(--color-status-warning-fg)]"
+        <Button
+          variant="warning"
+          onClick={() => router.push(`/applications/${applicationId}/discrepancy`)}
         >
           <span aria-hidden="true">⚠</span>
           Raise discrepancy
-        </button>
-        <button
-          type="button"
-          onClick={() => {
-            setStatus(applicationId, "rejected", actionNote || undefined);
-            setActionNote("");
-          }}
-          className="inline-flex h-10 items-center justify-center gap-1 rounded-[var(--radius-md)] border border-[var(--color-text-danger)] bg-[var(--color-status-danger-bg)] px-3 text-[var(--text-sm)] font-[var(--weight-semibold)] text-[var(--color-status-danger-fg)]"
-        >
+        </Button>
+        <Button variant="danger" onClick={() => setShowRejectConfirm(true)}>
           <span aria-hidden="true">✕</span>
           Reject
-        </button>
-        <button
-          type="button"
+        </Button>
+        <Button
+          variant="secondary"
           onClick={() => {
             setStatus(applicationId, "conditional", actionNote || undefined);
             setActionNote("");
           }}
-          className="inline-flex h-10 items-center justify-center gap-1 rounded-[var(--radius-md)] border border-[var(--color-status-warning-fg)] bg-[var(--color-surface)] px-3 text-[var(--text-sm)] font-[var(--weight-semibold)] text-[var(--color-status-warning-fg)] hover:bg-[var(--color-status-warning-bg)]"
+          className="border-[var(--color-status-warning-fg)] text-[var(--color-status-warning-fg)] hover:border-[var(--color-status-warning-fg)] hover:bg-[var(--color-status-warning-bg)] hover:text-[var(--color-status-warning-fg)]"
         >
           <span aria-hidden="true">~</span>
           Conditional accept
-        </button>
-        <button
-          type="button"
+        </Button>
+        <Button
+          variant="success"
           onClick={() => {
             setStatus(applicationId, "verified", actionNote || undefined);
             setActionNote("");
           }}
-          className="inline-flex h-10 items-center justify-center gap-1 rounded-[var(--radius-md)] bg-[var(--color-interactive-success)] px-4 text-[var(--text-sm)] font-[var(--weight-semibold)] text-[var(--color-text-inverse)]"
         >
           <span aria-hidden="true">✓</span>
           Verify application
-        </button>
+        </Button>
       </ActionFooter>
+
+      <Modal
+        open={showRejectConfirm}
+        onClose={() => setShowRejectConfirm(false)}
+        tone="danger"
+        size="sm"
+        title="Reject application?"
+        caption="This action cannot be undone*"
+        footer={
+          <>
+            <Button
+              variant="secondary"
+              onClick={() => setShowRejectConfirm(false)}
+            >
+              No
+            </Button>
+            <Button variant="danger" onClick={confirmReject}>
+              Yes, reject
+            </Button>
+          </>
+        }
+      >
+        <p className="text-center">
+          Application <strong className="font-mono text-[var(--color-text-primary)]">{app.id}</strong>{" "}
+          from <strong className="text-[var(--color-text-primary)]">{app.studentName}</strong>{" "}
+          will move to <strong className="text-[var(--color-text-primary)]">Rejected</strong>.
+          {actionNote
+            ? " Your outcome note will be attached to the audit trail."
+            : ""}
+        </p>
+      </Modal>
     </PortalFrame>
   );
 }

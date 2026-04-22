@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { use, useEffect, useMemo, useState } from "react";
+import { Badge, Button } from "@hp-mis/ui";
 import { PortalFrame } from "../../_components/portal-frame";
 import { ApplicationSummaryHeader } from "../../_components/admin/application-summary-header";
 import { TabNav, type TabItem } from "../../_components/admin/tab-nav";
@@ -62,12 +63,17 @@ export default function ApplicationDetailPage({ params }: { params: Promise<Para
       active="applications"
       eyebrow="Application detail"
       title={app.studentName}
+      breadcrumbs={[
+        { label: "Applications", href: "/applications" },
+        { label: app.studentName },
+      ]}
+      breadcrumbsBackHref="/applications"
       headerRight={
         <Link
           href="/applications"
-          className="inline-flex h-9 items-center justify-center rounded-[var(--radius-md)] border border-[var(--color-border-strong)] bg-[var(--color-surface)] px-3 text-[var(--text-sm)] font-[var(--weight-medium)] text-[var(--color-text-primary)] hover:bg-[var(--color-background-subtle)]"
+          className="inline-flex h-[var(--button-height-sm)] items-center gap-2 rounded-[var(--radius-pill)] border border-[var(--color-border-strong)] bg-[var(--color-surface)] px-4 text-[var(--text-xs)] font-[var(--weight-semibold)] text-[var(--color-text-primary)] transition-colors hover:border-[var(--color-border-brand)] hover:bg-[var(--color-background-brand-softer)] hover:text-[var(--color-text-brand)]"
         >
-          ← Back to queue
+          <span aria-hidden="true">←</span> Back to queue
         </Link>
       }
     >
@@ -237,28 +243,32 @@ export default function ApplicationDetailPage({ params }: { params: Promise<Para
       <ActionFooter
         meta={
           <span>
-            {discCount > 0 ? `${discCount} open discrepancy · ` : ""}
+            {discCount > 0 ? (
+              <Badge tone="warning" className="mr-2">
+                {discCount} open
+              </Badge>
+            ) : null}
             Last activity {formatTimestamp(app.history[app.history.length - 1]?.at ?? app.submittedAt)}
           </span>
         }
       >
         <Link
           href="/applications"
-          className="inline-flex h-10 items-center justify-center rounded-[var(--radius-md)] border border-[var(--color-border-strong)] bg-[var(--color-surface)] px-3 text-[var(--text-sm)] font-[var(--weight-medium)] text-[var(--color-text-primary)] hover:bg-[var(--color-background-subtle)]"
+          className="inline-flex h-[var(--button-height)] items-center justify-center rounded-[var(--radius-pill)] border border-[var(--color-border-strong)] bg-[var(--color-surface)] px-5 text-[var(--text-sm)] font-[var(--weight-semibold)] text-[var(--color-text-primary)] transition-colors hover:border-[var(--color-border-brand)] hover:bg-[var(--color-background-brand-softer)] hover:text-[var(--color-text-brand)]"
         >
           Back to queue
         </Link>
         <Link
           href={`/applications/${applicationId}/discrepancy`}
-          className="inline-flex h-10 items-center justify-center rounded-[var(--radius-md)] border border-[var(--color-status-warning-fg)] bg-[var(--color-status-warning-bg)] px-3 text-[var(--text-sm)] font-[var(--weight-semibold)] text-[var(--color-status-warning-fg)]"
+          className="inline-flex h-[var(--button-height)] items-center justify-center gap-1.5 rounded-[var(--radius-pill)] border border-[var(--color-status-warning-fg)] bg-[var(--color-status-warning-bg)] px-5 text-[var(--text-sm)] font-[var(--weight-semibold)] text-[var(--color-status-warning-fg)] transition-colors hover:bg-[var(--color-status-warning-fg)] hover:text-[var(--color-text-inverse)]"
         >
-          Raise discrepancy
+          <span aria-hidden="true">⚠</span> Raise discrepancy
         </Link>
         <Link
           href={`/applications/${applicationId}/scrutiny`}
-          className="inline-flex h-10 items-center justify-center rounded-[var(--radius-md)] bg-[var(--color-interactive-brand)] px-4 text-[var(--text-sm)] font-[var(--weight-semibold)] text-[var(--color-text-inverse)] hover:bg-[var(--color-interactive-brand-hover)]"
+          className="inline-flex h-[var(--button-height)] items-center justify-center gap-1.5 rounded-[var(--radius-pill)] bg-[var(--color-interactive-brand)] px-6 text-[var(--text-sm)] font-[var(--weight-semibold)] text-[var(--color-text-inverse)] shadow-[var(--shadow-sm)] transition-[background-color,box-shadow] hover:bg-[var(--color-interactive-brand-hover)] hover:shadow-[var(--shadow-md)]"
         >
-          Open scrutiny workbench →
+          Open scrutiny workbench <span aria-hidden="true">→</span>
         </Link>
       </ActionFooter>
     </PortalFrame>

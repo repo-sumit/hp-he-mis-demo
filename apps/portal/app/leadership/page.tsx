@@ -1,6 +1,6 @@
 "use client";
 
-import { Card, CardBody, CardTitle } from "@hp-mis/ui";
+import { Badge, Card, CardBody, CardTitle } from "@hp-mis/ui";
 import {
   COLLEGES,
   COLLEGE_COUNT_BY_DISTRICT,
@@ -69,11 +69,12 @@ export default function LeadershipDashboardPage() {
       active="leadership"
       eyebrow="HPU Admission · Department of Higher Education · Cycle 2026-27"
       title="Leadership dashboard"
+      banner={{
+        title: "Department of Higher Education",
+        eyebrow: "Leadership overview · Cycle 2026-27",
+        actions: <Badge tone="info">Read-only</Badge>,
+      }}
     >
-      <div className="mb-4 rounded-[var(--radius-md)] border border-[var(--color-border)] bg-[var(--color-background-subtle)] px-4 py-3 text-[var(--text-xs)] text-[var(--color-text-secondary)]">
-        Read-only view · No write actions available from this role.
-      </div>
-
       <SummaryStrip
         tiles={[
           { label: "Applications to date", value: total },
@@ -150,9 +151,9 @@ export default function LeadershipDashboardPage() {
                     <span className="text-[var(--color-text-primary)]">
                       {COLLEGE_TYPE_LABEL[type] ?? type}
                     </span>
-                    <span className="text-[var(--color-text-secondary)]">
+                    <Badge tone="neutral">
                       {n} college{n === 1 ? "" : "s"}
-                    </span>
+                    </Badge>
                   </li>
                 ))}
             </ul>
@@ -161,11 +162,15 @@ export default function LeadershipDashboardPage() {
 
         <Card>
           <CardTitle>Reservation mix (current queue)</CardTitle>
-          <CardBody>
-            <ul className="space-y-1 text-[var(--text-sm)]">
-              <li>SC / ST / OBC applications: {scStObc}</li>
-              <li>Single Girl Child claims: {girlChild}</li>
-            </ul>
+          <CardBody className="mt-3 space-y-2 text-[var(--text-sm)]">
+            <div className="flex items-center justify-between">
+              <span>SC / ST / OBC applications</span>
+              <Badge tone="brand">{scStObc}</Badge>
+            </div>
+            <div className="flex items-center justify-between">
+              <span>Single Girl Child claims</span>
+              <Badge tone="brand">{girlChild}</Badge>
+            </div>
           </CardBody>
         </Card>
 

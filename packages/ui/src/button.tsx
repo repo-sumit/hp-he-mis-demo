@@ -1,7 +1,7 @@
 import type { ButtonHTMLAttributes } from "react";
 import { cn } from "./cn";
 
-type Variant = "primary" | "secondary" | "ghost" | "danger" | "success";
+type Variant = "primary" | "secondary" | "ghost" | "danger" | "success" | "warning";
 type Size = "sm" | "md" | "lg";
 type Shape = "pill" | "md";
 
@@ -36,6 +36,9 @@ const variants: Record<Variant, string> = {
   success:
     "bg-[var(--color-interactive-success)] text-[var(--color-text-inverse)] shadow-[var(--shadow-sm)] " +
     "hover:bg-[var(--color-interactive-success-hover)] hover:shadow-[var(--shadow-md)]",
+  warning:
+    "bg-[var(--color-status-warning-bg)] text-[var(--color-status-warning-fg)] border border-[var(--color-status-warning-fg)] " +
+    "hover:bg-[var(--color-status-warning-fg)] hover:text-[var(--color-text-inverse)]",
 };
 
 const sizes: Record<Size, string> = {

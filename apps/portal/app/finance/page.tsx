@@ -1,6 +1,6 @@
 "use client";
 
-import { Card, CardBody, CardTitle } from "@hp-mis/ui";
+import { Badge, Card, CardBody, CardTitle } from "@hp-mis/ui";
 import { PortalFrame } from "../_components/portal-frame";
 import { SummaryStrip } from "../_components/admin/summary-strip";
 
@@ -15,6 +15,11 @@ export default function FinanceDashboardPage() {
       active="finance"
       eyebrow="Finance · Cycle 2026-27"
       title="Finance overview"
+      banner={{
+        title: "Finance · Cycle 2026-27",
+        eyebrow: "Finance",
+        actions: <Badge tone="info">Demo shell</Badge>,
+      }}
     >
       <SummaryStrip
         tiles={[
@@ -37,12 +42,12 @@ export default function FinanceDashboardPage() {
         </Card>
         <Card>
           <CardTitle>Coming soon</CardTitle>
-          <CardBody>
-            <ul className="space-y-1 text-[var(--text-sm)] text-[var(--color-text-primary)]">
-              <li>• Fee structure editor</li>
-              <li>• Transaction ledger</li>
-              <li>• Refund approval queue</li>
-              <li>• Finance reports</li>
+          <CardBody className="mt-3">
+            <ul className="flex flex-wrap gap-2 text-[var(--text-sm)]">
+              <li><Badge tone="neutral">Fee structure editor</Badge></li>
+              <li><Badge tone="neutral">Transaction ledger</Badge></li>
+              <li><Badge tone="neutral">Refund approval queue</Badge></li>
+              <li><Badge tone="neutral">Finance reports</Badge></li>
             </ul>
           </CardBody>
         </Card>

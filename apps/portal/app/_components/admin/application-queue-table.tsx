@@ -1,7 +1,18 @@
 "use client";
 
 import Link from "next/link";
-import { cn } from "@hp-mis/ui";
+import {
+  Badge,
+  Table,
+  TableEmpty,
+  TableShell,
+  TBody,
+  TD,
+  TH,
+  THead,
+  TR,
+  cn,
+} from "@hp-mis/ui";
 import type { AppBaseStatus, MockApplication } from "../data/mock-applications";
 import { StatusPill } from "./status-pill";
 import { formatRelative } from "./format";
@@ -27,52 +38,44 @@ interface Props {
 export function ApplicationQueueTable({ rows, emptyMessage }: Props) {
   if (rows.length === 0) {
     return (
-      <section className="rounded-[var(--radius-lg)] border border-dashed border-[var(--color-border-strong)] bg-[var(--color-background-subtle)] p-6 text-center text-[var(--text-sm)] text-[var(--color-text-secondary)]">
-        {emptyMessage}
-      </section>
+      <TableShell>
+        <TableEmpty>{emptyMessage}</TableEmpty>
+      </TableShell>
     );
   }
 
   return (
-    <section className="overflow-x-auto rounded-[var(--radius-md)] border border-[var(--color-border)] bg-[var(--color-surface)]">
-      <table className="w-full min-w-[720px] border-collapse text-left text-[var(--text-sm)]">
-        <thead className="border-b border-[var(--color-border)] bg-[var(--color-background-subtle)] text-[11px] font-[var(--weight-semibold)] uppercase tracking-[var(--tracking-wide)] text-[var(--color-text-tertiary)]">
-          <tr>
-            <Th>Student</Th>
-            <Th>Course · College</Th>
-            <Th>Category</Th>
-            <Th>Status</Th>
-            <Th>Submitted</Th>
-            <Th className="text-right">&nbsp;</Th>
-          </tr>
-        </thead>
-        <tbody>
-          {rows.map(({ app, status, discrepancyCount }, idx) => {
+    <TableShell>
+      <Table className="min-w-[720px]">
+        <THead>
+          <TR>
+            <TH>Student</TH>
+            <TH>Course · College</TH>
+            <TH>Category</TH>
+            <TH>Status</TH>
+            <TH>Submitted</TH>
+            <TH className="text-right">&nbsp;</TH>
+          </TR>
+        </THead>
+        <TBody>
+          {rows.map(({ app, status, discrepancyCount }) => {
             const isAsha = app.studentName === "Asha Sharma";
             const needsAttention = status === "discrepancy_raised" || discrepancyCount > 0;
             return (
-              <tr
+              <TR
                 key={app.id}
                 className={cn(
-                  "border-t border-[var(--color-border-subtle)] transition-colors hover:bg-[var(--color-background-brand-softer)]",
-                  idx % 2 === 1
-                    ? "bg-[var(--color-background-subtle)]/50"
-                    : "bg-[var(--color-surface)]",
                   needsAttention
                     ? "shadow-[inset_2px_0_0_var(--color-status-warning-fg)]"
                     : "",
                 )}
               >
-                <Td>
+                <TD className="align-top">
                   <div className="flex flex-wrap items-center gap-2">
                     <p className="font-[var(--weight-semibold)] text-[var(--color-text-primary)]">
                       {app.studentName}
                     </p>
-                    {isAsha ? (
-                      <span className="rounded-[var(--radius-pill)] bg-[var(--color-background-brand-subtle)] px-1.5 py-0.5 text-[10px] font-[var(--weight-semibold)] uppercase tracking-wide text-[var(--color-text-brand)]">
-                        Demo hero
-                      </span>
-                    ) : null}
+                    {isAsha ? <Badge tone="brand">Demo hero</Badge> : null}
                   </div>
                   <p className="font-mono text-[var(--text-xs)] text-[var(--color-text-tertiary)]">
                     {app.id}
@@ -80,8 +83,8 @@ export function ApplicationQueueTable({ rows, emptyMessage }: Props) {
                   <p className="text-[var(--text-xs)] text-[var(--color-text-tertiary)]">
                     {app.studentEmail}
                   </p>
-                </Td>
-                <Td>
+                </TD>
+                <TD className="align-top">
                   <p className="font-[var(--weight-medium)] text-[var(--color-text-primary)]">
                     {app.courseCode}
                   </p>
@@ -92,59 +95,43 @@ export function ApplicationQueueTable({ rows, emptyMessage }: Props) {
                     {app.preferences.length} preference
                     {app.preferences.length === 1 ? "" : "s"}
                   </p>
-                </Td>
-                <Td>
-                  <span className="inline-flex rounded-[var(--radius-pill)] border border-[var(--color-border)] bg-[var(--color-background-subtle)] px-2 py-0.5 text-[var(--text-xs)] uppercase tracking-wide text-[var(--color-text-secondary)]">
+                </TD>
+                <TD className="align-top">
+                  <Badge tone="neutral" className="uppercase">
                     {app.studentCategory.toUpperCase()}
-                  </span>
-                </Td>
-                <Td>
+                  </Badge>
+                </TD>
+                <TD className="align-top">
                   <div className="flex flex-wrap items-center gap-1.5">
                     <StatusPill status={status} />
                     {discrepancyCount > 0 ? (
-                      <span className="inline-flex items-center gap-1 rounded-[var(--radius-pill)] bg-[var(--color-status-warning-bg)] px-2 py-0.5 text-[var(--text-xs)] font-[var(--weight-semibold)] text-[var(--color-status-warning-fg)]">
-                        ⚠ {discrepancyCount}
-                      </span>
+                      <Badge tone="warning">
+                        <span aria-hidden="true">⚠</span>
+                        {discrepancyCount}
+                      </Badge>
                     ) : null}
                   </div>
-                </Td>
-                <Td>
+                </TD>
+                <TD className="align-top">
                   <span className="text-[var(--text-xs)] text-[var(--color-text-secondary)]">
                     {formatRelative(app.submittedAt)}
                   </span>
-                </Td>
-                <Td className="text-right">
+                </TD>
+                <TD className="text-right align-top">
                   <Link
                     href={`/applications/${app.id}`}
-                    className="inline-flex h-9 items-center justify-center rounded-[var(--radius-md)] bg-[var(--color-interactive-brand)] px-3 text-[var(--text-xs)] font-[var(--weight-semibold)] text-[var(--color-text-inverse)] hover:bg-[var(--color-interactive-brand-hover)]"
+                    aria-label={`Open application ${app.id}`}
+                    className="inline-flex h-9 items-center justify-center gap-1 rounded-[var(--radius-pill)] bg-[var(--color-interactive-brand)] px-3 text-[var(--text-xs)] font-[var(--weight-semibold)] text-[var(--color-text-inverse)] shadow-[var(--shadow-sm)] transition-colors hover:bg-[var(--color-interactive-brand-hover)] focus-visible:outline-none focus-visible:shadow-[var(--focus-ring)]"
                   >
-                    Open →
+                    Open
+                    <span aria-hidden="true">→</span>
                   </Link>
-                </Td>
-              </tr>
+                </TD>
+              </TR>
             );
           })}
-        </tbody>
-      </table>
-    </section>
-  );
-}
-
-function Th({ children, className }: { children: React.ReactNode; className?: string }) {
-  return (
-    <th
-      scope="col"
-      className={cn("px-4 py-2.5 font-[var(--weight-semibold)]", className)}
-    >
-      {children}
-    </th>
-  );
-}
-
-function Td({ children, className }: { children: React.ReactNode; className?: string }) {
-  return (
-    <td className={cn("px-4 py-3 align-top text-[var(--text-sm)] text-[var(--color-text-primary)]", className)}>
-      {children}
-    </td>
+        </TBody>
+      </Table>
+    </TableShell>
   );
 }

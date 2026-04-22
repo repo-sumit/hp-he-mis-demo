@@ -2,7 +2,20 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { t as translate } from "@hp-mis/i18n";
-import { Card, CardBody, CardTitle, cn } from "@hp-mis/ui";
+import {
+  Badge,
+  Button,
+  Card,
+  CardBody,
+  CardTitle,
+  Table,
+  TableShell,
+  TBody,
+  TD,
+  TH,
+  THead,
+  TR,
+} from "@hp-mis/ui";
 import {
   MERIT_STORAGE_KEY,
   computeMeritRanks,
@@ -189,21 +202,15 @@ export default function MeritCompilationPage() {
               title={bucket.courseCode}
               description={buildBucketDescription(bucket)}
               action={
-                <button
-                  type="button"
+                <Button
+                  variant="primary"
                   onClick={() => publish(bucket)}
                   disabled={!canPublish}
-                  className={cn(
-                    "inline-flex h-10 items-center justify-center rounded-[var(--radius-md)] px-4 text-[var(--text-sm)] font-[var(--weight-semibold)]",
-                    canPublish
-                      ? "bg-[var(--color-interactive-brand)] text-[var(--color-text-inverse)] hover:bg-[var(--color-interactive-brand-hover)]"
-                      : "cursor-not-allowed bg-[var(--color-background-muted)] text-[var(--color-text-tertiary)]",
-                  )}
                 >
                   {overlay
                     ? t("portal.merit.republishCta", { v: overlay.publishVersion + 1 })
                     : t("portal.merit.publishCta")}
-                </button>
+                </Button>
               }
             >
               {overlay ? (
@@ -262,52 +269,39 @@ function PublishedBlock({ overlay }: { overlay: MeritOverlay }) {
         </span>
       </p>
 
-      <div className="mt-3 overflow-x-auto rounded-[var(--radius-md)] border border-[var(--color-border)]">
-        <table className="w-full text-left text-[var(--text-sm)]">
-          <thead className="bg-[var(--color-background-subtle)] text-[var(--text-xs)] uppercase tracking-wide text-[var(--color-text-tertiary)]">
-            <tr>
-              <th className="px-3 py-2 font-[var(--weight-semibold)]">
-                {t("portal.merit.rankHeader")}
-              </th>
-              <th className="px-3 py-2 font-[var(--weight-semibold)]">
-                {t("portal.merit.studentHeader")}
-              </th>
-              <th className="px-3 py-2 font-[var(--weight-semibold)]">
-                {t("portal.merit.bofHeader")}
-              </th>
-              <th className="px-3 py-2 font-[var(--weight-semibold)]">
-                {t("portal.merit.categoryHeader")}
-              </th>
-            </tr>
-          </thead>
-          <tbody>
+      <TableShell className="mt-3">
+        <Table>
+          <THead>
+            <TR>
+              <TH>{t("portal.merit.rankHeader")}</TH>
+              <TH>{t("portal.merit.studentHeader")}</TH>
+              <TH>{t("portal.merit.bofHeader")}</TH>
+              <TH>{t("portal.merit.categoryHeader")}</TH>
+            </TR>
+          </THead>
+          <TBody>
             {overlay.ranks.map((entry) => (
-              <tr
-                key={entry.applicationId}
-                className="border-t border-[var(--color-border)]"
-              >
-                <td className="px-3 py-2 font-[var(--weight-semibold)] text-[var(--color-text-primary)]">
+              <TR key={entry.applicationId}>
+                <TD className="font-[var(--weight-semibold)] text-[var(--color-text-primary)]">
                   {entry.rank}
-                </td>
-                <td className="px-3 py-2 text-[var(--color-text-primary)]">
+                </TD>
+                <TD>
                   <div>{entry.studentName}</div>
                   <div className="font-mono text-[10px] text-[var(--color-text-tertiary)]">
                     {entry.applicationId}
                   </div>
-                </td>
-                <td className="px-3 py-2 text-[var(--color-text-primary)]">
-                  {entry.bofPercentage.toFixed(2)}%
-                </td>
-                <td className="px-3 py-2">
-                  <span className="rounded-[var(--radius-pill)] bg-[var(--color-background-brand-subtle)] px-2 py-0.5 text-[var(--text-xs)] font-[var(--weight-semibold)] uppercase text-[var(--color-text-brand)]">
+                </TD>
+                <TD>{entry.bofPercentage.toFixed(2)}%</TD>
+                <TD>
+                  <Badge tone="brand" className="uppercase">
                     {entry.category}
-                  </span>
-                </td>
-              </tr>
+                  </Badge>
+                </TD>
+              </TR>
             ))}
-          </tbody>
-        </table>
-      </div>
+          </TBody>
+        </Table>
+      </TableShell>
 
       <p className="mt-2 text-[var(--text-xs)] text-[var(--color-text-tertiary)]">
         {t("portal.merit.previewNote")}

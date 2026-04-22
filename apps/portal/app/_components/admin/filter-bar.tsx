@@ -1,6 +1,6 @@
 "use client";
 
-import { cn } from "@hp-mis/ui";
+import { Card, Input, Select, cn } from "@hp-mis/ui";
 import type { AppBaseStatus } from "../data/mock-applications";
 
 export interface QueueFilters {
@@ -71,30 +71,26 @@ export function FilterBar({
   };
 
   return (
-    <section
-      className={cn(
-        "rounded-[var(--radius-lg)] border border-[var(--color-border)] bg-[var(--color-surface)] p-4",
-        className,
-      )}
-    >
+    <Card className={cn("p-4", className)}>
       <div className="flex flex-col gap-3 md:flex-row md:items-center">
         <label className="relative flex-1">
           <span className="sr-only">Search applications</span>
           <span
             aria-hidden="true"
-            className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-[var(--color-text-tertiary)]"
+            className="pointer-events-none absolute left-3 top-1/2 z-[1] -translate-y-1/2 text-[var(--color-text-tertiary)]"
           >
             🔍
           </span>
-          <input
+          <Input
             type="search"
+            variant="filled"
             value={search}
             onChange={(event) => onSearchChange(event.target.value)}
             placeholder="Search by application #, student, email, roll number…"
-            className="h-10 w-full rounded-[var(--radius-md)] border border-[var(--color-border-strong)] bg-[var(--color-surface)] pl-9 pr-3 text-[var(--text-sm)] text-[var(--color-text-primary)] outline-none placeholder:text-[var(--color-text-tertiary)] focus:border-[var(--color-border-focus)] focus:ring-2 focus:ring-[var(--color-border-focus)]/30"
+            className="pl-9"
           />
         </label>
-        <label className="flex items-center gap-2 whitespace-nowrap rounded-[var(--radius-md)] border border-[var(--color-border-strong)] bg-[var(--color-surface)] px-3 py-2 text-[var(--text-sm)] text-[var(--color-text-primary)]">
+        <label className="flex items-center gap-2 whitespace-nowrap rounded-[var(--radius-pill)] border border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-2 text-[var(--text-sm)] text-[var(--color-text-primary)]">
           <input
             type="checkbox"
             checked={filters.discrepancyPending}
@@ -105,7 +101,7 @@ export function FilterBar({
         </label>
       </div>
 
-      <div className="mt-3 grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
+      <div className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
         <SelectBox
           label="Status"
           value={filters.status}
@@ -147,7 +143,7 @@ export function FilterBar({
           options={[{ value: "all", label: "All categories" }, ...categoryOptions]}
         />
       </div>
-    </section>
+    </Card>
   );
 }
 
@@ -163,19 +159,20 @@ function SelectBox({
   options: Option[];
 }) {
   return (
-    <label className="flex flex-col gap-1 text-[var(--text-xs)] text-[var(--color-text-secondary)]">
+    <label className="flex min-w-0 flex-col gap-1 text-[var(--text-xs)] font-[var(--weight-semibold)] uppercase tracking-[var(--tracking-wide)] text-[var(--color-text-tertiary)]">
       {label}
-      <select
+      <Select
+        variant="filled"
         value={value}
         onChange={(event) => onChange(event.target.value)}
-        className="h-10 rounded-[var(--radius-md)] border border-[var(--color-border-strong)] bg-[var(--color-surface)] px-2 text-[var(--text-sm)] text-[var(--color-text-primary)] focus:border-[var(--color-border-focus)] focus:ring-2 focus:ring-[var(--color-border-focus)]/30"
+        className="text-[var(--text-sm)] normal-case tracking-normal"
       >
         {options.map((opt) => (
           <option key={opt.value} value={opt.value}>
             {opt.label}
           </option>
         ))}
-      </select>
+      </Select>
     </label>
   );
 }

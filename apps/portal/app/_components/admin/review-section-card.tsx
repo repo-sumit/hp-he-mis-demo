@@ -1,7 +1,7 @@
 "use client";
 
 import type { ReactNode } from "react";
-import { cn } from "@hp-mis/ui";
+import { Card, cn } from "@hp-mis/ui";
 
 interface Props {
   title: string;
@@ -13,16 +13,12 @@ interface Props {
 
 /**
  * Shared container for grouped information blocks on the detail and
- * scrutiny pages. Title + optional description + optional action area.
+ * scrutiny pages. Delegates to the shared `Card` so the radius, elevation,
+ * and surface tokens stay consistent with the rest of the system.
  */
 export function ReviewSectionCard({ title, description, action, children, className }: Props) {
   return (
-    <section
-      className={cn(
-        "rounded-[var(--radius-lg)] border border-[var(--color-border)] bg-[var(--color-surface)] p-5",
-        className,
-      )}
-    >
+    <Card variant="default" className={cn("p-5", className)}>
       <header className="flex items-start justify-between gap-3">
         <div className="min-w-0">
           <h3 className="text-[var(--text-base)] font-[var(--weight-semibold)] text-[var(--color-text-primary)]">
@@ -37,7 +33,7 @@ export function ReviewSectionCard({ title, description, action, children, classN
         {action ? <div className="flex-none">{action}</div> : null}
       </header>
       <div className="mt-4">{children}</div>
-    </section>
+    </Card>
   );
 }
 
