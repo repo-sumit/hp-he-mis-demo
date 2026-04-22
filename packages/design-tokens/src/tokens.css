@@ -175,14 +175,33 @@
   --color-stepper-connector-done: var(--hp-primary-500);
 
   /*
-   * Input (filled) — light-gray surface matching the Figma. Bordered
-   * variant is controlled by components; both draw focus from the same
-   * brand ring.
+   * Input — per design system §1.1, `color/background/surfaceRaised` (white)
+   * + `color/border/default` (neutral-200). The "filled" variant remains
+   * available for contexts that want a tinted control, but outlined is now
+   * the default so inputs on white page surfaces read as real form fields,
+   * not floating labels.
    */
-  --color-input-bg: var(--hp-neutral-100);
+  --color-input-bg: var(--hp-neutral-0);
+  --color-input-bg-filled: #f3f5f9;
   --color-input-bg-focus: var(--hp-neutral-0);
   --color-input-border: var(--hp-neutral-200);
+  --color-input-border-hover: var(--hp-neutral-300);
   --color-input-border-focus: var(--hp-primary-500);
+
+  /*
+   * Design-system alias layer — surfaces the SwiftChat-family token names
+   * documented in `docs/Design System/swiftchat-design-system.md` so
+   * consumers can reference either the product-native name or the system
+   * name. Values stay HP-themed (sky-blue brand) to preserve the HP
+   * Admission identity; the alias only normalizes the vocabulary.
+   */
+  --color-interactive-primary: var(--color-interactive-brand);
+  --color-interactive-primary-hover: var(--color-interactive-brand-hover);
+  --color-interactive-primary-active: var(--color-interactive-brand-pressed);
+  --color-interactive-primary-disabled: var(--hp-primary-200);
+  --color-text-on-brand: var(--color-text-inverse);
+  --color-background-default: var(--color-surface);
+  --color-background-surface-raised: var(--color-surface-raised);
 
   /* ---------- Typography ---------- */
   --font-sans: var(--font-montserrat), "Segoe UI", system-ui, -apple-system, sans-serif;

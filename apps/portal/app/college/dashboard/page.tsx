@@ -97,6 +97,5 @@ export default function CollegeDashboardPage() {
 
 function roleLabel(role: string): string {
   if (role === "college_admin") return "College Admin · Principal";
-  if (role === "college_operator") return "College Operator";
   return role;
 }

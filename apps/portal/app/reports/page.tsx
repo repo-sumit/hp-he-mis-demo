@@ -168,20 +168,26 @@ export default function ReportsPage() {
 
       <section className="mt-6 grid gap-5 lg:grid-cols-2">
         <Card padded={false}>
-          <div className="border-b border-[var(--color-border-subtle)] px-5 py-4">
-            <CardTitle>Applications by status</CardTitle>
-            <CardBody className="mt-1">
-              Live scrutiny state. Bars are proportional to the largest bucket.
-            </CardBody>
+          <div className="flex items-start justify-between gap-3 border-b border-[var(--color-border-subtle)] px-5 py-4">
+            <div>
+              <CardTitle>Applications by status</CardTitle>
+              <CardBody className="mt-1">
+                Live scrutiny state across the current cycle.
+              </CardBody>
+            </div>
+            <span className="whitespace-nowrap text-[var(--text-xs)] font-[var(--weight-semibold)] uppercase tracking-[var(--tracking-wide)] text-[var(--color-text-tertiary)]">
+              n = {total}
+            </span>
           </div>
           <ul className="space-y-3 px-5 py-5">
             {STATUS_ORDER.map((status) => {
               const n = byStatus.get(status) ?? 0;
               const pct = (n / statusMax) * 100;
+              const share = total > 0 ? (n / total) * 100 : 0;
               return (
                 <li
                   key={status}
-                  className="grid grid-cols-[9rem_1fr_auto] items-center gap-3 text-[var(--text-sm)]"
+                  className="grid grid-cols-[10rem_1fr_5.5rem] items-center gap-3 text-[var(--text-sm)]"
                 >
                   <Badge tone={STATUS_TONE[status]}>{STATUS_LABEL[status]}</Badge>
                   <span
@@ -197,27 +203,42 @@ export default function ReportsPage() {
                             ? "bg-[var(--color-interactive-danger)]"
                             : status === "conditional"
                               ? "bg-[var(--color-status-warning-fg)]"
-                              : "bg-[var(--color-interactive-brand)]",
+                              : "bg-[var(--color-interactive-primary)]",
                       )}
                       style={{ width: `${pct}%` }}
                     />
                   </span>
-                  <span className="tabular-nums font-[var(--weight-semibold)] text-[var(--color-text-primary)]">
-                    {n}
+                  <span className="flex items-baseline justify-end gap-1.5 tabular-nums">
+                    <span className="font-[var(--weight-semibold)] text-[var(--color-text-primary)]">
+                      {n}
+                    </span>
+                    <span className="text-[var(--text-xs)] text-[var(--color-text-tertiary)]">
+                      {share.toFixed(0)}%
+                    </span>
                   </span>
                 </li>
               );
             })}
           </ul>
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-2 border-t border-[var(--color-border-subtle)] px-5 py-3 text-[var(--text-xs)] text-[var(--color-text-tertiary)]">
+            <LegendDot className="bg-[var(--color-interactive-primary)]" label="In progress" />
+            <LegendDot className="bg-[var(--color-interactive-success)]" label="Verified" />
+            <LegendDot className="bg-[var(--color-status-warning-fg)]" label="Conditional" />
+            <LegendDot className="bg-[var(--color-interactive-danger)]" label="Blocked" />
+          </div>
         </Card>
 
         <Card padded={false}>
-          <div className="border-b border-[var(--color-border-subtle)] px-5 py-4">
-            <CardTitle>Applications by category</CardTitle>
-            <CardBody className="mt-1">
-              Self-declared category on the application form. Claims are verified
-              during scrutiny.
-            </CardBody>
+          <div className="flex items-start justify-between gap-3 border-b border-[var(--color-border-subtle)] px-5 py-4">
+            <div>
+              <CardTitle>Applications by category</CardTitle>
+              <CardBody className="mt-1">
+                Self-declared on the application form. Verified during scrutiny.
+              </CardBody>
+            </div>
+            <span className="whitespace-nowrap text-[var(--text-xs)] font-[var(--weight-semibold)] uppercase tracking-[var(--tracking-wide)] text-[var(--color-text-tertiary)]">
+              {categoryRows.length} {categoryRows.length === 1 ? "group" : "groups"}
+            </span>
           </div>
           <ul className="space-y-3 px-5 py-5">
             {categoryRows.length === 0 ? (
@@ -227,10 +248,11 @@ export default function ReportsPage() {
             ) : null}
             {categoryRows.map(([cat, n]) => {
               const pct = (n / categoryMax) * 100;
+              const share = total > 0 ? (n / total) * 100 : 0;
               return (
                 <li
                   key={cat}
-                  className="grid grid-cols-[9rem_1fr_auto] items-center gap-3 text-[var(--text-sm)]"
+                  className="grid grid-cols-[10rem_1fr_5.5rem] items-center gap-3 text-[var(--text-sm)]"
                 >
                   <Badge tone="brand" className="uppercase">
                     {CATEGORY_LABEL[cat] ?? cat}
@@ -240,12 +262,17 @@ export default function ReportsPage() {
                     aria-hidden="true"
                   >
                     <span
-                      className="absolute inset-y-0 left-0 rounded-full bg-[var(--color-interactive-brand)]"
+                      className="absolute inset-y-0 left-0 rounded-full bg-[var(--color-interactive-primary)]"
                       style={{ width: `${pct}%` }}
                     />
                   </span>
-                  <span className="tabular-nums font-[var(--weight-semibold)] text-[var(--color-text-primary)]">
-                    {n}
+                  <span className="flex items-baseline justify-end gap-1.5 tabular-nums">
+                    <span className="font-[var(--weight-semibold)] text-[var(--color-text-primary)]">
+                      {n}
+                    </span>
+                    <span className="text-[var(--text-xs)] text-[var(--color-text-tertiary)]">
+                      {share.toFixed(0)}%
+                    </span>
                   </span>
                 </li>
               );
@@ -354,5 +381,17 @@ export default function ReportsPage() {
         report pack will land in a later sprint.
       </p>
     </PortalFrame>
+  );
+}
+
+function LegendDot({ className, label }: { className: string; label: string }) {
+  return (
+    <span className="inline-flex items-center gap-1.5">
+      <span
+        aria-hidden="true"
+        className={cn("inline-block h-2 w-2 rounded-full", className)}
+      />
+      {label}
+    </span>
   );
 }

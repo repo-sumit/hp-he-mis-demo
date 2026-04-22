@@ -11,19 +11,12 @@ import { RoleSwitcher } from "./admin/role-switcher";
 export type PortalNavKey =
   | "overview"
   | "applications"
-  | "convenor_queue"
   | "college_dashboard"
   | "cycle"
-  | "finance"
-  | "leadership"
-  | "colleges"
-  | "courses"
   | "seats"
   | "merit"
   | "allocation"
-  | "reports"
-  | "users"
-  | "settings";
+  | "reports";
 
 type NavItem = {
   key: PortalNavKey;
@@ -32,27 +25,20 @@ type NavItem = {
   href?: string;
   hrefByRole?: Partial<Record<PortalRole, string>>;
   labelKey: string;
-  disabled?: boolean;
 };
 
-const ALL_ROLES: PortalRole[] = [
-  "state_admin",
-  "college_admin",
-  "college_operator",
-  "convenor",
-  "finance",
-  "leadership",
-];
+const ALL_ROLES: PortalRole[] = ["state_admin", "college_admin"];
 
 const OVERVIEW_HREF_BY_ROLE: Partial<Record<PortalRole, string>> = {
   state_admin: "/",
   college_admin: "/college/dashboard",
-  college_operator: "/college/dashboard",
-  convenor: "/convenor/queue",
-  finance: "/finance",
-  leadership: "/leadership",
 };
 
+/**
+ * V1 navigation — scoped strictly to State Admin (DHE) and College Admin
+ * (Principal). No placeholder / disabled items; every entry here is a
+ * shipping route.
+ */
 const NAV_ITEMS: readonly NavItem[] = [
   {
     key: "overview",
@@ -64,21 +50,14 @@ const NAV_ITEMS: readonly NavItem[] = [
   {
     key: "applications",
     icon: "📝",
-    roles: ["state_admin", "college_admin", "college_operator", "leadership"],
+    roles: ALL_ROLES,
     href: "/applications",
     labelKey: "portal.sidebar.applications",
   },
   {
-    key: "convenor_queue",
-    icon: "🧭",
-    roles: ["convenor"],
-    href: "/convenor/queue",
-    labelKey: "portal.sidebar.convenorQueue",
-  },
-  {
     key: "college_dashboard",
     icon: "🏫",
-    roles: ["college_admin", "college_operator"],
+    roles: ["college_admin"],
     href: "/college/dashboard",
     labelKey: "portal.sidebar.collegeDashboard",
   },
@@ -88,36 +67,6 @@ const NAV_ITEMS: readonly NavItem[] = [
     roles: ["state_admin"],
     href: "/state/cycle",
     labelKey: "portal.sidebar.cycle",
-  },
-  {
-    key: "finance",
-    icon: "💳",
-    roles: ["finance"],
-    href: "/finance",
-    labelKey: "portal.sidebar.finance",
-  },
-  {
-    key: "leadership",
-    icon: "🏛",
-    roles: ["leadership"],
-    href: "/leadership",
-    labelKey: "portal.sidebar.leadership",
-  },
-  {
-    key: "colleges",
-    icon: "🏛️",
-    roles: ["state_admin", "leadership"],
-    href: "/colleges",
-    disabled: true,
-    labelKey: "portal.sidebar.colleges",
-  },
-  {
-    key: "courses",
-    icon: "📚",
-    roles: ["state_admin"],
-    href: "/courses",
-    disabled: true,
-    labelKey: "portal.sidebar.courses",
   },
   {
     key: "seats",
@@ -143,25 +92,9 @@ const NAV_ITEMS: readonly NavItem[] = [
   {
     key: "reports",
     icon: "📈",
-    roles: ["state_admin", "college_admin"],
+    roles: ALL_ROLES,
     href: "/reports",
     labelKey: "portal.sidebar.reports",
-  },
-  {
-    key: "users",
-    icon: "👥",
-    roles: ["state_admin", "college_admin"],
-    href: "/users",
-    disabled: true,
-    labelKey: "portal.sidebar.users",
-  },
-  {
-    key: "settings",
-    icon: "⚙️",
-    roles: ALL_ROLES,
-    href: "/settings",
-    disabled: true,
-    labelKey: "portal.sidebar.settings",
   },
 ];
 
@@ -235,26 +168,6 @@ export function PortalFrame({
                 "/";
               const base =
                 "group flex items-center gap-3 rounded-[var(--radius-pill)] px-4 py-2.5 text-[var(--text-sm)]";
-              if (item.disabled) {
-                return (
-                  <li key={item.key}>
-                    <div
-                      aria-disabled="true"
-                      title="Coming soon"
-                      className={cn(
-                        base,
-                        "cursor-not-allowed text-[var(--color-sidebar-fg-muted)] opacity-80",
-                      )}
-                    >
-                      <span aria-hidden="true">{item.icon}</span>
-                      <span className="flex-1 truncate">{t("en", item.labelKey)}</span>
-                      <span className="rounded-[var(--radius-pill)] bg-[var(--hp-primary-700)] px-2 py-0.5 text-[10px] font-[var(--weight-semibold)] uppercase tracking-wide text-[var(--color-text-inverse)]">
-                        Soon
-                      </span>
-                    </div>
-                  </li>
-                );
-              }
               return (
                 <li key={item.key}>
                   <Link
@@ -326,21 +239,36 @@ export function PortalFrame({
         </main>
 
         <Footer
+          brand={
+            <>
+              <p className="text-[var(--text-base)] font-[var(--weight-bold)] tracking-[var(--tracking-tight)] text-[var(--color-text-primary)]">
+                HPU Admission · Admin portal
+              </p>
+              <p className="mt-2 max-w-sm">
+                Official admission workspace of the Department of Higher Education,
+                Government of Himachal Pradesh.
+              </p>
+              <p className="mt-4 inline-flex items-center gap-2 rounded-[var(--radius-pill)] bg-[var(--color-surface)] px-3 py-1 text-[var(--text-xs)] font-[var(--weight-semibold)] text-[var(--color-text-brand)] shadow-[var(--shadow-sm)]">
+                <span aria-hidden="true">●</span>
+                Cycle 2026-27 · Live
+              </p>
+            </>
+          }
           columns={[
+            {
+              heading: "Operations",
+              links: [
+                { label: "Applications queue", href: "/applications" },
+                { label: "Reports", href: "/reports" },
+                { label: "Cycle setup", href: "/state/cycle" },
+              ],
+            },
             {
               heading: "Support",
               links: [
                 { label: "Helpdesk", href: "mailto:helpdesk@hpu.admission.gov.in" },
                 { label: "Contact DHE", href: "mailto:dhe@hp.gov.in" },
-                { label: "Report an issue", href: "mailto:helpdesk@hpu.admission.gov.in" },
-              ],
-            },
-            {
-              heading: "Resources",
-              links: [
                 { label: "Scrutiny SOP", href: "#" },
-                { label: "Cycle calendar", href: "#" },
-                { label: "Audit log", href: "#" },
               ],
             },
             {
@@ -352,18 +280,17 @@ export function PortalFrame({
               ],
             },
           ]}
-          brand={
-            <>
-              <p className="font-[var(--weight-semibold)] text-[var(--color-text-secondary)]">
-                HPU Admission · Admin portal
-              </p>
-              <p className="mt-1">
-                Department of Higher Education, Government of Himachal Pradesh. Cycle
-                2026-27.
-              </p>
-            </>
+          note="© 2026 Government of Himachal Pradesh. Department of Higher Education. For official admission use only."
+          noteSecondary={
+            <a
+              href="https://hpu.ac.in"
+              target="_blank"
+              rel="noreferrer noopener"
+              className="inline-flex items-center gap-1 text-[var(--color-text-tertiary)] hover:text-[var(--color-text-brand)] hover:underline underline-offset-4"
+            >
+              hpu.ac.in <span aria-hidden="true">↗</span>
+            </a>
           }
-          note="© 2026 Government of Himachal Pradesh. All rights reserved. For official admission use only."
         />
       </div>
     </div>

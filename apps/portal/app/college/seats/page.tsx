@@ -158,7 +158,7 @@ function total(row: SeatRow): number {
 export default function SeatMatrixPage() {
   const { session, hydrated } = useSession();
 
-  if (hydrated && session.role !== "college_admin" && session.role !== "college_operator") {
+  if (hydrated && session.role !== "college_admin") {
     return (
       <PortalFrame active="seats" eyebrow="Seat matrix" title="Seat matrix">
         <Card>
@@ -295,11 +295,11 @@ export default function SeatMatrixPage() {
                     </TR>
                   );
                 })}
-                <TR className="bg-[var(--color-background-brand-softer)]">
-                  <TD className="font-[var(--weight-semibold)] text-[var(--color-text-primary)]">
-                    Total
+                <TR className="border-t-2 border-[var(--color-border-strong)] bg-[var(--color-background-brand-softer)]">
+                  <TD className="text-[var(--text-xs)] font-[var(--weight-bold)] uppercase tracking-[var(--tracking-wide)] text-[var(--color-text-primary)]">
+                    Total · {SEAT_ROWS.length} tracks
                   </TD>
-                  <TD className="text-right tabular-nums font-[var(--weight-bold)] text-[var(--color-text-primary)]">
+                  <TD className="text-right tabular-nums text-[var(--text-base)] font-[var(--weight-bold)] text-[var(--color-text-primary)]">
                     {totals.sanctioned}
                   </TD>
                   {CATEGORY_ORDER.map((k) => (
@@ -310,7 +310,7 @@ export default function SeatMatrixPage() {
                       {totals.byCategory[k]}
                     </TD>
                   ))}
-                  <TD className="text-right tabular-nums font-[var(--weight-bold)] text-[var(--color-text-primary)]">
+                  <TD className="text-right tabular-nums text-[var(--text-base)] font-[var(--weight-bold)] text-[var(--color-text-primary)]">
                     {CATEGORY_ORDER.reduce((acc, k) => acc + totals.byCategory[k], 0)}
                   </TD>
                 </TR>

@@ -73,26 +73,17 @@ function passesFilters(
 
 /**
  * Scope the queue by the active role:
- *   - state_admin / leadership → every application
- *   - college_admin / college_operator → only their college
- *   - convenor → only applications flagged for second-level review
- *                (proxied by `discrepancy_raised` in the mock)
- *   - finance → no application visibility
+ *   - state_admin → every application
+ *   - college_admin → only their college's applications
  */
 function scopedApplications(
   all: readonly MockApplication[],
   role: PortalRole,
   collegeId: string | undefined,
-  effectiveStatus: (id: string) => AppBaseStatus,
+  _effectiveStatus: (id: string) => AppBaseStatus,
 ): MockApplication[] {
-  if (role === "state_admin" || role === "leadership") return [...all];
-  if (role === "college_admin" || role === "college_operator") {
-    return all.filter((app) => app.collegeId === collegeId);
-  }
-  if (role === "convenor") {
-    return all.filter((app) => effectiveStatus(app.id) === "discrepancy_raised");
-  }
-  return []; // finance gets nothing
+  if (role === "state_admin") return [...all];
+  return all.filter((app) => app.collegeId === collegeId);
 }
 
 export default function ApplicationsQueuePage() {
@@ -190,8 +181,7 @@ export default function ApplicationsQueuePage() {
       .sort((a, b) => a.label.localeCompare(b.label));
   }, [visible]);
 
-  const singleCollegeScope =
-    session.role === "college_admin" || session.role === "college_operator";
+  const singleCollegeScope = session.role === "college_admin";
 
   const categoryOptions = [
     { value: "general", label: "General" },

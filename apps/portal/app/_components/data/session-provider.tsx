@@ -11,19 +11,13 @@ import {
 } from "react";
 
 /**
- * Mock session layer for the portal. In V1 this is driven entirely by a
- * role-switcher in the header so demo-day presenters can flip between
- * State Admin, College Admin, Operator, Convenor, Finance, and DHE
- * Secretary in one click. A real SSO provider replaces this hook in V2+.
+ * Mock session layer for the portal. V1 demo is restricted to two roles:
+ * State Admin (DHE) and College Admin (Principal + scrutiny operators).
+ * Finance, Convenor, and Leadership are out of scope for this release and
+ * have been removed from the role switcher.
  */
 
-export type PortalRole =
-  | "state_admin"
-  | "college_admin"
-  | "college_operator"
-  | "convenor"
-  | "finance"
-  | "leadership";
+export type PortalRole = "state_admin" | "college_admin";
 
 export interface PortalSession {
   role: PortalRole;
@@ -48,37 +42,11 @@ export const SESSION_PRESETS: Record<PortalRole, PortalSession> = {
     collegeId: "gc_sanjauli",
     collegeName: "Government College Sanjauli",
   },
-  college_operator: {
-    role: "college_operator",
-    name: "Priya Negi",
-    email: "scrutiny@gcsanjauli.ac.in",
-    collegeId: "gc_sanjauli",
-    collegeName: "Government College Sanjauli",
-  },
-  convenor: {
-    role: "convenor",
-    name: "Prof. Anil Kaushal",
-    email: "convenor@hp.gov.in",
-  },
-  finance: {
-    role: "finance",
-    name: "Neha Gupta",
-    email: "finance@hp.gov.in",
-  },
-  leadership: {
-    role: "leadership",
-    name: "Secretary (DHE)",
-    email: "dhe-secretary@hp.gov.in",
-  },
 };
 
 export const ROLE_LABELS: Record<PortalRole, string> = {
   state_admin: "State Admin",
   college_admin: "College Admin",
-  college_operator: "College Operator",
-  convenor: "Convenor",
-  finance: "Finance",
-  leadership: "DHE Secretary",
 };
 
 interface SessionContextValue {
@@ -95,9 +63,8 @@ function isPortalRole(value: string): value is PortalRole {
 }
 
 export function SessionProvider({ children }: { children: ReactNode }) {
-  // Default to the college operator role — that's the persona the demo
-  // usually opens with (Priya Negi at Sanjauli).
-  const [session, setSession] = useState<PortalSession>(SESSION_PRESETS.college_operator);
+  // Default to college admin — the most common demo entry point.
+  const [session, setSession] = useState<PortalSession>(SESSION_PRESETS.college_admin);
   const [hydrated, setHydrated] = useState(false);
 
   useEffect(() => {
@@ -107,7 +74,7 @@ export function SessionProvider({ children }: { children: ReactNode }) {
         setSession(SESSION_PRESETS[raw]);
       }
     } catch {
-      /* default to college_operator on corrupt storage */
+      /* default on corrupt storage */
     }
     setHydrated(true);
   }, []);

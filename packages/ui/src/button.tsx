@@ -19,10 +19,14 @@ const base =
   "disabled:cursor-not-allowed disabled:opacity-55";
 
 const variants: Record<Variant, string> = {
+  // Primary button — design system §Buttons (verified): bg =
+  // color/interactive/primary, text = color/text/onBrand. Aliased to HP's
+  // sky-blue primitive so the product identity stays HP Admission, not
+  // SwiftChat, while the token names match the system vocabulary.
   primary:
-    "bg-[var(--color-interactive-brand)] text-[var(--color-text-inverse)] shadow-[var(--shadow-sm)] " +
-    "hover:bg-[var(--color-interactive-brand-hover)] hover:shadow-[var(--shadow-md)] " +
-    "active:bg-[var(--color-interactive-brand-pressed)] active:shadow-none",
+    "bg-[var(--color-interactive-primary)] text-[var(--color-text-on-brand)] shadow-[var(--shadow-sm)] " +
+    "hover:bg-[var(--color-interactive-primary-hover)] hover:shadow-[var(--shadow-md)] " +
+    "active:bg-[var(--color-interactive-primary-active)] active:shadow-none",
   secondary:
     "border border-[var(--color-border-strong)] bg-[var(--color-surface)] text-[var(--color-text-primary)] " +
     "hover:border-[var(--color-border-brand)] hover:bg-[var(--color-background-brand-softer)] " +

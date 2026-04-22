@@ -5,32 +5,45 @@ import type { InputHTMLAttributes, SelectHTMLAttributes, TextareaHTMLAttributes 
 import { cn } from "./cn";
 import { useField } from "./field";
 
-type Variant = "filled" | "outline";
+type Variant = "outline" | "filled";
 
 type VariantProps = { variant?: Variant };
 
+/**
+ * Input primitives (per design system §1.4: inputs use `radius/md`; §1.2:
+ * text is Label/Medium 14px). Default variant is `outline` — white surface
+ * with a 1px neutral border — so fields read as real form elements on any
+ * page surface. `filled` is available for contexts that prefer a tinted
+ * control (e.g. dense admin filter rows).
+ */
+
 const baseControl =
-  "w-full min-w-0 rounded-[var(--radius-input)] border text-[var(--text-sm)] text-[var(--color-text-primary)] " +
-  "placeholder:text-[var(--color-text-tertiary)] transition-[background-color,border-color,box-shadow] " +
-  "duration-150 outline-none read-only:cursor-default disabled:cursor-not-allowed disabled:opacity-60";
+  "w-full min-w-0 rounded-[var(--radius-input)] border text-[var(--text-sm)] " +
+  "font-[var(--weight-medium)] text-[var(--color-text-primary)] " +
+  "placeholder:text-[var(--color-text-tertiary)] placeholder:font-[var(--weight-regular)] " +
+  "transition-[background-color,border-color,box-shadow] duration-150 outline-none " +
+  "read-only:cursor-default disabled:cursor-not-allowed disabled:opacity-60";
 
 const variantClass: Record<Variant, string> = {
+  outline:
+    "bg-[var(--color-input-bg)] border-[var(--color-input-border)] " +
+    "hover:border-[var(--color-input-border-hover)] " +
+    "focus:border-[var(--color-input-border-focus)] focus:shadow-[var(--focus-ring)]",
   filled:
-    "bg-[var(--color-input-bg)] border-transparent hover:border-[var(--color-input-border)] " +
+    "bg-[var(--color-input-bg-filled)] border-[var(--color-input-border)] " +
+    "hover:border-[var(--color-input-border-hover)] " +
     "focus:bg-[var(--color-input-bg-focus)] focus:border-[var(--color-input-border-focus)] " +
     "focus:shadow-[var(--focus-ring)]",
-  outline:
-    "bg-[var(--color-surface)] border-[var(--color-input-border)] hover:border-[var(--color-border-strong)] " +
-    "focus:border-[var(--color-input-border-focus)] focus:shadow-[var(--focus-ring)]",
 };
 
 const invalidClass =
-  "border-[var(--color-text-danger)] focus:border-[var(--color-text-danger)] focus:shadow-[var(--focus-ring-danger)]";
+  "border-[var(--color-text-danger)] hover:border-[var(--color-text-danger)] " +
+  "focus:border-[var(--color-text-danger)] focus:shadow-[var(--focus-ring-danger)]";
 
 export type InputProps = InputHTMLAttributes<HTMLInputElement> & VariantProps;
 
 export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
-  { variant = "filled", className, ...props },
+  { variant = "outline", className, ...props },
   ref,
 ) {
   const field = useField();
@@ -57,7 +70,7 @@ export type SelectProps = SelectHTMLAttributes<HTMLSelectElement> &
   VariantProps & { placeholder?: string };
 
 export const Select = forwardRef<HTMLSelectElement, SelectProps>(function Select(
-  { variant = "filled", className, children, placeholder, ...props },
+  { variant = "outline", className, children, placeholder, ...props },
   ref,
 ) {
   const field = useField();
@@ -98,7 +111,7 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(function Select
 export type TextareaProps = TextareaHTMLAttributes<HTMLTextAreaElement> & VariantProps;
 
 export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(function Textarea(
-  { variant = "filled", className, rows = 4, ...props },
+  { variant = "outline", className, rows = 4, ...props },
   ref,
 ) {
   const field = useField();

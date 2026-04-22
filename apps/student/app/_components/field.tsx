@@ -23,7 +23,7 @@ export function Field({ label, helper, error, adornment, ...inputProps }: FieldP
       helper={!error ? helper : undefined}
       error={error}
     >
-      <Input variant="filled" {...inputProps} />
+      <Input {...inputProps} />
       {adornment ? <div className="pt-0.5">{adornment}</div> : null}
     </FieldGroup>
   );

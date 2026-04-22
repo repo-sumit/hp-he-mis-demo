@@ -123,6 +123,21 @@ const PHASE_LABEL: Record<PhaseState, string> = {
   upcoming: "Upcoming",
 };
 
+const PHASE_ICON: Record<PhaseState, string> = {
+  closed: "✓",
+  active: "●",
+  upcoming: "○",
+};
+
+const PHASE_ICON_CLASS: Record<PhaseState, string> = {
+  closed:
+    "bg-[var(--color-status-success-bg)] text-[var(--color-status-success-fg)]",
+  active:
+    "bg-[var(--color-interactive-primary)] text-[var(--color-text-on-brand)] shadow-[var(--shadow-sm)]",
+  upcoming:
+    "bg-[var(--color-background-muted)] text-[var(--color-text-tertiary)]",
+};
+
 export default function CycleSetupPage() {
   const { session, hydrated } = useSession();
 
@@ -227,17 +242,34 @@ export default function CycleSetupPage() {
                 </TR>
               </THead>
               <TBody>
-                {PHASES.map((phase) => (
-                  <TR key={phase.name}>
+                {PHASES.map((phase, idx) => (
+                  <TR
+                    key={phase.name}
+                    className={
+                      phase.state === "active"
+                        ? "bg-[var(--color-background-brand-softer)]"
+                        : undefined
+                    }
+                  >
                     <TD className="align-top">
-                      <p className="font-[var(--weight-semibold)] text-[var(--color-text-primary)]">
-                        {phase.name}
-                      </p>
-                      {phase.note ? (
-                        <p className="mt-0.5 text-[var(--text-xs)] text-[var(--color-text-tertiary)]">
-                          {phase.note}
-                        </p>
-                      ) : null}
+                      <div className="flex items-start gap-3">
+                        <span
+                          aria-hidden="true"
+                          className={`mt-0.5 inline-flex h-7 w-7 flex-none items-center justify-center rounded-[var(--radius-pill)] text-[var(--text-xs)] font-[var(--weight-bold)] ${PHASE_ICON_CLASS[phase.state]}`}
+                        >
+                          {phase.state === "active" ? idx + 1 : PHASE_ICON[phase.state]}
+                        </span>
+                        <div className="min-w-0">
+                          <p className="font-[var(--weight-semibold)] text-[var(--color-text-primary)]">
+                            {phase.name}
+                          </p>
+                          {phase.note ? (
+                            <p className="mt-0.5 text-[var(--text-xs)] text-[var(--color-text-tertiary)]">
+                              {phase.note}
+                            </p>
+                          ) : null}
+                        </div>
+                      </div>
                     </TD>
                     <TD className="align-top whitespace-nowrap text-[var(--color-text-secondary)]">
                       {phase.opensAt}

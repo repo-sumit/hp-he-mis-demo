@@ -110,6 +110,18 @@ export function PageShell({
       </main>
 
       <Footer
+        brand={
+          <>
+            <p className="text-[var(--text-base)] font-[var(--weight-bold)] tracking-[var(--tracking-tight)] text-[var(--color-text-primary)]">
+              {t("app.name")}
+            </p>
+            <p className="mt-2 max-w-sm">{t("footer.brand.org")}</p>
+            <p className="mt-4 inline-flex items-center gap-2 rounded-[var(--radius-pill)] bg-[var(--color-surface)] px-3 py-1 text-[var(--text-xs)] font-[var(--weight-semibold)] text-[var(--color-text-brand)] shadow-[var(--shadow-sm)]">
+              <span aria-hidden="true">●</span>
+              {t("footer.brand.cycle")}
+            </p>
+          </>
+        }
         columns={[
           {
             heading: t("footer.headings.help"),
@@ -136,15 +148,17 @@ export function PageShell({
             ],
           },
         ]}
-        brand={
-          <>
-            <p className="font-[var(--weight-semibold)] text-[var(--color-text-secondary)]">
-              {t("app.name")}
-            </p>
-            <p className="mt-1">{t("footer.brand.org")}</p>
-          </>
-        }
         note={t("footer.note")}
+        noteSecondary={
+          <a
+            href="https://hpu.ac.in"
+            target="_blank"
+            rel="noreferrer noopener"
+            className="inline-flex items-center gap-1 text-[var(--color-text-tertiary)] hover:text-[var(--color-text-brand)] hover:underline underline-offset-4"
+          >
+            hpu.ac.in <span aria-hidden="true">↗</span>
+          </a>
+        }
       />
 
       {footer ? (
