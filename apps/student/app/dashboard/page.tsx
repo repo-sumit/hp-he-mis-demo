@@ -14,6 +14,8 @@ import { getCourse } from "../_components/discover/mock-data";
 import { useScrutinyBridge } from "../_components/scrutiny-bridge/scrutiny-bridge-provider";
 import { DiscrepancySummaryCard } from "../_components/scrutiny-bridge/discrepancy-summary-card";
 import { useAllotmentBridge } from "../_components/allotment-bridge/allotment-bridge-provider";
+import { useDemoProgress } from "../_components/demo-progress/demo-progress-provider";
+import { DemoProgressControl } from "../_components/demo-progress/demo-progress-control";
 
 // Helpdesk moved into the footer — the body list keeps the two journey-
 // specific shortcuts (documents, eligibility) so the dashboard stays
@@ -45,6 +47,7 @@ export default function DashboardPage() {
   const { draft } = useProfile();
   const bridge = useScrutinyBridge();
   const allotment = useAllotmentBridge();
+  const demoProgress = useDemoProgress();
 
   const submittedIds = submittedCourseIds();
   const hasSubmitted = submittedIds.length > 0;
@@ -86,7 +89,7 @@ export default function DashboardPage() {
   // course. Previously this case collapsed back into "profileComplete",
   // which left the Profile Complete node perpetually un-ticked even after
   // the profile was actually complete.
-  const currentStep: StatusStep = (() => {
+  const realCurrentStep: StatusStep = (() => {
     if (
       firstAllocation?.status === "fee_paid" ||
       firstAllocation?.status === "admission_confirmed"
@@ -99,6 +102,12 @@ export default function DashboardPage() {
     if (hasEnoughProfile(draft)) return "submitted";
     return "profileComplete";
   })();
+
+  // Demo override — when an operator forces a stage via the demo panel,
+  // prefer that stage for the tracker ONLY. The real provider state and
+  // the next-action card below still reflect the genuine flow so this
+  // stays isolated to the tracker visual.
+  const currentStep: StatusStep = demoProgress.stage ?? realCurrentStep;
 
   const stepsLeft = remainingProfileSteps(draft);
   const firstName = draft.fullName.trim().split(/\s+/)[0] ?? "";
@@ -159,6 +168,7 @@ export default function DashboardPage() {
           <div className="mt-4">
             <StatusTracker currentStep={currentStep} />
           </div>
+          <DemoProgressControl currentStep={currentStep} />
         </section>
 
         {!hasOpenDiscrepancy ? (

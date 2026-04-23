@@ -7,6 +7,7 @@ import { DocumentsProvider } from "./_components/documents/documents-provider";
 import { ApplicationsProvider } from "./_components/apply/applications-provider";
 import { ScrutinyBridgeProvider } from "./_components/scrutiny-bridge/scrutiny-bridge-provider";
 import { AllotmentBridgeProvider } from "./_components/allotment-bridge/allotment-bridge-provider";
+import { DemoProgressProvider } from "./_components/demo-progress/demo-progress-provider";
 import "./globals.css";
 
 // Noto Sans matches the UX4G reference system and pairs naturally with the
@@ -51,7 +52,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               <DocumentsProvider>
                 <ApplicationsProvider>
                   <ScrutinyBridgeProvider>
-                    <AllotmentBridgeProvider>{children}</AllotmentBridgeProvider>
+                    <AllotmentBridgeProvider>
+                      <DemoProgressProvider>{children}</DemoProgressProvider>
+                    </AllotmentBridgeProvider>
                   </ScrutinyBridgeProvider>
                 </ApplicationsProvider>
               </DocumentsProvider>
