@@ -9,6 +9,56 @@ import { useLocale } from "../../../_components/locale-provider";
 import { getCourse } from "../../../_components/discover/mock-data";
 import { useApplications } from "../../../_components/apply/applications-provider";
 import { SuccessSummaryCard } from "../../../_components/apply/success-summary-card";
+import { useEffectiveStudentStep } from "../../../_components/use-effective-step";
+import type { StatusStep } from "../../../_components/status-tracker";
+
+interface DemoBanner {
+  title: string;
+  body: string;
+  cta: string;
+  href: string;
+  tone: "info" | "success" | "brand";
+}
+
+function bannerForStep(step: StatusStep, courseId: string): DemoBanner | null {
+  if (step === "underScrutiny") {
+    return {
+      title: "College has started scrutiny",
+      body: "A reviewer is verifying your documents. Outcome usually within 3 working days.",
+      cta: "View application",
+      href: "/applications",
+      tone: "info",
+    };
+  }
+  if (step === "meritPublished") {
+    return {
+      title: "Merit list published",
+      body: "Your name is on the merit list. Allotment runs next — we'll notify you when your seat is offered.",
+      cta: "View application",
+      href: "/applications",
+      tone: "brand",
+    };
+  }
+  if (step === "allotted") {
+    return {
+      title: "Seat offered to you",
+      body: "Review your offer and choose Freeze, Float, or Decline before the deadline.",
+      cta: "View offer",
+      href: `/allotment/${courseId}`,
+      tone: "success",
+    };
+  }
+  if (step === "admissionConfirmed") {
+    return {
+      title: "Admission confirmed",
+      body: "Your fee is acknowledged and your roll number is issued. Welcome aboard.",
+      cta: "View admission",
+      href: `/payment/${courseId}`,
+      tone: "success",
+    };
+  }
+  return null;
+}
 
 type Params = { courseId: string };
 
@@ -17,12 +67,17 @@ export default function SubmittedPage({ params }: { params: Promise<Params> }) {
   const { t } = useLocale();
   const router = useRouter();
   const { hydrated, getDraft } = useApplications();
+  const effective = useEffectiveStudentStep();
 
   const course = getCourse(courseId);
   if (!course) notFound();
 
   const draft = getDraft(courseId);
   const courseLabel = `${course.code} · ${t(course.nameKey)}`;
+  const demoBanner =
+    effective.isDemo && effective.step !== "submitted"
+      ? bannerForStep(effective.step, courseId)
+      : null;
 
   // Guard: if the user lands here without having submitted (e.g. deep link
   // before any draft exists), send them back to review.
@@ -50,6 +105,33 @@ export default function SubmittedPage({ params }: { params: Promise<Params> }) {
         submittedAt={draft.submittedAt}
         courseLabel={course.code}
       />
+
+      {demoBanner ? (
+        <section
+          className={
+            demoBanner.tone === "success"
+              ? "mt-5 rounded-[var(--radius-lg)] border border-[var(--color-interactive-success)] bg-[var(--color-status-success-bg)] p-4"
+              : demoBanner.tone === "brand"
+                ? "mt-5 rounded-[var(--radius-lg)] border border-[var(--color-border-brand)] bg-[var(--color-background-brand-softer)] p-4"
+                : "mt-5 rounded-[var(--radius-lg)] border border-[var(--color-status-info-fg)] bg-[var(--color-status-info-bg)] p-4"
+          }
+        >
+          <p className="text-[var(--text-sm)] font-[var(--weight-semibold)] text-[var(--color-text-primary)]">
+            {demoBanner.title}
+          </p>
+          <p className="mt-1 text-[var(--text-sm)] leading-[var(--leading-relaxed)] text-[var(--color-text-secondary)]">
+            {demoBanner.body}
+          </p>
+          <div className="mt-3">
+            <Link
+              href={demoBanner.href}
+              className="inline-flex h-10 items-center justify-center rounded-[var(--radius-md)] bg-[var(--color-interactive-primary)] px-4 text-[var(--text-sm)] font-[var(--weight-semibold)] text-[var(--color-text-on-brand)] hover:bg-[var(--color-interactive-primary-hover)]"
+            >
+              {demoBanner.cta} →
+            </Link>
+          </div>
+        </section>
+      ) : null}
 
       <section className="mt-5 flex items-start gap-3 rounded-[var(--radius-lg)] border border-[var(--color-interactive-success)] bg-[var(--color-status-success-bg)] p-4">
         <span

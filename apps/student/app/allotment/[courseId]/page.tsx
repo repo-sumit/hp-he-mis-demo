@@ -13,7 +13,9 @@ import { useLocale } from "../../_components/locale-provider";
 import { useProfile } from "../../_components/profile/profile-provider";
 import { useApplications } from "../../_components/apply/applications-provider";
 import { useAllotmentBridge } from "../../_components/allotment-bridge/allotment-bridge-provider";
-import { getCourse } from "../../_components/discover/mock-data";
+import { getCollege, getCourse, offeringsFor } from "../../_components/discover/mock-data";
+import { feeFor } from "../../_components/apply/rules";
+import { useEffectiveStudentStep } from "../../_components/use-effective-step";
 
 type Params = { courseId: string };
 
@@ -65,8 +67,48 @@ export default function AllotmentPage({
   if (!course) notFound();
 
   const appDraft = getDraft(courseId);
-  const allocation = allocationFor(courseId);
+  const realAllocation = allocationFor(courseId);
   const meritPublished = meritPublishedFor(courseId);
+
+  // Effective step — when the operator forces "allotted" or
+  // "admissionConfirmed" via the demo panel, synthesise a read-only
+  // allocation so the student sees the offer card instead of the
+  // waiting state. The bridge is NEVER written from here — this is a
+  // pure display fallback.
+  const effective = useEffectiveStudentStep();
+  const demoAllocation: AllocationEntry | null = useMemo(() => {
+    if (realAllocation) return null;
+    if (
+      !effective.isDemo ||
+      (effective.step !== "allotted" &&
+        effective.step !== "admissionConfirmed")
+    ) {
+      return null;
+    }
+    const offering = offeringsFor(undefined, courseId)[0];
+    const college = offering ? getCollege(offering.collegeId) : undefined;
+    const studentName = draft.fullName.trim() || "Student";
+    return {
+      applicationId: appDraft.applicationNumber ?? "DEMO-APP",
+      rank: 47,
+      studentName,
+      category: "general",
+      offer: {
+        collegeId: college?.id ?? "demo-college",
+        collegeName: college?.name ?? "Your first preference college",
+        feeAmount: feeFor(courseId),
+      },
+      status:
+        effective.step === "admissionConfirmed" ? "admission_confirmed" : "pending",
+      offeredAt: Date.now(),
+      rollNumber:
+        effective.step === "admissionConfirmed"
+          ? `${(college?.id ?? "DEMO").toUpperCase()}/2026/0047`
+          : undefined,
+    };
+  }, [effective.isDemo, effective.step, realAllocation, courseId, draft.fullName, appDraft.applicationNumber]);
+
+  const allocation = realAllocation ?? demoAllocation;
 
   const feeHeads = useMemo(
     () => (allocation ? buildFeeHeads(allocation.offer.feeAmount) : []),

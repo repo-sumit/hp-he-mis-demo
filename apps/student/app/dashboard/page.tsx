@@ -2,20 +2,26 @@
 
 import Link from "next/link";
 import { PageShell } from "../_components/page-shell";
-import { StatusTracker, type StatusStep } from "../_components/status-tracker";
+import { StatusTracker } from "../_components/status-tracker";
 import { NextActionCard } from "../_components/next-action-card";
 import { NotificationItem } from "../_components/notification-item";
 import { BottomTabBar } from "../_components/bottom-tab-bar";
 import { useLocale } from "../_components/locale-provider";
 import { useApplications } from "../_components/apply/applications-provider";
 import { useProfile } from "../_components/profile/profile-provider";
-import { hasEnoughProfile, remainingProfileSteps } from "../_components/discover/evaluate";
+import { remainingProfileSteps } from "../_components/discover/evaluate";
 import { getCourse } from "../_components/discover/mock-data";
 import { useScrutinyBridge } from "../_components/scrutiny-bridge/scrutiny-bridge-provider";
 import { DiscrepancySummaryCard } from "../_components/scrutiny-bridge/discrepancy-summary-card";
-import { useAllotmentBridge } from "../_components/allotment-bridge/allotment-bridge-provider";
-import { useDemoProgress } from "../_components/demo-progress/demo-progress-provider";
 import { DemoProgressControl } from "../_components/demo-progress/demo-progress-control";
+import { useEffectiveStudentStep } from "../_components/use-effective-step";
+import {
+  AllotmentView,
+  ConfirmedView,
+  MeritView,
+  ScrutinyView,
+  SubmittedView,
+} from "../_components/stage-views";
 
 // Helpdesk moved into the footer — the body list keeps the two journey-
 // specific shortcuts (documents, eligibility) so the dashboard stays
@@ -33,34 +39,40 @@ const BASE_NOTIFICATIONS = [
   { key: "language", time: "3 days ago", unread: false },
 ] as const;
 
-type NextActionVariant =
-  | "finishProfile"
-  | "findCourses"
-  | "underReview"
-  | "meritPublished"
-  | "seatOffered"
-  | "admissionConfirmed";
-
 export default function DashboardPage() {
   const { t } = useLocale();
-  const { applications, submittedCourseIds } = useApplications();
+  const { applications } = useApplications();
   const { draft } = useProfile();
   const bridge = useScrutinyBridge();
-  const allotment = useAllotmentBridge();
-  const demoProgress = useDemoProgress();
 
-  const submittedIds = submittedCourseIds();
-  const hasSubmitted = submittedIds.length > 0;
+  // Single source of truth for "what step to render". When an operator
+  // forces a demo stage via DemoProgressProvider, `step` reflects that
+  // stage — every page in the app reads from this hook so the rendered
+  // UI stays in lockstep with the demo. The underlying providers are
+  // not touched, so the real submission / allocation pipeline still
+  // behaves normally.
+  const effective = useEffectiveStudentStep();
+  const {
+    step: currentStep,
+    isDemo,
+    firstSubmittedCourseId,
+    firstApplicationNumber,
+    firstAllocation,
+  } = effective;
+  const firstSubmittedCourse = firstSubmittedCourseId
+    ? getCourse(firstSubmittedCourseId)
+    : null;
 
   /*
    * Only surface an action-required card on the dashboard when there's at
-   * least one OPEN discrepancy (student hasn't acted yet). Showing the
-   * awaiting/"sent for re-check" state here previously turned into a
-   * dead-end — green card with no CTA and "nothing more to do" copy even
-   * when the reason was an unresolved issue like a blurry photo. Awaiting
-   * status still lives on /applications and /issues where it belongs.
+   * least one OPEN discrepancy (student hasn't acted yet). When the demo
+   * override is active the operator is curating the journey, so we hide
+   * the discrepancy escalation — the staged view should not get drowned
+   * out by genuine real-flow noise.
    */
-  const openDiscrepancies = bridge.all.filter((d) => !d.studentActionAt);
+  const openDiscrepancies = isDemo
+    ? []
+    : bridge.all.filter((d) => !d.studentActionAt);
   const headlineDiscrepancy = openDiscrepancies[0] ?? null;
   const hasOpenDiscrepancy = openDiscrepancies.length > 0;
   const headlineCourseId = headlineDiscrepancy
@@ -70,64 +82,11 @@ export default function DashboardPage() {
     : "";
   const moreCount = Math.max(0, openDiscrepancies.length - 1);
 
-  const firstSubmitted = hasSubmitted ? applications[submittedIds[0]!] : null;
-  const firstSubmittedCourse = firstSubmitted ? getCourse(firstSubmitted.courseId) : null;
-
-  // Derive allocation state for the first submitted course. The tracker +
-  // next-action card both read from this — the dashboard is the one place
-  // where merit and allocation overlays actually animate the student's
-  // progress through steps 4, 5, 6, 7.
-  const firstAllocation = firstSubmitted
-    ? allotment.allocationFor(firstSubmitted.courseId)
-    : null;
-  const firstMeritPublished =
-    firstSubmitted && allotment.meritPublishedFor(firstSubmitted.courseId);
-
-  // Current step: walk backwards from the most advanced state. Once the
-  // profile meets the submission bar, the "Profile complete" step is done —
-  // the student is now sitting at the submission stage waiting to pick a
-  // course. Previously this case collapsed back into "profileComplete",
-  // which left the Profile Complete node perpetually un-ticked even after
-  // the profile was actually complete.
-  const realCurrentStep: StatusStep = (() => {
-    if (
-      firstAllocation?.status === "fee_paid" ||
-      firstAllocation?.status === "admission_confirmed"
-    ) {
-      return "admissionConfirmed";
-    }
-    if (firstAllocation) return "allotted";
-    if (firstMeritPublished) return "meritPublished";
-    if (hasSubmitted) return "submitted";
-    if (hasEnoughProfile(draft)) return "submitted";
-    return "profileComplete";
-  })();
-
-  // Demo override — when an operator forces a stage via the demo panel,
-  // prefer that stage for the tracker ONLY. The real provider state and
-  // the next-action card below still reflect the genuine flow so this
-  // stays isolated to the tracker visual.
-  const currentStep: StatusStep = demoProgress.stage ?? realCurrentStep;
-
   const stepsLeft = remainingProfileSteps(draft);
   const firstName = draft.fullName.trim().split(/\s+/)[0] ?? "";
 
-  // Priority order for the next-action card. More advanced states win —
-  // a confirmed admission takes precedence over "seat offered" which takes
-  // precedence over "merit published" / "under review".
-  const nextActionVariant: NextActionVariant = (() => {
-    if (
-      firstAllocation?.status === "fee_paid" ||
-      firstAllocation?.status === "admission_confirmed"
-    ) {
-      return "admissionConfirmed";
-    }
-    if (firstAllocation) return "seatOffered";
-    if (firstMeritPublished) return "meritPublished";
-    if (hasSubmitted && firstSubmittedCourse) return "underReview";
-    if (!hasEnoughProfile(draft)) return "finishProfile";
-    return "findCourses";
-  })();
+  const allocationCollegeName = firstAllocation?.offer.collegeName ?? null;
+  const allocationRollNumber = firstAllocation?.rollNumber ?? null;
 
   return (
     <PageShell
@@ -177,51 +136,43 @@ export default function DashboardPage() {
               {t("screen.dashboard.nextActionTitle")}
             </h3>
             <div className="mt-3">
-              {nextActionVariant === "admissionConfirmed" &&
-              firstSubmitted &&
-              firstAllocation ? (
-                <NextActionCard
-                  title={t("screen.dashboard.admissionConfirmed.title")}
-                  body={t("screen.dashboard.admissionConfirmed.body", {
-                    college: firstAllocation.offer.collegeName,
-                  })}
-                  cta={t("screen.dashboard.admissionConfirmed.cta")}
-                  href={`/payment/${firstSubmitted.courseId}`}
-                  meta={firstAllocation.rollNumber ?? firstSubmitted.applicationNumber}
-                  icon="🎓"
+              {/*
+                Stage-based UI switching — every step from `submitted` onwards
+                renders a dedicated view component. The pre-submission steps
+                (profileComplete) keep the existing finish-profile / find-
+                courses cards because there's nothing to "stage" before an
+                application exists.
+              */}
+              {currentStep === "admissionConfirmed" ? (
+                <ConfirmedView
+                  courseId={firstSubmittedCourseId}
+                  applicationNumber={firstApplicationNumber}
+                  collegeName={allocationCollegeName}
+                  rollNumber={allocationRollNumber}
                 />
-              ) : nextActionVariant === "seatOffered" &&
-                firstSubmitted &&
-                firstAllocation ? (
-                <NextActionCard
-                  title={t("screen.dashboard.seatOffered.title", {
-                    college: firstAllocation.offer.collegeName,
-                  })}
-                  body={t("screen.dashboard.seatOffered.body")}
-                  cta={t("screen.dashboard.seatOffered.cta")}
-                  href={`/allotment/${firstSubmitted.courseId}`}
-                  meta={firstSubmitted.applicationNumber}
-                  icon="🎉"
+              ) : currentStep === "allotted" ? (
+                <AllotmentView
+                  courseId={firstSubmittedCourseId}
+                  applicationNumber={firstApplicationNumber}
+                  collegeName={allocationCollegeName}
                 />
-              ) : nextActionVariant === "meritPublished" && firstSubmitted ? (
-                <NextActionCard
-                  title={t("screen.dashboard.meritPublished.title")}
-                  body={t("screen.dashboard.meritPublished.body")}
-                  cta={t("screen.dashboard.meritPublished.cta")}
-                  href={`/allotment/${firstSubmitted.courseId}`}
-                  meta={firstSubmitted.applicationNumber}
-                  icon="🏅"
+              ) : currentStep === "meritPublished" ? (
+                <MeritView
+                  courseId={firstSubmittedCourseId}
+                  applicationNumber={firstApplicationNumber}
                 />
-              ) : nextActionVariant === "underReview" && firstSubmitted && firstSubmittedCourse ? (
-                <NextActionCard
-                  title={t("screen.dashboard.underReview.title")}
-                  body={t("screen.dashboard.underReview.body")}
-                  cta={t("screen.dashboard.underReview.cta")}
-                  href="/applications"
-                  meta={firstSubmitted.applicationNumber}
-                  icon="⏱"
+              ) : currentStep === "underScrutiny" ? (
+                <ScrutinyView
+                  courseId={firstSubmittedCourseId}
+                  applicationNumber={firstApplicationNumber}
                 />
-              ) : nextActionVariant === "findCourses" ? (
+              ) : currentStep === "submitted" && firstSubmittedCourse ? (
+                <SubmittedView
+                  courseId={firstSubmittedCourseId}
+                  applicationNumber={firstApplicationNumber}
+                />
+              ) : currentStep === "submitted" ? (
+                /* Profile complete + ready to apply, but nothing submitted yet. */
                 <NextActionCard
                   title={t("screen.dashboard.findCourses.title")}
                   body={t("screen.dashboard.findCourses.body")}

@@ -12,6 +12,8 @@ import { useApplications } from "../_components/apply/applications-provider";
 import { formatRelative, formatTimestamp } from "../_components/documents/format";
 import { feeFor, maxPreferencesFor } from "../_components/apply/rules";
 import { useScrutinyBridge } from "../_components/scrutiny-bridge/scrutiny-bridge-provider";
+import { useEffectiveStudentStep } from "../_components/use-effective-step";
+import type { StatusStep } from "../_components/status-tracker";
 
 type RichStatus =
   | "draft"
@@ -48,10 +50,33 @@ function overlayToRich(status: AppBaseStatus | undefined): RichStatus | null {
   return null;
 }
 
+/**
+ * Map a forced demo stage to the rich status the applications list shows.
+ * "submitted" → "submitted" (in queue)
+ * "underScrutiny" → "underReview" (college actively checking)
+ * "meritPublished" / "allotted" / "admissionConfirmed" → "verified"
+ *   (the application has cleared scrutiny — anything beyond merit publication
+ *   implies a clean verification outcome).
+ */
+function demoStepToRich(step: StatusStep): RichStatus | null {
+  if (step === "submitted") return "submitted";
+  if (step === "underScrutiny") return "underReview";
+  if (
+    step === "meritPublished" ||
+    step === "allotted" ||
+    step === "admissionConfirmed"
+  ) {
+    return "verified";
+  }
+  return null;
+}
+
 export default function ApplicationsListPage() {
   const { t, locale } = useLocale();
   const { applications, hydrated } = useApplications();
   const bridge = useScrutinyBridge();
+  const effective = useEffectiveStudentStep();
+  const demoRich = effective.isDemo ? demoStepToRich(effective.step) : null;
 
   const rows = useMemo(() => {
     return Object.values(applications)
@@ -119,19 +144,25 @@ export default function ApplicationsListPage() {
             const submitted = row.status === "submitted";
 
             // Rich status is driven by bridge overlay when submitted; otherwise
-            // stays "Draft".
+            // stays "Draft". When an operator demo stage is active, every
+            // submitted row reflects the demo stage so the list view
+            // animates in lockstep with the dashboard tracker.
             const bridgeStatus = row.applicationNumber
               ? overlayToRich(bridge.statusFor(row.applicationNumber))
               : null;
             const richStatus: RichStatus = submitted
-              ? bridgeStatus ?? "underReview"
+              ? demoRich ?? bridgeStatus ?? "underReview"
               : "draft";
 
-            const issueCount = row.applicationNumber
-              ? bridge
-                  .byApplication(row.applicationNumber)
-                  .filter((d) => !d.studentActionAt).length
-              : 0;
+            // Demo stage suppresses real discrepancies on this row too — the
+            // operator is curating a clean journey, not testing the issues
+            // queue.
+            const issueCount =
+              effective.isDemo || !row.applicationNumber
+                ? 0
+                : bridge
+                    .byApplication(row.applicationNumber)
+                    .filter((d) => !d.studentActionAt).length;
 
             const primaryHref = submitted
               ? issueCount > 0
