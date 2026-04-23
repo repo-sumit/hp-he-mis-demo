@@ -87,6 +87,7 @@ export default function DashboardPage() {
 
   const allocationCollegeName = firstAllocation?.offer.collegeName ?? null;
   const allocationRollNumber = firstAllocation?.rollNumber ?? null;
+  const allocationFeeAmount = firstAllocation?.offer.feeAmount ?? null;
 
   return (
     <PageShell
@@ -155,6 +156,7 @@ export default function DashboardPage() {
                   courseId={firstSubmittedCourseId}
                   applicationNumber={firstApplicationNumber}
                   collegeName={allocationCollegeName}
+                  feeAmount={allocationFeeAmount}
                 />
               ) : currentStep === "meritPublished" ? (
                 <MeritView

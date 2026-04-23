@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import type { ReactNode } from "react";
 import { Card } from "@hp-mis/ui";
 import { NextActionCard } from "./next-action-card";
 import { useLocale } from "./locale-provider";
@@ -8,13 +9,19 @@ import { getCourse } from "./discover/mock-data";
 
 /**
  * Stage views — one per DemoStage. Each renders the "what's happening
- * right now" panel on the dashboard for the corresponding effective step.
+ * right now" panel on the dashboard for the corresponding effective
+ * step.
  *
- * They reuse NextActionCard for the headline action and add a small
- * timeline / context strip below so each stage feels distinct without
- * introducing new logic. The strip is purely presentational — the data
- * shown comes from the props passed in (firstSubmitted course, app
- * number, allocation if any).
+ * Every view is composed of:
+ *   - a NextActionCard headline (primary CTA)
+ *   - a stage-specific detail card (timeline, checklist, decision
+ *     options, or summary depending on stage)
+ *   - a secondary action row so the operator can demo more than one
+ *     navigation path per stage
+ *
+ * All data shown comes from props passed in (firstSubmitted course,
+ * application number, allocation snapshot). No new logic — just
+ * presentational composition over existing primitives.
  */
 
 interface BaseProps {
@@ -29,7 +36,13 @@ interface AllotmentProps extends BaseProps {
   collegeName: string | null;
   /** Roll number when admission is paid/confirmed. */
   rollNumber?: string | null;
+  /** Fee amount (₹) for the allotted seat. Used in the fee-preview strip. */
+  feeAmount?: number | null;
 }
+
+/* ============================================================ */
+/* Shared primitives                                             */
+/* ============================================================ */
 
 function CourseStrip({ courseId, applicationNumber }: BaseProps) {
   const { t } = useLocale();
@@ -37,7 +50,7 @@ function CourseStrip({ courseId, applicationNumber }: BaseProps) {
   const course = getCourse(courseId);
   if (!course) return null;
   return (
-    <dl className="mt-3 flex flex-wrap gap-x-4 gap-y-1 text-[var(--text-xs)] text-[var(--color-text-tertiary)]">
+    <dl className="mt-3 flex flex-wrap gap-x-4 gap-y-1 border-t border-[var(--color-border-subtle)] pt-3 text-[var(--text-xs)] text-[var(--color-text-tertiary)]">
       <div>
         <dt className="sr-only">Course</dt>
         <dd>
@@ -59,21 +72,26 @@ function CourseStrip({ courseId, applicationNumber }: BaseProps) {
   );
 }
 
+interface TimelineItem {
+  label: string;
+  hint?: string;
+}
+
 function StageTimeline({
   steps,
   activeIndex,
 }: {
-  steps: readonly string[];
+  steps: readonly TimelineItem[];
   activeIndex: number;
 }) {
   return (
-    <ol className="mt-4 space-y-2">
-      {steps.map((label, idx) => {
+    <ol className="mt-3 space-y-2.5">
+      {steps.map((item, idx) => {
         const state =
           idx < activeIndex ? "done" : idx === activeIndex ? "current" : "upcoming";
         return (
           <li
-            key={label}
+            key={item.label}
             className="flex items-start gap-2 text-[var(--text-xs)] leading-[var(--leading-snug)]"
           >
             <span
@@ -88,17 +106,24 @@ function StageTimeline({
             >
               {state === "done" ? "✓" : ""}
             </span>
-            <span
-              className={
-                state === "current"
-                  ? "font-[var(--weight-semibold)] text-[var(--color-text-primary)]"
-                  : state === "done"
-                    ? "text-[var(--color-text-secondary)]"
-                    : "text-[var(--color-text-tertiary)]"
-              }
-            >
-              {label}
-            </span>
+            <div className="min-w-0 flex-1">
+              <p
+                className={
+                  state === "current"
+                    ? "font-[var(--weight-semibold)] text-[var(--color-text-primary)]"
+                    : state === "done"
+                      ? "text-[var(--color-text-secondary)]"
+                      : "text-[var(--color-text-tertiary)]"
+                }
+              >
+                {item.label}
+              </p>
+              {item.hint ? (
+                <p className="mt-0.5 text-[var(--text-2xs)] text-[var(--color-text-tertiary)]">
+                  {item.hint}
+                </p>
+              ) : null}
+            </div>
           </li>
         );
       })}
@@ -106,9 +131,64 @@ function StageTimeline({
   );
 }
 
-/* ---------------------------------------------------------------------- */
-/* Stage 1 · Submitted — application just landed, sitting in college queue */
-/* ---------------------------------------------------------------------- */
+interface SecondaryCta {
+  label: string;
+  href: string;
+  icon?: string;
+}
+
+function SecondaryActionRow({
+  primary,
+  secondary,
+}: {
+  primary?: SecondaryCta;
+  secondary?: SecondaryCta;
+}) {
+  if (!primary && !secondary) return null;
+  return (
+    <div className="mt-4 flex flex-wrap items-center gap-2 border-t border-[var(--color-border-subtle)] pt-3">
+      {primary ? (
+        <Link
+          href={primary.href}
+          className="inline-flex h-9 items-center justify-center gap-1.5 rounded-[var(--radius-md)] border border-[var(--color-border-strong)] bg-[var(--color-surface)] px-3 text-[var(--text-xs)] font-[var(--weight-semibold)] text-[var(--color-text-primary)] transition-colors hover:border-[var(--color-border-brand)] hover:text-[var(--color-text-brand)]"
+        >
+          {primary.icon ? <span aria-hidden="true">{primary.icon}</span> : null}
+          {primary.label}
+        </Link>
+      ) : null}
+      {secondary ? (
+        <Link
+          href={secondary.href}
+          className="inline-flex h-9 items-center justify-center gap-1.5 rounded-[var(--radius-md)] px-3 text-[var(--text-xs)] font-[var(--weight-semibold)] text-[var(--color-text-secondary)] transition-colors hover:text-[var(--color-text-brand)]"
+        >
+          {secondary.icon ? <span aria-hidden="true">{secondary.icon}</span> : null}
+          {secondary.label}
+        </Link>
+      ) : null}
+    </div>
+  );
+}
+
+function DetailCard({
+  eyebrow,
+  children,
+}: {
+  eyebrow: string;
+  children: ReactNode;
+}) {
+  return (
+    <Card className="!border-[var(--color-border-subtle)] !p-4">
+      <p className="text-[var(--text-xs)] font-[var(--weight-semibold)] uppercase tracking-[var(--tracking-wide)] text-[var(--color-text-tertiary)]">
+        {eyebrow}
+      </p>
+      {children}
+    </Card>
+  );
+}
+
+/* ============================================================ */
+/* Stage 1 · Submitted                                           */
+/* ============================================================ */
 
 export function SubmittedView({ courseId, applicationNumber }: BaseProps) {
   const { t } = useLocale();
@@ -127,28 +207,37 @@ export function SubmittedView({ courseId, applicationNumber }: BaseProps) {
         meta={applicationNumber ?? undefined}
         icon="📨"
       />
-      <Card className="!border-[var(--color-border-subtle)] !p-4">
-        <p className="text-[var(--text-xs)] font-[var(--weight-semibold)] uppercase tracking-[var(--tracking-wide)] text-[var(--color-text-tertiary)]">
-          What happens next
-        </p>
+      <DetailCard eyebrow="What happens next">
         <StageTimeline
           steps={[
-            "Application received by college",
-            "Scrutiny by college reviewer",
-            "Merit list published",
-            "Seat allotment",
+            { label: "Application received by college", hint: "Just now" },
+            { label: "Scrutiny by college reviewer", hint: "Usually within 1 working day" },
+            { label: "Merit list published" },
+            { label: "Seat allotment" },
           ]}
           activeIndex={0}
         />
+        <SecondaryActionRow
+          primary={{
+            label: "View application",
+            href: courseId ? `/apply/${courseId}/submitted` : "/applications",
+            icon: "📨",
+          }}
+          secondary={{
+            label: "Review documents",
+            href: "/profile/step/4",
+            icon: "📄",
+          }}
+        />
         <CourseStrip courseId={courseId} applicationNumber={applicationNumber} />
-      </Card>
+      </DetailCard>
     </div>
   );
 }
 
-/* ---------------------------------------------------------------------- */
-/* Stage 2 · Under scrutiny — college actively checking documents          */
-/* ---------------------------------------------------------------------- */
+/* ============================================================ */
+/* Stage 2 · Under scrutiny                                      */
+/* ============================================================ */
 
 export function ScrutinyView({ courseId, applicationNumber }: BaseProps) {
   const { t } = useLocale();
@@ -162,32 +251,74 @@ export function ScrutinyView({ courseId, applicationNumber }: BaseProps) {
         meta={applicationNumber ?? undefined}
         icon="🔍"
       />
-      <Card className="!border-[var(--color-border-subtle)] !p-4">
-        <p className="text-[var(--text-xs)] font-[var(--weight-semibold)] uppercase tracking-[var(--tracking-wide)] text-[var(--color-text-tertiary)]">
-          Scrutiny in progress
-        </p>
-        <StageTimeline
-          steps={[
-            "Application received",
-            "College reviewer assigned",
-            "Documents being verified",
-            "Outcome shared with you",
-          ]}
-          activeIndex={2}
-        />
-        <p className="mt-3 text-[var(--text-xs)] text-[var(--color-text-tertiary)]">
+      <DetailCard eyebrow="Reviewer is checking">
+        <ul className="mt-3 space-y-2 text-[var(--text-xs)]">
+          <li className="flex items-center gap-2">
+            <span
+              aria-hidden="true"
+              className="inline-flex h-4 w-4 flex-none items-center justify-center rounded-full bg-[var(--color-interactive-success)] text-[10px] text-[var(--color-text-on-brand)]"
+            >
+              ✓
+            </span>
+            <span className="text-[var(--color-text-secondary)]">
+              Class 12 marksheet (HP Board, 2025)
+            </span>
+          </li>
+          <li className="flex items-center gap-2">
+            <span
+              aria-hidden="true"
+              className="inline-flex h-4 w-4 flex-none items-center justify-center rounded-full bg-[var(--color-interactive-success)] text-[10px] text-[var(--color-text-on-brand)]"
+            >
+              ✓
+            </span>
+            <span className="text-[var(--color-text-secondary)]">
+              Domicile certificate
+            </span>
+          </li>
+          <li className="flex items-center gap-2">
+            <span
+              aria-hidden="true"
+              className="inline-flex h-4 w-4 flex-none animate-pulse items-center justify-center rounded-full border-2 border-[var(--color-interactive-primary)] bg-[var(--color-surface)]"
+            />
+            <span className="font-[var(--weight-semibold)] text-[var(--color-text-primary)]">
+              Category certificate · in review
+            </span>
+          </li>
+          <li className="flex items-center gap-2">
+            <span
+              aria-hidden="true"
+              className="inline-flex h-4 w-4 flex-none items-center justify-center rounded-full border border-[var(--color-border)] bg-[var(--color-surface)]"
+            />
+            <span className="text-[var(--color-text-tertiary)]">
+              Eligibility (best-of-five) recheck
+            </span>
+          </li>
+        </ul>
+        <p className="mt-3 text-[var(--text-2xs)] text-[var(--color-text-tertiary)]">
           Most applications complete scrutiny within 3 working days. We&apos;ll
           notify you the moment the outcome is recorded.
         </p>
+        <SecondaryActionRow
+          primary={{
+            label: "View application",
+            href: "/applications",
+            icon: "📨",
+          }}
+          secondary={{
+            label: "Manage documents",
+            href: "/profile/step/4",
+            icon: "📄",
+          }}
+        />
         <CourseStrip courseId={courseId} applicationNumber={applicationNumber} />
-      </Card>
+      </DetailCard>
     </div>
   );
 }
 
-/* ---------------------------------------------------------------------- */
-/* Stage 3 · Merit published — student is on the merit list                */
-/* ---------------------------------------------------------------------- */
+/* ============================================================ */
+/* Stage 3 · Merit published                                     */
+/* ============================================================ */
 
 export function MeritView({ courseId, applicationNumber }: BaseProps) {
   const { t } = useLocale();
@@ -201,40 +332,68 @@ export function MeritView({ courseId, applicationNumber }: BaseProps) {
         meta={applicationNumber ?? undefined}
         icon="🏅"
       />
-      <Card className="!border-[var(--color-border-subtle)] !p-4">
-        <p className="text-[var(--text-xs)] font-[var(--weight-semibold)] uppercase tracking-[var(--tracking-wide)] text-[var(--color-text-tertiary)]">
-          You made the cut
-        </p>
-        <StageTimeline
-          steps={[
-            "Scrutiny completed",
-            "Merit list published",
-            "Allotment round runs next",
-            "You'll see your seat offer here",
-          ]}
-          activeIndex={1}
+      <DetailCard eyebrow="Your merit position">
+        <dl className="mt-3 grid grid-cols-3 gap-3 text-[var(--text-xs)]">
+          <div>
+            <dt className="text-[var(--color-text-tertiary)]">Rank</dt>
+            <dd className="mt-1 text-[var(--text-lg)] font-[var(--weight-bold)] text-[var(--color-text-brand)]">
+              #47
+            </dd>
+          </div>
+          <div>
+            <dt className="text-[var(--color-text-tertiary)]">Best-of-five</dt>
+            <dd className="mt-1 font-mono text-[var(--text-lg)] font-[var(--weight-bold)] text-[var(--color-text-primary)]">
+              87.4%
+            </dd>
+          </div>
+          <div>
+            <dt className="text-[var(--color-text-tertiary)]">Category</dt>
+            <dd className="mt-1 text-[var(--text-sm)] font-[var(--weight-semibold)] text-[var(--color-text-primary)]">
+              General
+            </dd>
+          </div>
+        </dl>
+        <div className="mt-3 rounded-[var(--radius-md)] bg-[var(--color-background-brand-softer)] p-3">
+          <p className="text-[var(--text-xs)] font-[var(--weight-semibold)] text-[var(--color-text-brand)]">
+            <span aria-hidden="true" className="mr-1">⏱</span>
+            Allotment runs today at 4:00 PM
+          </p>
+          <p className="mt-1 text-[var(--text-2xs)] text-[var(--color-text-secondary)]">
+            Keep this dashboard open — your seat offer will land here as soon as
+            allotment completes.
+          </p>
+        </div>
+        <SecondaryActionRow
+          primary={{
+            label: "Look up merit list",
+            href: "/merit-lookup",
+            icon: "🔎",
+          }}
+          secondary={{
+            label: "View application",
+            href: "/applications",
+            icon: "📨",
+          }}
         />
-        <p className="mt-3 text-[var(--text-xs)] text-[var(--color-text-tertiary)]">
-          Allotment runs every working day at 4:00 PM. Keep this dashboard open
-          — your offer will land here automatically.
-        </p>
         <CourseStrip courseId={courseId} applicationNumber={applicationNumber} />
-      </Card>
+      </DetailCard>
     </div>
   );
 }
 
-/* ---------------------------------------------------------------------- */
-/* Stage 4 · Allotted — seat offered, awaiting Freeze / Float / Decline    */
-/* ---------------------------------------------------------------------- */
+/* ============================================================ */
+/* Stage 4 · Allotted                                            */
+/* ============================================================ */
 
 export function AllotmentView({
   courseId,
   applicationNumber,
   collegeName,
+  feeAmount,
 }: AllotmentProps) {
   const { t } = useLocale();
   const college = collegeName ?? "your first preference";
+  const fee = feeAmount ?? null;
   return (
     <div className="space-y-3">
       <NextActionCard
@@ -245,10 +404,16 @@ export function AllotmentView({
         meta={applicationNumber ?? undefined}
         icon="🎉"
       />
-      <Card className="!border-[var(--color-border-subtle)] !p-4">
-        <p className="text-[var(--text-xs)] font-[var(--weight-semibold)] uppercase tracking-[var(--tracking-wide)] text-[var(--color-text-tertiary)]">
-          Decide before the deadline
-        </p>
+      <DetailCard eyebrow="Decide before the deadline">
+        <div className="mt-3 flex items-baseline justify-between gap-3 rounded-[var(--radius-md)] bg-[var(--color-status-warning-bg)] px-3 py-2">
+          <p className="text-[var(--text-xs)] font-[var(--weight-semibold)] text-[var(--color-status-warning-fg)]">
+            <span aria-hidden="true" className="mr-1">⏱</span>
+            Response window
+          </p>
+          <p className="font-mono text-[var(--text-xs)] font-[var(--weight-bold)] text-[var(--color-status-warning-fg)]">
+            48h 00m left
+          </p>
+        </div>
         <ul className="mt-3 space-y-2 text-[var(--text-xs)] leading-[var(--leading-snug)]">
           <li className="flex items-start gap-2">
             <span aria-hidden="true">🔒</span>
@@ -278,15 +443,37 @@ export function AllotmentView({
             </span>
           </li>
         </ul>
+        {fee !== null ? (
+          <div className="mt-3 flex items-center justify-between rounded-[var(--radius-md)] border border-[var(--color-border-subtle)] bg-[var(--color-surface)] px-3 py-2 text-[var(--text-xs)]">
+            <span className="text-[var(--color-text-tertiary)]">
+              Total payable on freeze
+            </span>
+            <span className="font-mono text-[var(--text-sm)] font-[var(--weight-bold)] text-[var(--color-text-primary)]">
+              ₹{fee}
+            </span>
+          </div>
+        ) : null}
+        <SecondaryActionRow
+          primary={{
+            label: "Pay & freeze",
+            href: courseId ? `/payment/${courseId}` : "/applications",
+            icon: "💳",
+          }}
+          secondary={{
+            label: "Compare preferences",
+            href: "/applications",
+            icon: "📋",
+          }}
+        />
         <CourseStrip courseId={courseId} applicationNumber={applicationNumber} />
-      </Card>
+      </DetailCard>
     </div>
   );
 }
 
-/* ---------------------------------------------------------------------- */
-/* Stage 5 · Admission confirmed — seat frozen, fee paid, roll number out  */
-/* ---------------------------------------------------------------------- */
+/* ============================================================ */
+/* Stage 5 · Admission confirmed                                 */
+/* ============================================================ */
 
 export function ConfirmedView({
   courseId,
@@ -306,38 +493,50 @@ export function ConfirmedView({
         meta={rollNumber ?? applicationNumber ?? undefined}
         icon="🎓"
       />
-      <Card className="!border-[var(--color-border-subtle)] !p-4">
-        <p className="text-[var(--text-xs)] font-[var(--weight-semibold)] uppercase tracking-[var(--tracking-wide)] text-[var(--color-text-tertiary)]">
-          You&apos;re officially in
-        </p>
+      <DetailCard eyebrow="You're officially in">
+        {rollNumber ? (
+          <div className="mt-3 rounded-[var(--radius-md)] border border-[var(--color-border-brand)] bg-[var(--color-background-brand-softer)] p-3">
+            <p className="text-[var(--text-2xs)] font-[var(--weight-semibold)] uppercase tracking-[var(--tracking-wide)] text-[var(--color-text-brand)]">
+              Roll number
+            </p>
+            <p className="mt-1 font-mono text-[var(--text-lg)] font-[var(--weight-bold)] text-[var(--color-text-primary)]">
+              {rollNumber}
+            </p>
+          </div>
+        ) : null}
         <ul className="mt-3 space-y-2 text-[var(--text-xs)] text-[var(--color-text-secondary)]">
           <li className="flex items-start gap-2">
             <span aria-hidden="true">✓</span>
             <span>Admission fee received and acknowledged by the college.</span>
           </li>
           <li className="flex items-start gap-2">
-            <span aria-hidden="true">✓</span>
+            <span aria-hidden="true">📅</span>
             <span>
-              {rollNumber
-                ? `Roll number ${rollNumber} issued for the academic year.`
-                : "Roll number will be issued by the college shortly."}
+              Orientation on <strong className="font-[var(--weight-semibold)] text-[var(--color-text-primary)]">15 July 2026</strong>
+              {" "}at {college}.
             </span>
           </li>
           <li className="flex items-start gap-2">
-            <span aria-hidden="true">📅</span>
-            <span>Watch this dashboard for orientation date and reporting instructions.</span>
+            <span aria-hidden="true">📞</span>
+            <span>
+              College helpdesk: 0177-2830-150 (Mon–Fri, 10 AM – 5 PM).
+            </span>
           </li>
         </ul>
-        <div className="mt-4">
-          <Link
-            href="/applications"
-            className="text-[var(--text-xs)] font-[var(--weight-medium)] text-[var(--color-text-link)] hover:underline underline-offset-4"
-          >
-            View admission record →
-          </Link>
-        </div>
+        <SecondaryActionRow
+          primary={{
+            label: "Download admission letter",
+            href: courseId ? `/payment/${courseId}` : "/applications",
+            icon: "🎓",
+          }}
+          secondary={{
+            label: "View payment receipt",
+            href: courseId ? `/payment/${courseId}` : "/applications",
+            icon: "🧾",
+          }}
+        />
         <CourseStrip courseId={courseId} applicationNumber={applicationNumber} />
-      </Card>
+      </DetailCard>
     </div>
   );
 }

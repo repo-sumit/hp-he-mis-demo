@@ -12,6 +12,7 @@ import { useLocale } from "../../_components/locale-provider";
 import { useProfile } from "../../_components/profile/profile-provider";
 import { useAllotmentBridge } from "../../_components/allotment-bridge/allotment-bridge-provider";
 import { getCourse } from "../../_components/discover/mock-data";
+import { useEffectiveStudentStep } from "../../_components/use-effective-step";
 
 type Params = { courseId: string };
 type Stage = "confirm" | "paying" | "success";
@@ -53,10 +54,29 @@ export default function PaymentPage({
   const courseLabel = `${course.code} · ${t(course.nameKey)}`;
   const firstName = (draft.fullName.trim().split(/\s+/)[0] ?? "").trim();
 
-  const allocation = allocationFor(courseId);
+  const realAllocation = allocationFor(courseId);
+
+  // Effective-step demo override — when an operator forces the journey
+  // to "allotted" or "admissionConfirmed" without the real bridge
+  // actually allocating a seat, the hook synthesises a read-only
+  // AllocationEntry so the payment screen still renders the offer + roll
+  // number. The bridge is never written from this fallback path;
+  // `markAdmissionConfirmed` still routes through the real provider on
+  // Pay (returns null for synthetic entries — the success screen still
+  // renders from the synthetic entry's existing roll number).
+  const effective = useEffectiveStudentStep();
+  const demoAllocation: AllocationEntry | null =
+    !realAllocation &&
+    effective.isDemo &&
+    effective.firstSubmittedCourseId === courseId
+      ? effective.firstAllocation
+      : null;
+
+  const allocation = realAllocation ?? demoAllocation;
 
   // If the allocation entry is already admission_confirmed (returning
-  // visitor), open on the success screen. Otherwise open on confirm.
+  // visitor or a demo override at admissionConfirmed), open on the
+  // success screen. Otherwise open on confirm.
   const initialStage: Stage =
     allocation?.status === "admission_confirmed" || allocation?.status === "fee_paid"
       ? "success"
@@ -107,7 +127,24 @@ export default function PaymentPage({
     // Fake gateway delay — enough to feel real, short enough to not annoy.
     window.setTimeout(() => {
       const entry = markAdmissionConfirmed(courseId, course.code);
-      setConfirmedEntry(entry);
+      // Demo override case — there's no real allocation to mutate, so the
+      // bridge call returned null. Promote the synthetic offer into a
+      // confirmed entry locally (still no bridge writes) so the success
+      // screen reads coherently with a roll number.
+      const fallback: AllocationEntry | null =
+        entry ??
+        (demoAllocation
+          ? {
+              ...demoAllocation,
+              status: "admission_confirmed",
+              rollNumber:
+                demoAllocation.rollNumber ??
+                `${demoAllocation.offer.collegeId.toUpperCase()}/2026/${String(
+                  demoAllocation.rank,
+                ).padStart(4, "0")}`,
+            }
+          : null);
+      setConfirmedEntry(fallback);
       setStage("success");
     }, 1100);
   };
