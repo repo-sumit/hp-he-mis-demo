@@ -39,13 +39,15 @@ import {
 /**
  * State Admin landing — "Higher Education Command Center".
  *
- * Decision-first layout, not operational:
- *   1. Executive KPI strip (5 cards w/ trends)
- *   2. Core insights — district enrollment + 5-year trend + gender
- *   3. Actionable alerts (right rail)
- *   4. Deep-dive snapshot blocks (Lifecycle · Faculty · Finance · Infra)
+ * Layout contract (enforced by this file):
+ *   · 12-column base grid for every region with multiple children
+ *   · 32px (mt-8) vertical rhythm between top-level sections
+ *   · 24px (gap-6 / mt-6) between cards inside a section
+ *   · 16px (p-4) card padding everywhere it is controlled here
  *
- * Matches the layout and data from docs/State_User Dashabord.pdf.
+ * Data, components, and logic remain untouched from the pre-refactor
+ * state; this pass only fixes layout, spacing, alignment, and
+ * hierarchy.
  */
 
 const DENSITY_TONE: Record<DistrictDensity, "success" | "brand" | "warning" | "danger"> = {
@@ -102,12 +104,13 @@ export default function DashboardPage() {
       />
 
       {/* ------- Priority Actions Today ------- */}
-      <div className="mb-5">
-        <PriorityActions actions={PRIORITY_ACTIONS} />
-      </div>
+      <PriorityActions actions={PRIORITY_ACTIONS} />
 
-      {/* ------- Section 1 · Executive KPIs ------- */}
-      <section aria-label="Executive KPIs" className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-5">
+      {/* ------- Section 1 · Executive KPIs (5 tiles) ------- */}
+      <section
+        aria-label="Executive KPIs"
+        className="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-5"
+      >
         <KPICard
           label="Total Colleges"
           value={STATE_KPI.totalColleges}
@@ -149,15 +152,16 @@ export default function DashboardPage() {
         />
       </section>
 
-      {/* ------- Section 2 + 3 · Core insights + Alerts ------- */}
+      {/* ------- Section 2 + 3 · Core insights + Alerts (12-col · 8 + 4) ------- */}
       <section
         aria-label="Core insights and alerts"
-        className="mt-6 grid gap-5 lg:grid-cols-3"
+        className="mt-8 grid grid-cols-1 gap-6 lg:grid-cols-12"
       >
-        <div className="space-y-5 lg:col-span-2">
-          {/* District-wise enrollment */}
-          <Card padded={false}>
-            <div className="flex flex-wrap items-start justify-between gap-3 border-b border-[var(--color-border-subtle)] px-5 py-4">
+        {/* Insights column (8/12) */}
+        <div className="grid grid-cols-1 gap-6 lg:col-span-8 lg:grid-cols-12">
+          {/* District-wise enrollment — full width of inner 12-col */}
+          <Card padded={false} className="lg:col-span-12">
+            <header className="flex flex-wrap items-start justify-between gap-3 border-b border-[var(--color-border-subtle)] p-4">
               <div>
                 <CardTitle>District-wise enrollment</CardTitle>
                 <CardBody className="mt-1">
@@ -175,8 +179,8 @@ export default function DashboardPage() {
                   </span>
                 ))}
               </div>
-            </div>
-            <ul className="space-y-3 px-5 py-5">
+            </header>
+            <ul className="space-y-3 p-4">
               {DISTRICT_ENROLLMENT.map((row) => {
                 const pct = (row.students / maxDistrictEnrollment) * 100;
                 return (
@@ -203,9 +207,7 @@ export default function DashboardPage() {
                       <span className="font-[var(--weight-semibold)] text-[var(--color-text-primary)]">
                         {row.students.toLocaleString("en-IN")}
                       </span>
-                      {row.note ? (
-                        <Badge tone="danger">!</Badge>
-                      ) : null}
+                      {row.note ? <Badge tone="danger">!</Badge> : null}
                     </span>
                   </li>
                 );
@@ -213,132 +215,138 @@ export default function DashboardPage() {
             </ul>
           </Card>
 
-          {/* Enrollment trend + gender donut */}
-          <div className="grid gap-5 lg:grid-cols-[3fr_2fr]">
-            <Card padded={false}>
-              <div className="flex items-start justify-between gap-3 border-b border-[var(--color-border-subtle)] px-5 py-4">
-                <div>
-                  <CardTitle>Enrollment analysis</CardTitle>
-                  <CardBody className="mt-1">
-                    Five-year trend, students in Lakhs. Overall plus gender split.
-                  </CardBody>
-                </div>
-                <Link
-                  href="#"
-                  className="text-[var(--text-xs)] font-[var(--weight-semibold)] text-[var(--color-text-link)] transition-colors duration-150 ease-out hover:underline underline-offset-4"
-                >
-                  View details →
-                </Link>
+          {/* Enrollment trend (7/12) + Gender parity (5/12) */}
+          <Card padded={false} className="lg:col-span-7">
+            <header className="flex items-start justify-between gap-3 border-b border-[var(--color-border-subtle)] p-4">
+              <div>
+                <CardTitle>Enrollment analysis</CardTitle>
+                <CardBody className="mt-1">
+                  Five-year trend, students in Lakhs. Overall plus gender split.
+                </CardBody>
               </div>
-              <div className="px-5 py-5">
-                <LineChart
-                  data={ENROLLMENT_TREND}
-                  series={[
-                    { label: "Female", color: "var(--color-chart-5)", data: ENROLLMENT_TREND_FEMALE },
-                    { label: "Male", color: "var(--color-chart-3)", data: ENROLLMENT_TREND_MALE },
-                  ]}
-                  yMin={0}
-                  yMax={2.5}
-                  yTickCount={5}
-                  yFormatter={(n) => `${n.toFixed(1)}L`}
-                  ariaLabel="Enrollment trend over five years, total plus female and male"
-                />
-                <div className="mt-3 flex flex-wrap items-center justify-center gap-4 text-[var(--text-xs)] text-[var(--color-text-secondary)]">
-                  <Legend color="var(--color-chart-1)" label="Total" />
-                  <Legend color="var(--color-chart-5)" label="Female" dashed />
-                  <Legend color="var(--color-chart-3)" label="Male" dashed />
-                </div>
+              <Link
+                href="#"
+                className="text-[var(--text-xs)] font-[var(--weight-semibold)] text-[var(--color-text-link)] transition-colors duration-150 ease-out hover:underline underline-offset-4"
+              >
+                View details →
+              </Link>
+            </header>
+            <div className="p-4">
+              <LineChart
+                data={ENROLLMENT_TREND}
+                series={[
+                  { label: "Female", color: "var(--color-chart-5)", data: ENROLLMENT_TREND_FEMALE },
+                  { label: "Male", color: "var(--color-chart-3)", data: ENROLLMENT_TREND_MALE },
+                ]}
+                yMin={0}
+                yMax={2.5}
+                yTickCount={5}
+                yFormatter={(n) => `${n.toFixed(1)}L`}
+                ariaLabel="Enrollment trend over five years, total plus female and male"
+              />
+              <div className="mt-4 flex flex-wrap items-center justify-center gap-4 text-[var(--text-xs)] text-[var(--color-text-secondary)]">
+                <Legend color="var(--color-chart-1)" label="Total" />
+                <Legend color="var(--color-chart-5)" label="Female" dashed />
+                <Legend color="var(--color-chart-3)" label="Male" dashed />
               </div>
-            </Card>
+            </div>
+          </Card>
 
-            <Card padded={false}>
-              <div className="flex items-center justify-between gap-3 border-b border-[var(--color-border-subtle)] px-5 py-4">
-                <CardTitle>Gender parity</CardTitle>
-                <Badge tone="success">GPI · {GENDER_DISTRIBUTION.gpi}</Badge>
-              </div>
-              <div className="px-5 py-6">
-                <DonutChart
-                  segments={[
-                    { label: "Female", value: GENDER_DISTRIBUTION.female, color: "var(--color-chart-5)" },
-                    { label: "Male", value: GENDER_DISTRIBUTION.male, color: "var(--color-chart-1)" },
-                  ]}
-                  centerLabel="Total"
-                  centerValue="2.15 L"
-                  size={180}
-                  ariaLabel="Gender distribution donut chart"
-                />
-              </div>
-            </Card>
-          </div>
+          <Card padded={false} className="lg:col-span-5">
+            <header className="flex items-center justify-between gap-3 border-b border-[var(--color-border-subtle)] p-4">
+              <CardTitle>Gender parity</CardTitle>
+              <Badge tone="success">GPI · {GENDER_DISTRIBUTION.gpi}</Badge>
+            </header>
+            <div className="p-4">
+              <DonutChart
+                segments={[
+                  { label: "Female", value: GENDER_DISTRIBUTION.female, color: "var(--color-chart-5)" },
+                  { label: "Male", value: GENDER_DISTRIBUTION.male, color: "var(--color-chart-1)" },
+                ]}
+                centerLabel="Total"
+                centerValue="2.15 L"
+                size={180}
+                ariaLabel="Gender distribution donut chart"
+              />
+            </div>
+          </Card>
         </div>
 
-        {/* Alerts rail */}
-        <aside aria-label="Actionable alerts" className="space-y-5">
+        {/* Alerts column (4/12) */}
+        <aside aria-label="Actionable alerts" className="grid gap-6 lg:col-span-4">
           <AlertsPanel
             alerts={COMMAND_CENTER_ALERTS}
             urgentCount={ALERT_SUMMARY.critical}
             viewAllHref="/state/alerts"
           />
-          <Card>
-            <CardTitle>Alert health</CardTitle>
-            <CardBody className="mt-3 space-y-2 text-[var(--text-sm)]">
+          <Card padded={false}>
+            <header className="border-b border-[var(--color-border-subtle)] p-4">
+              <CardTitle>Alert health</CardTitle>
+            </header>
+            <div className="space-y-2 p-4 text-[var(--text-sm)]">
               <AlertRow label="Critical" value={ALERT_SUMMARY.critical} tone="danger" />
               <AlertRow label="Warnings" value={ALERT_SUMMARY.warnings} tone="warning" />
               <AlertRow label="Pending reviews" value={ALERT_SUMMARY.pendingReviews} tone="brand" />
               <AlertRow label="Resolved · this week" value={ALERT_SUMMARY.resolvedThisWeek} tone="success" />
-            </CardBody>
+            </div>
           </Card>
         </aside>
       </section>
 
       {/* ------- Decision intelligence ------- */}
-      <div className="mt-8">
+      <section aria-label="Decision intelligence" className="mt-8">
         <DecisionInsightPanel insights={DECISION_INSIGHTS} />
-      </div>
+      </section>
 
-      {/* ------- Section 4 · Student Lifecycle ------- */}
+      {/* ------- Section 4 · Student Lifecycle (12-col · 3+3+3+3) ------- */}
       <section aria-label="Student lifecycle" className="mt-8">
         <SectionHeading
           eyebrow="Student lifecycle"
           title="Are students arriving, staying, and moving on?"
           href="/state/lifecycle"
         />
-        <div className="mt-4 grid gap-5 lg:grid-cols-[1fr_1fr_1fr_2fr]">
-          <KPICard
-            label="Total enrollment"
-            value={LIFECYCLE.totalEnrollment}
-            icon="👥"
-            tone="brand"
-            trend={{ label: `${LIFECYCLE.totalEnrollmentDelta} YoY`, direction: "up", tone: "success" }}
-          />
-          <KPICard
-            label="Dropout rate"
-            value={LIFECYCLE.dropoutRate}
-            icon="⚠"
-            tone="danger"
-            trend={{
-              label: `Above target ${LIFECYCLE.dropoutTarget}`,
-              direction: "up",
-              tone: "danger",
-            }}
-          />
-          <KPICard
-            label="Completion rate"
-            value={LIFECYCLE.completionRate}
-            icon="🎓"
-            tone="success"
-            context="On track"
-          />
-          <Card padded={false}>
-            <div className="flex items-center justify-between gap-3 border-b border-[var(--color-border-subtle)] px-5 py-4">
+        <div className="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-12">
+          <div className="lg:col-span-3">
+            <KPICard
+              label="Total enrollment"
+              value={LIFECYCLE.totalEnrollment}
+              icon="👥"
+              tone="brand"
+              trend={{ label: `${LIFECYCLE.totalEnrollmentDelta} YoY`, direction: "up", tone: "success" }}
+            />
+          </div>
+          <div className="lg:col-span-3">
+            <KPICard
+              label="Dropout rate"
+              value={LIFECYCLE.dropoutRate}
+              icon="⚠"
+              tone="danger"
+              trend={{
+                label: `Above target ${LIFECYCLE.dropoutTarget}`,
+                direction: "up",
+                tone: "danger",
+              }}
+            />
+          </div>
+          <div className="lg:col-span-3">
+            <KPICard
+              label="Completion rate"
+              value={LIFECYCLE.completionRate}
+              icon="🎓"
+              tone="success"
+              context="On track"
+            />
+          </div>
+          <Card padded={false} className="lg:col-span-3">
+            <header className="flex items-center justify-between gap-3 border-b border-[var(--color-border-subtle)] p-4">
               <CardTitle>High-risk cohorts</CardTitle>
               <Badge tone="danger">{HIGH_RISK_COHORTS.length} flagged</Badge>
-            </div>
+            </header>
             <ul className="divide-y divide-[var(--color-border-subtle)]">
               {HIGH_RISK_COHORTS.map((row, i) => (
                 <li
                   key={i}
-                  className="grid grid-cols-[1fr_1fr_auto_auto] items-center gap-3 px-5 py-3 text-[var(--text-sm)]"
+                  className="grid grid-cols-[1fr_1fr_auto_auto] items-center gap-3 px-4 py-3 text-[var(--text-sm)]"
                 >
                   <span className="font-[var(--weight-semibold)] text-[var(--color-text-primary)]">
                     {row.district}
@@ -359,28 +367,31 @@ export default function DashboardPage() {
           </Card>
         </div>
 
-        <Card className="mt-5">
-          <CardTitle>Rural vs urban split</CardTitle>
-          <CardBody className="mt-4 space-y-4">
+        <Card padded={false} className="mt-6">
+          <header className="border-b border-[var(--color-border-subtle)] p-4">
+            <CardTitle>Rural vs urban split</CardTitle>
+          </header>
+          <div className="space-y-4 p-4">
             <SplitBar label="Rural" value={RURAL_URBAN.rural} tone="success" />
             <SplitBar label="Urban" value={RURAL_URBAN.urban} tone="brand" />
             <p className="rounded-[var(--radius-md)] bg-[var(--color-background-brand-subtle)] p-3 text-[var(--text-xs)] text-[var(--color-text-primary)]">
               <span aria-hidden="true" className="mr-1">ℹ</span>
               {RURAL_URBAN.note}
             </p>
-          </CardBody>
+          </div>
         </Card>
       </section>
 
-      {/* ------- Section 5 · Faculty & HR ------- */}
+      {/* ------- Section 5 · Faculty & HR (12-col · 4 + 8) ------- */}
       <section aria-label="Faculty and HR" className="mt-8">
         <SectionHeading
           eyebrow="Faculty & HR"
           title="Where is teaching capacity thin?"
           href="#"
         />
-        <div className="mt-4 grid gap-5 lg:grid-cols-[2fr_3fr]">
-          <div className="grid grid-cols-2 gap-4">
+        <div className="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-12">
+          {/* KPI 2x2 (4/12) */}
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:col-span-4">
             <KPICard
               label="Sanctioned posts"
               value={FACULTY.sanctioned.toLocaleString("en-IN")}
@@ -411,8 +422,9 @@ export default function DashboardPage() {
             />
           </div>
 
-          <Card padded={false}>
-            <div className="flex items-center justify-between gap-3 border-b border-[var(--color-border-subtle)] px-5 py-4">
+          {/* Subject-wise vacancy (8/12) */}
+          <Card padded={false} className="lg:col-span-8">
+            <header className="flex items-center justify-between gap-3 border-b border-[var(--color-border-subtle)] p-4">
               <div>
                 <CardTitle>Subject-wise vacancy (top 6)</CardTitle>
                 <CardBody className="mt-1">Sanctioned posts · filled vs vacant.</CardBody>
@@ -423,8 +435,8 @@ export default function DashboardPage() {
               >
                 View all →
               </Link>
-            </div>
-            <ul className="space-y-3 px-5 py-5">
+            </header>
+            <ul className="space-y-3 p-4">
               {SUBJECT_VACANCY.map((row) => {
                 const total = row.filled + row.vacant;
                 const filledPct = (row.filled / maxSubjectVacancy) * 100;
@@ -467,16 +479,16 @@ export default function DashboardPage() {
           </Card>
         </div>
 
-        <Card padded={false} className="mt-5">
-          <div className="flex items-center justify-between gap-3 border-b border-[var(--color-border-subtle)] px-5 py-4">
+        <Card padded={false} className="mt-6">
+          <header className="flex items-center justify-between gap-3 border-b border-[var(--color-border-subtle)] p-4">
             <CardTitle>Critical shortages by college</CardTitle>
             <Badge tone="danger">Vacancy &gt; 30%</Badge>
-          </div>
+          </header>
           <ul className="divide-y divide-[var(--color-border-subtle)]">
             {CRITICAL_SHORTAGES.map((row) => (
               <li
                 key={row.college}
-                className="grid grid-cols-[1fr_8rem_6rem_5rem_5rem] items-center gap-3 px-5 py-3 text-[var(--text-sm)]"
+                className="grid grid-cols-[1fr_8rem_6rem_5rem_5rem] items-center gap-3 px-4 py-3 text-[var(--text-sm)]"
               >
                 <span className="font-[var(--weight-semibold)] text-[var(--color-text-primary)]">
                   {row.college}
@@ -493,14 +505,14 @@ export default function DashboardPage() {
         </Card>
       </section>
 
-      {/* ------- Section 6 · Financial ------- */}
+      {/* ------- Section 6 · Financial (4 KPIs · then 8+4 detail) ------- */}
       <section aria-label="Financial" className="mt-8">
         <SectionHeading
           eyebrow="Financial monitoring"
           title="Is the money moving on time?"
           href="#"
         />
-        <div className="mt-4 grid gap-5 lg:grid-cols-4">
+        <div className="mt-6 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
           <KPICard
             label="Total budget"
             value={`₹${FINANCE.totalBudgetCr} Cr`}
@@ -535,9 +547,9 @@ export default function DashboardPage() {
           />
         </div>
 
-        <div className="mt-5 grid gap-5 lg:grid-cols-[3fr_2fr]">
-          <Card padded={false}>
-            <div className="flex items-center justify-between gap-3 border-b border-[var(--color-border-subtle)] px-5 py-4">
+        <div className="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-12">
+          <Card padded={false} className="lg:col-span-8">
+            <header className="flex items-center justify-between gap-3 border-b border-[var(--color-border-subtle)] p-4">
               <div>
                 <CardTitle>Budget vs utilisation · by scheme</CardTitle>
                 <CardBody className="mt-1">Figures in ₹ Crores.</CardBody>
@@ -548,8 +560,8 @@ export default function DashboardPage() {
               >
                 Finance dashboard →
               </Link>
-            </div>
-            <ul className="space-y-3 px-5 py-5">
+            </header>
+            <ul className="space-y-3 p-4">
               {SCHEME_BUDGET.map((row) => {
                 const utilisedPct = (row.utilizedCr / maxSchemeBudget) * 100;
                 const allocatedPct = (row.allocatedCr / maxSchemeBudget) * 100;
@@ -590,9 +602,11 @@ export default function DashboardPage() {
             </ul>
           </Card>
 
-          <Card>
-            <CardTitle>Fund source distribution</CardTitle>
-            <CardBody className="mt-4 space-y-3">
+          <Card padded={false} className="lg:col-span-4">
+            <header className="border-b border-[var(--color-border-subtle)] p-4">
+              <CardTitle>Fund source distribution</CardTitle>
+            </header>
+            <div className="space-y-3 p-4">
               {FINANCE.fundSources.map((src) => (
                 <div
                   key={src.label}
@@ -610,19 +624,19 @@ export default function DashboardPage() {
                   </span>
                 </div>
               ))}
-            </CardBody>
+            </div>
           </Card>
         </div>
       </section>
 
-      {/* ------- Section 7 · Infrastructure ------- */}
+      {/* ------- Section 7 · Infrastructure (4 KPIs · then 8+4 detail) ------- */}
       <section aria-label="Infrastructure" className="mt-8">
         <SectionHeading
           eyebrow="Infrastructure & assets"
           title="Where does capacity need capex?"
           href="#"
         />
-        <div className="mt-4 grid gap-5 lg:grid-cols-4">
+        <div className="mt-6 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
           <KPICard
             label="Student–classroom ratio"
             value={INFRA.classroomRatio}
@@ -657,20 +671,20 @@ export default function DashboardPage() {
           />
         </div>
 
-        <div className="mt-5 grid gap-5 lg:grid-cols-[2fr_1fr]">
-          <Card padded={false}>
-            <div className="flex items-center justify-between gap-3 border-b border-[var(--color-border-subtle)] px-5 py-4">
+        <div className="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-12">
+          <Card padded={false} className="lg:col-span-8">
+            <header className="flex items-center justify-between gap-3 border-b border-[var(--color-border-subtle)] p-4">
               <div>
                 <CardTitle>Priority CAPEX requirements</CardTitle>
                 <CardBody className="mt-1">Top-priority asset requirements pending funding or procurement.</CardBody>
               </div>
               <Badge tone="neutral">{CAPEX_REQUIREMENTS.length} items</Badge>
-            </div>
+            </header>
             <ul className="divide-y divide-[var(--color-border-subtle)]">
               {CAPEX_REQUIREMENTS.map((row) => (
                 <li
                   key={row.asset}
-                  className="grid grid-cols-[1.5fr_1fr_1fr_6rem_1fr] items-center gap-3 px-5 py-3 text-[var(--text-sm)]"
+                  className="grid grid-cols-[1.5fr_1fr_1fr_6rem_1fr] items-center gap-3 px-4 py-3 text-[var(--text-sm)]"
                 >
                   <span className="font-[var(--weight-semibold)] text-[var(--color-text-primary)]">
                     {row.asset}
@@ -686,9 +700,11 @@ export default function DashboardPage() {
             </ul>
           </Card>
 
-          <Card>
-            <CardTitle>ICT infrastructure</CardTitle>
-            <CardBody className="mt-4 space-y-4">
+          <Card padded={false} className="lg:col-span-4">
+            <header className="border-b border-[var(--color-border-subtle)] p-4">
+              <CardTitle>ICT infrastructure</CardTitle>
+            </header>
+            <div className="space-y-4 p-4">
               <SplitBar label="Wi-Fi campus" value={INFRA.wifiCampusPct} tone="brand" />
               <SplitBar label="Comp. labs (&gt;20 PCs)" value={INFRA.computerLabsPct} tone="success" />
               <SplitBar label="Power backup" value={INFRA.powerBackupPct} tone="danger" />
@@ -696,7 +712,7 @@ export default function DashboardPage() {
                 <span aria-hidden="true" className="mr-1">⚠</span>
                 Critical gap in remote areas. Prioritise Lahaul &amp; Spiti, Kinnaur.
               </p>
-            </CardBody>
+            </div>
           </Card>
         </div>
       </section>
