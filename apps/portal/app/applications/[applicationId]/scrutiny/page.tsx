@@ -2,8 +2,8 @@
 
 import Link from "next/link";
 import { notFound, useRouter } from "next/navigation";
-import { use, useState } from "react";
-import { Button, Modal, Textarea } from "@hp-mis/ui";
+import { use, useCallback, useState } from "react";
+import { Button, Modal, Textarea, useToast } from "@hp-mis/ui";
 import { PortalFrame } from "../../../_components/portal-frame";
 import { ApplicationSummaryHeader } from "../../../_components/admin/application-summary-header";
 import { ReviewSectionCard } from "../../../_components/admin/review-section-card";
@@ -37,6 +37,8 @@ export default function ScrutinyWorkbenchPage({ params }: { params: Promise<Para
 
   const [actionNote, setActionNote] = useState("");
   const [showRejectConfirm, setShowRejectConfirm] = useState(false);
+  const [pending, setPending] = useState<null | "verify" | "conditional" | "reject">(null);
+  const { toast } = useToast();
 
   const app = effective(applicationId);
   if (!app) notFound();
@@ -108,10 +110,46 @@ export default function ScrutinyWorkbenchPage({ params }: { params: Promise<Para
     setFieldOutcome(applicationId, key, outcome);
   }
 
+  /**
+   * Run a terminal scrutiny action (verify / conditional / reject) end-to-end:
+   *   1. Show a short loading state on the clicked button.
+   *   2. Persist the outcome through the scrutiny provider (existing path).
+   *   3. Fire a success toast naming the applicant so the audit trail
+   *      reads as a real action, not a silent state change.
+   *   4. Redirect back to the queue so the operator's eye is on the next
+   *      application immediately — matches the "verify, next, verify"
+   *      review cadence the workbench is built for.
+   *
+   * The 600ms delay is intentional: it gives the click visible weight
+   * without slowing the operator down. localStorage writes themselves
+   * are synchronous; the spinner is purely UX.
+   */
+  const commitOutcome = useCallback(
+    (kind: "verify" | "conditional" | "reject") => {
+      setPending(kind);
+      const status =
+        kind === "verify" ? "verified" : kind === "conditional" ? "conditional" : "rejected";
+      const note = actionNote || undefined;
+      window.setTimeout(() => {
+        setStatus(applicationId, status, note);
+        setActionNote("");
+        const message =
+          kind === "verify"
+            ? `${app.studentName} has been approved.`
+            : kind === "conditional"
+              ? `${app.studentName} marked as conditional accept.`
+              : `${app.studentName} has been rejected.`;
+        const tone = kind === "reject" ? "info" : "success";
+        toast(message, { tone });
+        router.push("/applications");
+      }, 600);
+    },
+    [app.studentName, applicationId, actionNote, setStatus, toast, router],
+  );
+
   function confirmReject() {
-    setStatus(applicationId, "rejected", actionNote || undefined);
-    setActionNote("");
     setShowRejectConfirm(false);
+    commitOutcome("reject");
   }
 
   return (
@@ -259,20 +297,27 @@ export default function ScrutinyWorkbenchPage({ params }: { params: Promise<Para
         <Button
           variant="warning"
           onClick={() => router.push(`/applications/${applicationId}/discrepancy`)}
+          disabled={pending !== null}
         >
           <span aria-hidden="true">⚠</span>
           Raise discrepancy
         </Button>
-        <Button variant="danger" onClick={() => setShowRejectConfirm(true)}>
+        <Button
+          variant="danger"
+          onClick={() => setShowRejectConfirm(true)}
+          loading={pending === "reject"}
+          loadingLabel="Rejecting…"
+          disabled={pending !== null && pending !== "reject"}
+        >
           <span aria-hidden="true">✕</span>
           Reject
         </Button>
         <Button
           variant="secondary"
-          onClick={() => {
-            setStatus(applicationId, "conditional", actionNote || undefined);
-            setActionNote("");
-          }}
+          onClick={() => commitOutcome("conditional")}
+          loading={pending === "conditional"}
+          loadingLabel="Saving…"
+          disabled={pending !== null && pending !== "conditional"}
           className="border-[var(--color-status-warning-fg)] text-[var(--color-status-warning-fg)] hover:border-[var(--color-status-warning-fg)] hover:bg-[var(--color-status-warning-bg)] hover:text-[var(--color-status-warning-fg)]"
         >
           <span aria-hidden="true">~</span>
@@ -280,10 +325,10 @@ export default function ScrutinyWorkbenchPage({ params }: { params: Promise<Para
         </Button>
         <Button
           variant="success"
-          onClick={() => {
-            setStatus(applicationId, "verified", actionNote || undefined);
-            setActionNote("");
-          }}
+          onClick={() => commitOutcome("verify")}
+          loading={pending === "verify"}
+          loadingLabel="Verifying…"
+          disabled={pending !== null && pending !== "verify"}
         >
           <span aria-hidden="true">✓</span>
           Verify application

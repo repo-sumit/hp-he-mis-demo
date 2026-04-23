@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { notFound, useRouter, useSearchParams } from "next/navigation";
 import { use, useMemo, useState } from "react";
-import { Badge, Button, Input, SegmentedOptions, Select, Textarea, type SegmentedOption } from "@hp-mis/ui";
+import { Badge, Button, Input, SegmentedOptions, Select, Textarea, useToast, type SegmentedOption } from "@hp-mis/ui";
 import { PortalFrame } from "../../../_components/portal-frame";
 import { ApplicationSummaryHeader } from "../../../_components/admin/application-summary-header";
 import { ReviewSectionCard } from "../../../_components/admin/review-section-card";
@@ -56,12 +56,14 @@ export default function DiscrepancyPage({ params }: { params: Promise<Params> })
   const router = useRouter();
   const searchParams = useSearchParams();
   const { effective, effectiveStatus, discrepancyCount, addDiscrepancy } = useScrutiny();
+  const { toast } = useToast();
 
   const app = effective(applicationId);
   if (!app) notFound();
 
   const status = effectiveStatus(applicationId);
   const discCount = discrepancyCount(applicationId);
+  const studentName = app.studentName;
 
   const initialScope = (searchParams.get("scope") as DiscrepancyScope | null) ?? "document";
   const initialDocCode = searchParams.get("doc") ?? app.documents[0]?.code ?? "";
@@ -75,6 +77,7 @@ export default function DiscrepancyPage({ params }: { params: Promise<Params> })
   const [customReasonHi, setCustomReasonHi] = useState("");
   const [deadline, setDeadline] = useState(DEFAULT_DEADLINE);
   const [error, setError] = useState<string | undefined>();
+  const [submitting, setSubmitting] = useState(false);
 
   const docName = docCode ? docNameFor(docCode) : "";
 
@@ -109,14 +112,24 @@ export default function DiscrepancyPage({ params }: { params: Promise<Params> })
       return;
     }
     setError(undefined);
-    addDiscrepancy(applicationId, {
-      scope,
-      targetRef: scope === "document" ? docCode : undefined,
-      reasonEn,
-      reasonHi,
-      deadline,
-    });
-    router.push(`/applications/${applicationId}`);
+    setSubmitting(true);
+    // 600ms hold matches the verify / publish / allocation cadence so
+    // the operator gets the same "click → spinner → toast → redirect"
+    // rhythm across every workbench action.
+    window.setTimeout(() => {
+      addDiscrepancy(applicationId, {
+        scope,
+        targetRef: scope === "document" ? docCode : undefined,
+        reasonEn,
+        reasonHi,
+        deadline,
+      });
+      toast(
+        `Discrepancy raised for ${studentName} — student notified.`,
+        { tone: "info" },
+      );
+      router.push(`/applications/${applicationId}`);
+    }, 600);
   }
 
   return (
@@ -265,7 +278,12 @@ export default function DiscrepancyPage({ params }: { params: Promise<Params> })
         >
           Cancel
         </Link>
-        <Button variant="warning" onClick={handleSubmit}>
+        <Button
+          variant="warning"
+          onClick={handleSubmit}
+          loading={submitting}
+          loadingLabel="Raising…"
+        >
           Raise discrepancy <span aria-hidden="true">→</span>
         </Button>
       </ActionFooter>

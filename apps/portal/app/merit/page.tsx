@@ -87,6 +87,8 @@ export default function MeritCompilationPage() {
   const { effectiveStatus, hydrated: scrutinyHydrated } = useScrutiny();
 
   const [map, setMap] = useState<MeritOverlayMap>({});
+  /** Per-course publish-in-flight flag so each row gets its own spinner. */
+  const [publishing, setPublishing] = useState<Set<string>>(() => new Set());
   const { toast } = useToast();
 
   useEffect(() => {
@@ -126,31 +128,45 @@ export default function MeritCompilationPage() {
   const publish = useCallback(
     (bucket: CourseBucket) => {
       if (bucket.verified.length === 0) return;
-      const candidates: MeritCandidate[] = bucket.verified.map((app) => ({
-        applicationId: app.id,
-        bofPercentage: app.studentBofPercentage,
-        dob: app.studentDob,
-        category: app.studentCategory,
-        studentName: app.studentName,
-        courseCode: app.courseCode,
-        firstPreferenceCollegeId:
-          app.preferences[0]?.collegeId ?? app.collegeId,
-      }));
-      const ranks = computeMeritRanks(candidates);
-      const prev = map[bucket.courseId];
-      const next: MeritOverlay = {
-        courseId: bucket.courseId,
-        publishedAt: Date.now(),
-        publishedBy: session.name,
-        ranks,
-        publishVersion: (prev?.publishVersion ?? 0) + 1,
-      };
-      const updated = { ...map, [bucket.courseId]: next };
-      setMap(updated);
-      persistMeritMap(updated);
-      toast(t("portal.merit.toastPublished", { course: bucket.courseCode }), {
-        tone: "success",
-      });
+      // Mark the row as publishing so its Button shows a spinner. The 600ms
+      // delay gives the click visible weight; the underlying compute is
+      // synchronous and would otherwise complete imperceptibly.
+      setPublishing((prev) => new Set(prev).add(bucket.courseId));
+      window.setTimeout(() => {
+        const candidates: MeritCandidate[] = bucket.verified.map((app) => ({
+          applicationId: app.id,
+          bofPercentage: app.studentBofPercentage,
+          dob: app.studentDob,
+          category: app.studentCategory,
+          studentName: app.studentName,
+          courseCode: app.courseCode,
+          firstPreferenceCollegeId:
+            app.preferences[0]?.collegeId ?? app.collegeId,
+        }));
+        const ranks = computeMeritRanks(candidates);
+        const prev = map[bucket.courseId];
+        const next: MeritOverlay = {
+          courseId: bucket.courseId,
+          publishedAt: Date.now(),
+          publishedBy: session.name,
+          ranks,
+          publishVersion: (prev?.publishVersion ?? 0) + 1,
+        };
+        const updated = { ...map, [bucket.courseId]: next };
+        setMap(updated);
+        persistMeritMap(updated);
+        setPublishing((prev) => {
+          const out = new Set(prev);
+          out.delete(bucket.courseId);
+          return out;
+        });
+        toast(
+          `Merit published for ${bucket.courseCode} — ${ranks.length} ${
+            ranks.length === 1 ? "candidate" : "candidates"
+          } ranked.`,
+          { tone: "success" },
+        );
+      }, 600);
     },
     [map, session.name, toast],
   );
@@ -203,6 +219,8 @@ export default function MeritCompilationPage() {
                   variant="primary"
                   onClick={() => publish(bucket)}
                   disabled={!canPublish}
+                  loading={publishing.has(bucket.courseId)}
+                  loadingLabel={overlay ? "Republishing…" : "Publishing…"}
                 >
                   {overlay
                     ? t("portal.merit.republishCta", { v: overlay.publishVersion + 1 })

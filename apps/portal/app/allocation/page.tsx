@@ -176,6 +176,10 @@ export default function SeatAllocationPage() {
 
   const [meritMap, setMeritMap] = useState<MeritOverlayMap>({});
   const [allocationMap, setAllocationMap] = useState<AllocationOverlayMap>({});
+  /** Course IDs currently being processed by Run/Rerun. Drives the per-row
+   *  loading spinner so multiple courses can run sequentially without their
+   *  spinners interfering. */
+  const [running, setRunning] = useState<Set<string>>(() => new Set());
   const { toast } = useToast();
 
   useEffect(() => {
@@ -219,15 +223,36 @@ export default function SeatAllocationPage() {
     (row: CourseRow) => {
       const inputs = buildInputs(row, meritMap);
       if (!inputs) return;
-      const existing = allocationMap[row.courseId];
-      const nextRound = existing ? existing.roundNumber + 1 : 1;
-      const overlay = runAllocation(inputs, Date.now(), session.name, nextRound);
-      const updated = { ...allocationMap, [row.courseId]: overlay };
-      setAllocationMap(updated);
-      persistAllocationMap(updated);
-      toast(t("portal.allocation.toastRun", { course: row.courseCode }), {
-        tone: "success",
-      });
+      // Mark this course as in-flight so the per-row Button shows its
+      // spinner and the operator can't double-click. The 700ms delay
+      // gives the click visible weight — the underlying allocation is
+      // synchronous (pure function over the merit list), so without it
+      // the operator wouldn't see anything happen on a fast laptop.
+      setRunning((prev) => new Set(prev).add(row.courseId));
+      window.setTimeout(() => {
+        const existing = allocationMap[row.courseId];
+        const nextRound = existing ? existing.roundNumber + 1 : 1;
+        const overlay = runAllocation(
+          inputs,
+          Date.now(),
+          session.name,
+          nextRound,
+        );
+        const updated = { ...allocationMap, [row.courseId]: overlay };
+        setAllocationMap(updated);
+        persistAllocationMap(updated);
+        setRunning((prev) => {
+          const next = new Set(prev);
+          next.delete(row.courseId);
+          return next;
+        });
+        toast(
+          `Round ${nextRound} allocation completed for ${row.courseCode} — ${overlay.seatsOffered} ${
+            overlay.seatsOffered === 1 ? "seat" : "seats"
+          } offered.`,
+          { tone: "success" },
+        );
+      }, 700);
     },
     [meritMap, allocationMap, session.name, toast],
   );
@@ -291,6 +316,10 @@ export default function SeatAllocationPage() {
                   variant="primary"
                   onClick={() => run(row)}
                   disabled={!meritReady}
+                  loading={running.has(row.courseId)}
+                  loadingLabel={
+                    overlay ? "Re-running…" : `Running round 1…`
+                  }
                 >
                   {overlay
                     ? t("portal.allocation.rerunCta")
