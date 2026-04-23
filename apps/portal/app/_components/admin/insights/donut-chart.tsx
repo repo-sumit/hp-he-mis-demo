@@ -64,20 +64,26 @@ export function DonutChart({
             stroke="var(--color-background-muted)"
             strokeWidth={strokeWidth}
           />
-          {arcs.map((arc, i) => (
-            <circle
-              key={i}
-              cx="100"
-              cy="100"
-              r={radius}
-              fill="none"
-              stroke={arc.seg.color}
-              strokeWidth={strokeWidth}
-              strokeDasharray={arc.dashArray}
-              strokeDashoffset={arc.dashOffset}
-              strokeLinecap="butt"
-            />
-          ))}
+          {arcs.map((arc, i) => {
+            const share = total > 0 ? (arc.seg.value / total) * 100 : 0;
+            return (
+              <circle
+                key={i}
+                cx="100"
+                cy="100"
+                r={radius}
+                fill="none"
+                stroke={arc.seg.color}
+                strokeWidth={strokeWidth}
+                strokeDasharray={arc.dashArray}
+                strokeDashoffset={arc.dashOffset}
+                strokeLinecap="butt"
+                className="cursor-default transition-[stroke-width] duration-150 ease-out hover:[stroke-width:28]"
+              >
+                <title>{`${arc.seg.label}: ${arc.seg.value.toLocaleString("en-IN")} (${share.toFixed(1)}%)`}</title>
+              </circle>
+            );
+          })}
         </svg>
         {centerLabel || centerValue ? (
           <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center text-center">

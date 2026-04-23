@@ -137,25 +137,50 @@ export function LineChart({
       />
 
       {data.map((d, i) => (
-        <circle
-          key={`dot-${i}`}
-          cx={xScale(i)}
-          cy={yScale(d.value)}
-          r="4"
-          fill="var(--color-chart-1)"
-        />
+        <g key={`dot-${i}`}>
+          {/* Invisible larger hit-target so the <title> tooltip stays easy to trigger on hover. */}
+          <circle
+            cx={xScale(i)}
+            cy={yScale(d.value)}
+            r="14"
+            fill="transparent"
+            className="cursor-default"
+          >
+            <title>{`${d.label}: ${yFormatter(d.value)}`}</title>
+          </circle>
+          <circle
+            cx={xScale(i)}
+            cy={yScale(d.value)}
+            r="4"
+            fill="var(--color-chart-1)"
+            className="pointer-events-none transition-all duration-150 ease-out"
+          />
+        </g>
       ))}
 
       {series.map((s, sIdx) => (
-        <polyline
-          key={`s-${sIdx}`}
-          points={s.data.map((d, i) => `${xScale(i)},${yScale(d.value)}`).join(" ")}
-          fill="none"
-          stroke={s.color}
-          strokeWidth="2"
-          strokeDasharray="8 6"
-          strokeLinecap="round"
-        />
+        <g key={`s-${sIdx}`}>
+          <polyline
+            points={s.data.map((d, i) => `${xScale(i)},${yScale(d.value)}`).join(" ")}
+            fill="none"
+            stroke={s.color}
+            strokeWidth="2"
+            strokeDasharray="8 6"
+            strokeLinecap="round"
+          />
+          {s.data.map((d, i) => (
+            <circle
+              key={`s-${sIdx}-dot-${i}`}
+              cx={xScale(i)}
+              cy={yScale(d.value)}
+              r="12"
+              fill="transparent"
+              className="cursor-default"
+            >
+              <title>{`${s.label} · ${d.label}: ${yFormatter(d.value)}`}</title>
+            </circle>
+          ))}
+        </g>
       ))}
     </svg>
   );

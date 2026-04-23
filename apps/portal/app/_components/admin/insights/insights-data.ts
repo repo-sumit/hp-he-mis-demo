@@ -8,6 +8,13 @@
 import type { InsightAlert } from "./alerts-panel";
 import type { LineChartPoint } from "./line-chart";
 
+// ---------- Global data context ----------
+
+/** How long ago the dashboard data was refreshed. Mocked; used in the header. */
+export const LAST_UPDATED_LABEL = "2 mins ago";
+/** Active financial year shown in the top filter. */
+export const CURRENT_FY = "FY 2026-27";
+
 // ---------- Section 1 · Executive KPIs (PDF page 1) ----------
 
 export const STATE_KPI = {
@@ -110,7 +117,9 @@ export const COMMAND_CENTER_ALERTS: readonly InsightAlert[] = [
     timeAgo: "2h ago",
     severity: "critical",
     tags: ["Chamba", "Sirmaur", "Faculty"],
-    cta: { label: "Review deployment", href: "#" },
+    status: "Pending district review",
+    sla: "24h remaining",
+    cta: { label: "Review deployment", href: "/state/alerts#alert-vacancies" },
   },
   {
     id: "alert-enrollment",
@@ -120,7 +129,9 @@ export const COMMAND_CENTER_ALERTS: readonly InsightAlert[] = [
     timeAgo: "1d ago",
     severity: "warning",
     tags: ["Lahaul & Spiti", "Enrolment"],
-    cta: { label: "View district", href: "#" },
+    status: "Awaiting directorate approval",
+    sla: "3d remaining",
+    cta: { label: "View district", href: "/state/alerts#alert-enrollment" },
   },
   {
     id: "alert-uc",
@@ -130,7 +141,9 @@ export const COMMAND_CENTER_ALERTS: readonly InsightAlert[] = [
     timeAgo: "2d ago",
     severity: "warning",
     tags: ["RUSA 2.0", "Finance"],
-    cta: { label: "Send reminder", href: "#" },
+    status: "Reminder sent",
+    sla: "5d to escalate",
+    cta: { label: "Send reminder", href: "/state/alerts#alert-uc" },
   },
   {
     id: "alert-dropout",
@@ -140,7 +153,131 @@ export const COMMAND_CENTER_ALERTS: readonly InsightAlert[] = [
     timeAgo: "1d ago",
     severity: "warning",
     tags: ["Kangra", "Student"],
-    cta: { label: "Open cohort", href: "#" },
+    status: "Observation in progress",
+    sla: "7d remaining",
+    cta: { label: "Open cohort", href: "/state/alerts#alert-dropout" },
+  },
+];
+
+// ---------- Priority Actions Today ----------
+
+export type ActionSeverity = "critical" | "warning" | "info";
+
+export interface PriorityAction {
+  id: string;
+  title: string;
+  context: string;
+  severity: ActionSeverity;
+  href: string;
+}
+
+export const PRIORITY_ACTIONS: readonly PriorityAction[] = [
+  {
+    id: "pa-vacancies",
+    title: "Faculty shortage — Chamba",
+    context: "3 colleges at >30% vacancy · recruitment panel due",
+    severity: "critical",
+    href: "/state/alerts#alert-vacancies",
+  },
+  {
+    id: "pa-uc",
+    title: "UC submission pending — 12 colleges",
+    context: "₹120 Cr RUSA 2.0 grants at risk of lapse",
+    severity: "critical",
+    href: "/state/alerts#alert-uc",
+  },
+  {
+    id: "pa-enrollment",
+    title: "Enrollment drop — Lahaul & Spiti",
+    context: "-9% YoY in Science stream · policy review requested",
+    severity: "warning",
+    href: "/state/alerts#alert-enrollment",
+  },
+];
+
+// ---------- Decision Insights ----------
+
+export type DecisionPriority = "Critical" | "High" | "Medium";
+
+export interface DecisionInsight {
+  id: string;
+  title: string;
+  /** Short contextual tags — districts, subjects, stream, scheme. */
+  contexts: readonly string[];
+  impact: readonly string[];
+  recommendations: readonly string[];
+  priority: DecisionPriority;
+  cta: { label: string; href: string };
+}
+
+export const DECISION_INSIGHTS: readonly DecisionInsight[] = [
+  {
+    id: "decision-enrollment",
+    title: "Enrollment decline — reshape Lahaul & Spiti intake",
+    contexts: ["Lahaul & Spiti", "B.Sc. Medical", "Science stream"],
+    impact: [
+      "-18% YoY seat fill across 5 district colleges",
+      "Seat utilisation averaging 18% — effective wastage of ~62 seats",
+      "Financial inefficiency estimated at ₹45 lakh / year",
+    ],
+    recommendations: [
+      "Rationalise intake in 3 colleges — reduce sanctioned seats by one section",
+      "Convert 2 low-demand units to B.Voc programmes aligned with local tourism",
+      "Trigger regional skill-gap study before FY 2027-28 cycle",
+    ],
+    priority: "Critical",
+    cta: { label: "Open details", href: "/state/alerts#alert-enrollment" },
+  },
+  {
+    id: "decision-vacancies",
+    title: "Faculty shortage — close the Chamba & Sirmaur gap",
+    contexts: ["Chamba", "Sirmaur", "Mathematics", "Commerce"],
+    impact: [
+      "Vacancy rate >30% across GC Pangi, GC Shillai, GC Sangla",
+      "Student-teacher ratio reached 85:1 at GC Mandi (Mathematics)",
+      "Risk to quality of instruction for ~4,200 enrolled students",
+    ],
+    recommendations: [
+      "Fast-track HPPSC recruitment panel for 43 vacancies (priority subjects)",
+      "Authorise temporary transfers from surplus clusters in Shimla, Kangra",
+      "Engage 18 contract lecturers for academic session 2026-27",
+    ],
+    priority: "Critical",
+    cta: { label: "Open details", href: "/state/alerts#alert-vacancies" },
+  },
+  {
+    id: "decision-uc",
+    title: "Pending UCs — unlock ₹120 Cr before Q4 cutoff",
+    contexts: ["RUSA 2.0", "Finance", "12 colleges"],
+    impact: [
+      "₹120 Cr of Infrastructure Grant unaccounted for at directorate level",
+      "Fund lapse risk if UCs are not submitted before 31 March 2027",
+      "Procurement pipeline stalled at tender stage in 3 districts",
+    ],
+    recommendations: [
+      "Trigger escalation workflow — weekly status review with principals",
+      "Extend reminder cadence from monthly to weekly until 100% submission",
+      "Freeze new infrastructure sanctions for non-compliant colleges",
+    ],
+    priority: "High",
+    cta: { label: "Open details", href: "/state/alerts#alert-uc" },
+  },
+  {
+    id: "decision-dropout",
+    title: "Dropout spike — stabilise 1st-year BA in Kangra",
+    contexts: ["Kangra", "B.A. (General)", "Student lifecycle"],
+    impact: [
+      "Absenteeism up 14% vs previous cohort in weeks 4-8",
+      "Estimated 210 students at risk of leaving before mid-term",
+      "Dropout rate already 9.8% in the district — above 5% target",
+    ],
+    recommendations: [
+      "Mandate college-level mentor pairing for flagged 1st-year students",
+      "Introduce bridge classes for Hindi and Sociology foundation gaps",
+      "Run a one-week attendance audit across all 14 Kangra colleges",
+    ],
+    priority: "High",
+    cta: { label: "Open cohort", href: "/state/lifecycle" },
   },
 ];
 

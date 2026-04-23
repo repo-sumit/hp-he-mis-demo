@@ -11,6 +11,10 @@ export interface InsightAlert {
   timeAgo: string;
   severity: AlertSeverity;
   tags?: readonly string[];
+  /** Lifecycle stage of the alert (e.g. "Pending district review"). */
+  status?: string;
+  /** Remaining SLA window (e.g. "24h remaining"). */
+  sla?: string;
   cta?: { label: string; href?: string };
 }
 
@@ -109,6 +113,26 @@ export function AlertsPanel({
                     </span>
                   ))}
                 </div>
+              ) : null}
+              {alert.status || alert.sla ? (
+                <dl className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 text-[var(--text-2xs)]">
+                  {alert.status ? (
+                    <div className="inline-flex items-baseline gap-1">
+                      <dt className="font-[var(--weight-semibold)] uppercase tracking-[var(--tracking-wide)] text-[var(--color-text-tertiary)]">
+                        Status
+                      </dt>
+                      <dd className="text-[var(--color-text-primary)]">{alert.status}</dd>
+                    </div>
+                  ) : null}
+                  {alert.sla ? (
+                    <div className="inline-flex items-baseline gap-1">
+                      <dt className="font-[var(--weight-semibold)] uppercase tracking-[var(--tracking-wide)] text-[var(--color-text-tertiary)]">
+                        SLA
+                      </dt>
+                      <dd className="text-[var(--color-text-primary)]">{alert.sla}</dd>
+                    </div>
+                  ) : null}
+                </dl>
               ) : null}
               {alert.cta ? (
                 <a

@@ -7,11 +7,16 @@ import { KPICard } from "./_components/admin/insights/kpi-card";
 import { LineChart } from "./_components/admin/insights/line-chart";
 import { DonutChart } from "./_components/admin/insights/donut-chart";
 import { AlertsPanel } from "./_components/admin/insights/alerts-panel";
+import { PriorityActions } from "./_components/admin/insights/priority-actions";
+import { DecisionInsightPanel } from "./_components/admin/insights/decision-insight-panel";
+import { DashboardHeader } from "./_components/admin/insights/dashboard-header";
 import {
   ALERT_SUMMARY,
   CAPEX_REQUIREMENTS,
   COMMAND_CENTER_ALERTS,
   CRITICAL_SHORTAGES,
+  CURRENT_FY,
+  DECISION_INSIGHTS,
   DISTRICT_ENROLLMENT,
   ENROLLMENT_TREND,
   ENROLLMENT_TREND_FEMALE,
@@ -21,7 +26,9 @@ import {
   GENDER_DISTRIBUTION,
   HIGH_RISK_COHORTS,
   INFRA,
+  LAST_UPDATED_LABEL,
   LIFECYCLE,
+  PRIORITY_ACTIONS,
   RURAL_URBAN,
   SCHEME_BUDGET,
   STATE_KPI,
@@ -88,6 +95,17 @@ export default function DashboardPage() {
         ),
       }}
     >
+      {/* ------- Dashboard header · data freshness + filters ------- */}
+      <DashboardHeader
+        lastUpdatedLabel={LAST_UPDATED_LABEL}
+        financialYear={CURRENT_FY}
+      />
+
+      {/* ------- Priority Actions Today ------- */}
+      <div className="mb-5">
+        <PriorityActions actions={PRIORITY_ACTIONS} />
+      </div>
+
       {/* ------- Section 1 · Executive KPIs ------- */}
       <section aria-label="Executive KPIs" className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-5">
         <KPICard
@@ -259,7 +277,7 @@ export default function DashboardPage() {
           <AlertsPanel
             alerts={COMMAND_CENTER_ALERTS}
             urgentCount={ALERT_SUMMARY.critical}
-            viewAllHref="#"
+            viewAllHref="/state/alerts"
           />
           <Card>
             <CardTitle>Alert health</CardTitle>
@@ -273,12 +291,17 @@ export default function DashboardPage() {
         </aside>
       </section>
 
+      {/* ------- Decision intelligence ------- */}
+      <div className="mt-8">
+        <DecisionInsightPanel insights={DECISION_INSIGHTS} />
+      </div>
+
       {/* ------- Section 4 · Student Lifecycle ------- */}
       <section aria-label="Student lifecycle" className="mt-8">
         <SectionHeading
           eyebrow="Student lifecycle"
           title="Are students arriving, staying, and moving on?"
-          href="#"
+          href="/state/lifecycle"
         />
         <div className="mt-4 grid gap-5 lg:grid-cols-[1fr_1fr_1fr_2fr]">
           <KPICard
