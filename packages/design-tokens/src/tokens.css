@@ -150,6 +150,22 @@
     #5e3ec0 100%
   );
 
+  /*
+   * Chart palette — used by the State Admin command-center insights
+   * (line / donut / bar charts). Chart-1..4 alias existing brand/status
+   * primitives so a re-tune cascades automatically. Chart-5 is the only
+   * new primitive: a magenta needed for the gender-parity donut, where
+   * brand-blue + green/amber would read as pass/fail, not neutral split.
+   */
+  --hp-chart-pink-500: #db2777;
+  --color-chart-1: var(--hp-primary-600);
+  --color-chart-2: var(--hp-success-500);
+  --color-chart-3: var(--hp-warning-500);
+  --color-chart-4: var(--hp-danger-500);
+  --color-chart-5: var(--hp-chart-pink-500);
+  --color-chart-grid: var(--hp-neutral-200);
+  --color-chart-area: var(--hp-primary-100);
+
   --color-status-success-bg: var(--hp-success-100);
   --color-status-success-fg: var(--hp-success-700);
   --color-status-warning-bg: var(--hp-warning-100);

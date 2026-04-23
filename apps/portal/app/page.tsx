@@ -1,203 +1,780 @@
 "use client";
 
 import Link from "next/link";
-import {
-  Badge,
-  Card,
-  CardBody,
-  CardTitle,
-  Stepper,
-  Table,
-  TableShell,
-  TBody,
-  TD,
-  TH,
-  THead,
-  TR,
-  type Step,
-} from "@hp-mis/ui";
-import {
-  COLLEGES,
-  COLLEGE_COUNT_BY_DISTRICT,
-  getCollegeById,
-  HP_DISTRICTS,
-} from "@hp-mis/fixtures";
+import { Badge, Card, CardBody, CardTitle, cn } from "@hp-mis/ui";
 import { PortalFrame } from "./_components/portal-frame";
-import { MOCK_APPLICATIONS } from "./_components/data/mock-applications";
-import { SummaryStrip } from "./_components/admin/summary-strip";
+import { KPICard } from "./_components/admin/insights/kpi-card";
+import { LineChart } from "./_components/admin/insights/line-chart";
+import { DonutChart } from "./_components/admin/insights/donut-chart";
+import { AlertsPanel } from "./_components/admin/insights/alerts-panel";
+import {
+  ALERT_SUMMARY,
+  CAPEX_REQUIREMENTS,
+  COMMAND_CENTER_ALERTS,
+  CRITICAL_SHORTAGES,
+  DISTRICT_ENROLLMENT,
+  ENROLLMENT_TREND,
+  ENROLLMENT_TREND_FEMALE,
+  ENROLLMENT_TREND_MALE,
+  FACULTY,
+  FINANCE,
+  GENDER_DISTRIBUTION,
+  HIGH_RISK_COHORTS,
+  INFRA,
+  LIFECYCLE,
+  RURAL_URBAN,
+  SCHEME_BUDGET,
+  STATE_KPI,
+  SUBJECT_VACANCY,
+  type DistrictDensity,
+} from "./_components/admin/insights/insights-data";
+
+/**
+ * State Admin landing — "Higher Education Command Center".
+ *
+ * Decision-first layout, not operational:
+ *   1. Executive KPI strip (5 cards w/ trends)
+ *   2. Core insights — district enrollment + 5-year trend + gender
+ *   3. Actionable alerts (right rail)
+ *   4. Deep-dive snapshot blocks (Lifecycle · Faculty · Finance · Infra)
+ *
+ * Matches the layout and data from docs/State_User Dashabord.pdf.
+ */
+
+const DENSITY_TONE: Record<DistrictDensity, "success" | "brand" | "warning" | "danger"> = {
+  high: "success",
+  medium: "brand",
+  low: "warning",
+  critical: "danger",
+};
+
+const DENSITY_LABEL: Record<DistrictDensity, string> = {
+  high: "High (>20k)",
+  medium: "Medium (10–20k)",
+  low: "Low (<10k)",
+  critical: "Flagged",
+};
+
+const DENSITY_BAR: Record<DistrictDensity, string> = {
+  high: "bg-[var(--color-chart-1)]",
+  medium: "bg-[var(--color-chart-2)]",
+  low: "bg-[var(--color-chart-3)]",
+  critical: "bg-[var(--color-chart-4)]",
+};
 
 export default function DashboardPage() {
-  const totalSeats = COLLEGES.reduce((acc, c) => acc + c.totalSanctionedSeats, 0);
-  const pending = MOCK_APPLICATIONS.filter(
-    (a) => a.baseStatus === "submitted" || a.baseStatus === "under_scrutiny",
-  ).length;
-  const verified = MOCK_APPLICATIONS.filter((a) => a.baseStatus === "verified").length;
-  const discrepancy = MOCK_APPLICATIONS.filter(
-    (a) => a.baseStatus === "discrepancy_raised",
-  ).length;
-
-  const appsByDistrict = new Map<string, number>();
-  for (const app of MOCK_APPLICATIONS) {
-    const college = getCollegeById(app.collegeId);
-    const districtId = college?.district ?? "unknown";
-    appsByDistrict.set(districtId, (appsByDistrict.get(districtId) ?? 0) + 1);
-  }
-
-  const districtRows = HP_DISTRICTS.map((d) => ({
-    id: d.id,
-    name: d.name,
-    colleges: COLLEGE_COUNT_BY_DISTRICT[d.id] ?? 0,
-    apps: appsByDistrict.get(d.id) ?? 0,
-  }))
-    .filter((row) => row.colleges > 0)
-    .sort((a, b) => b.apps - a.apps || b.colleges - a.colleges);
-
-  const maxCollegeCount = Math.max(1, ...districtRows.map((r) => r.colleges));
-
-  const phaseSteps: readonly Step[] = [
-    { number: 1, label: "Cycle setup", state: "done" },
-    { number: 2, label: "Application open", state: "active" },
-    { number: 3, label: "Scrutiny", state: "idle" },
-    { number: 4, label: "Merit & allotment", state: "idle" },
-    { number: 5, label: "Admission confirmed", state: "idle" },
-  ];
+  const maxDistrictEnrollment = Math.max(
+    ...DISTRICT_ENROLLMENT.map((d) => d.students),
+  );
+  const maxSubjectVacancy = Math.max(
+    ...SUBJECT_VACANCY.map((s) => s.filled + s.vacant),
+  );
+  const maxSchemeBudget = Math.max(
+    ...SCHEME_BUDGET.map((s) => s.allocatedCr),
+  );
 
   return (
     <PortalFrame
       active="overview"
-      title="Dashboard"
+      eyebrow="Directorate of Higher Education · Himachal Pradesh · FY 2026-27"
+      title="Higher Education Command Center"
       banner={{
-        title: "State overview · Cycle 2026-27",
-        eyebrow: "HPU Admission",
+        title: "Higher Education Command Center",
+        eyebrow: "FY 2026-27 · Live insights",
         actions: (
           <Badge tone="success" dot>
-            Application open · Day 3 of 10
+            System status · Online
           </Badge>
         ),
       }}
     >
-      <SummaryStrip
-        tiles={[
-          { label: "Active cycle", value: "2026-27", hint: "Live across 167 colleges" },
-          {
-            label: "Applications to date",
-            value: MOCK_APPLICATIONS.length.toString(),
-            tone: "brand",
-          },
-          { label: "Scrutiny in queue", value: pending.toString(), tone: "warning" },
-          {
-            label: "Seats configured",
-            value: totalSeats.toLocaleString("en-IN"),
-            tone: "success",
-          },
-        ]}
-      />
-
-      <section className="mt-6">
-        <Card padded={false}>
-          <div className="p-5 pb-3">
-            <CardTitle>Cycle phase</CardTitle>
-            <CardBody>
-              Toggle phases from <strong>State admin → Cycle setup</strong> (coming soon).
-            </CardBody>
-          </div>
-          <div className="px-5 pb-5 pt-2">
-            <Stepper steps={phaseSteps} />
-          </div>
-        </Card>
+      {/* ------- Section 1 · Executive KPIs ------- */}
+      <section aria-label="Executive KPIs" className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-5">
+        <KPICard
+          label="Total Colleges"
+          value={STATE_KPI.totalColleges}
+          icon="🏛"
+          tone="brand"
+          context={`${STATE_KPI.govtColleges} Govt · ${STATE_KPI.privateColleges} Pvt`}
+        />
+        <KPICard
+          label="Total Students"
+          value={STATE_KPI.totalStudents}
+          icon="👥"
+          tone="success"
+          trend={{ label: `${STATE_KPI.totalStudentsYoY} YoY growth`, direction: "up", tone: "success" }}
+        />
+        <KPICard
+          label="Gross Enrolment Ratio"
+          value={STATE_KPI.grossEnrolmentRatio}
+          icon="📈"
+          tone="success"
+          trend={{ label: `${STATE_KPI.grossEnrolmentDelta} vs last year`, direction: "up", tone: "success" }}
+        />
+        <KPICard
+          label="Faculty Vacancies"
+          value={STATE_KPI.facultyVacancyPct}
+          icon="🧑‍🏫"
+          tone="danger"
+          trend={{
+            label: `${STATE_KPI.facultyVacantPosts.toLocaleString("en-IN")} posts vacant`,
+            direction: "down",
+            tone: "danger",
+          }}
+        />
+        <KPICard
+          label="Fund Utilization"
+          value={STATE_KPI.fundUtilizationPct}
+          icon="💰"
+          tone="warning"
+          context={`₹${STATE_KPI.fundUtilizedCr} Cr of ₹${STATE_KPI.fundBudgetCr} Cr utilised YTD`}
+        />
       </section>
 
-      <section className="mt-6 grid gap-5 lg:grid-cols-3">
-        <div className="lg:col-span-2">
+      {/* ------- Section 2 + 3 · Core insights + Alerts ------- */}
+      <section
+        aria-label="Core insights and alerts"
+        className="mt-6 grid gap-5 lg:grid-cols-3"
+      >
+        <div className="space-y-5 lg:col-span-2">
+          {/* District-wise enrollment */}
           <Card padded={false}>
-            <div className="flex items-center justify-between gap-3 border-b border-[var(--color-border-subtle)] px-5 py-4">
+            <div className="flex flex-wrap items-start justify-between gap-3 border-b border-[var(--color-border-subtle)] px-5 py-4">
               <div>
-                <CardTitle>Applications by district</CardTitle>
+                <CardTitle>District-wise enrollment</CardTitle>
                 <CardBody className="mt-1">
-                  Live counts laid over the HPU-167 college footprint.
+                  Across all 12 Himachal districts. Bars coloured by density band.
                 </CardBody>
               </div>
-              <Link
-                href="/applications"
-                className="text-[var(--text-sm)] font-[var(--weight-semibold)] text-[var(--color-text-link)] hover:underline"
-              >
-                Open queue →
-              </Link>
+              <div className="flex flex-wrap items-center gap-3 text-[var(--text-xs)] text-[var(--color-text-secondary)]">
+                {(Object.keys(DENSITY_LABEL) as DistrictDensity[]).map((d) => (
+                  <span key={d} className="inline-flex items-center gap-2">
+                    <span
+                      aria-hidden="true"
+                      className={cn("h-2 w-3 rounded-sm", DENSITY_BAR[d])}
+                    />
+                    {DENSITY_LABEL[d]}
+                  </span>
+                ))}
+              </div>
             </div>
-            <TableShell className="rounded-none border-0 shadow-none">
-              <Table>
-                <THead>
-                  <TR>
-                    <TH className="w-48">District</TH>
-                    <TH>Coverage</TH>
-                    <TH className="w-28 text-right">Colleges</TH>
-                    <TH className="w-28 text-right">Apps</TH>
-                  </TR>
-                </THead>
-                <TBody>
-                  {districtRows.map((row) => (
-                    <TR key={row.id}>
-                      <TD className="font-[var(--weight-semibold)] text-[var(--color-text-primary)]">
-                        {row.name}
-                      </TD>
-                      <TD>
-                        <span
-                          className="block h-1.5 rounded-full bg-[var(--color-background-brand-subtle)]"
-                          aria-hidden="true"
-                        >
-                          <span
-                            className="block h-full rounded-full bg-[var(--color-interactive-primary)]"
-                            style={{ width: `${(row.colleges / maxCollegeCount) * 100}%` }}
-                          />
-                        </span>
-                      </TD>
-                      <TD className="text-right tabular-nums">
-                        {row.colleges}
-                      </TD>
-                      <TD className="text-right tabular-nums">
-                        <Badge tone={row.apps > 0 ? "brand" : "neutral"}>{row.apps}</Badge>
-                      </TD>
-                    </TR>
-                  ))}
-                </TBody>
-              </Table>
-            </TableShell>
+            <ul className="space-y-3 px-5 py-5">
+              {DISTRICT_ENROLLMENT.map((row) => {
+                const pct = (row.students / maxDistrictEnrollment) * 100;
+                return (
+                  <li
+                    key={row.districtId}
+                    className="grid grid-cols-[9rem_1fr_7rem] items-center gap-3 text-[var(--text-sm)]"
+                  >
+                    <span className="font-[var(--weight-medium)] text-[var(--color-text-primary)]">
+                      {row.districtName}
+                    </span>
+                    <span
+                      className="relative h-2.5 rounded-full bg-[var(--color-background-brand-subtle)]"
+                      aria-hidden="true"
+                    >
+                      <span
+                        className={cn(
+                          "absolute inset-y-0 left-0 rounded-full transition-[width] duration-300 ease-out",
+                          DENSITY_BAR[row.density],
+                        )}
+                        style={{ width: `${pct}%` }}
+                      />
+                    </span>
+                    <span className="flex items-baseline justify-end gap-2 tabular-nums">
+                      <span className="font-[var(--weight-semibold)] text-[var(--color-text-primary)]">
+                        {row.students.toLocaleString("en-IN")}
+                      </span>
+                      {row.note ? (
+                        <Badge tone="danger">!</Badge>
+                      ) : null}
+                    </span>
+                  </li>
+                );
+              })}
+            </ul>
+          </Card>
+
+          {/* Enrollment trend + gender donut */}
+          <div className="grid gap-5 lg:grid-cols-[3fr_2fr]">
+            <Card padded={false}>
+              <div className="flex items-start justify-between gap-3 border-b border-[var(--color-border-subtle)] px-5 py-4">
+                <div>
+                  <CardTitle>Enrollment analysis</CardTitle>
+                  <CardBody className="mt-1">
+                    Five-year trend, students in Lakhs. Overall plus gender split.
+                  </CardBody>
+                </div>
+                <Link
+                  href="#"
+                  className="text-[var(--text-xs)] font-[var(--weight-semibold)] text-[var(--color-text-link)] transition-colors duration-150 ease-out hover:underline underline-offset-4"
+                >
+                  View details →
+                </Link>
+              </div>
+              <div className="px-5 py-5">
+                <LineChart
+                  data={ENROLLMENT_TREND}
+                  series={[
+                    { label: "Female", color: "var(--color-chart-5)", data: ENROLLMENT_TREND_FEMALE },
+                    { label: "Male", color: "var(--color-chart-3)", data: ENROLLMENT_TREND_MALE },
+                  ]}
+                  yMin={0}
+                  yMax={2.5}
+                  yTickCount={5}
+                  yFormatter={(n) => `${n.toFixed(1)}L`}
+                  ariaLabel="Enrollment trend over five years, total plus female and male"
+                />
+                <div className="mt-3 flex flex-wrap items-center justify-center gap-4 text-[var(--text-xs)] text-[var(--color-text-secondary)]">
+                  <Legend color="var(--color-chart-1)" label="Total" />
+                  <Legend color="var(--color-chart-5)" label="Female" dashed />
+                  <Legend color="var(--color-chart-3)" label="Male" dashed />
+                </div>
+              </div>
+            </Card>
+
+            <Card padded={false}>
+              <div className="flex items-center justify-between gap-3 border-b border-[var(--color-border-subtle)] px-5 py-4">
+                <CardTitle>Gender parity</CardTitle>
+                <Badge tone="success">GPI · {GENDER_DISTRIBUTION.gpi}</Badge>
+              </div>
+              <div className="px-5 py-6">
+                <DonutChart
+                  segments={[
+                    { label: "Female", value: GENDER_DISTRIBUTION.female, color: "var(--color-chart-5)" },
+                    { label: "Male", value: GENDER_DISTRIBUTION.male, color: "var(--color-chart-1)" },
+                  ]}
+                  centerLabel="Total"
+                  centerValue="2.15 L"
+                  size={180}
+                  ariaLabel="Gender distribution donut chart"
+                />
+              </div>
+            </Card>
+          </div>
+        </div>
+
+        {/* Alerts rail */}
+        <aside aria-label="Actionable alerts" className="space-y-5">
+          <AlertsPanel
+            alerts={COMMAND_CENTER_ALERTS}
+            urgentCount={ALERT_SUMMARY.critical}
+            viewAllHref="#"
+          />
+          <Card>
+            <CardTitle>Alert health</CardTitle>
+            <CardBody className="mt-3 space-y-2 text-[var(--text-sm)]">
+              <AlertRow label="Critical" value={ALERT_SUMMARY.critical} tone="danger" />
+              <AlertRow label="Warnings" value={ALERT_SUMMARY.warnings} tone="warning" />
+              <AlertRow label="Pending reviews" value={ALERT_SUMMARY.pendingReviews} tone="brand" />
+              <AlertRow label="Resolved · this week" value={ALERT_SUMMARY.resolvedThisWeek} tone="success" />
+            </CardBody>
+          </Card>
+        </aside>
+      </section>
+
+      {/* ------- Section 4 · Student Lifecycle ------- */}
+      <section aria-label="Student lifecycle" className="mt-8">
+        <SectionHeading
+          eyebrow="Student lifecycle"
+          title="Are students arriving, staying, and moving on?"
+          href="#"
+        />
+        <div className="mt-4 grid gap-5 lg:grid-cols-[1fr_1fr_1fr_2fr]">
+          <KPICard
+            label="Total enrollment"
+            value={LIFECYCLE.totalEnrollment}
+            icon="👥"
+            tone="brand"
+            trend={{ label: `${LIFECYCLE.totalEnrollmentDelta} YoY`, direction: "up", tone: "success" }}
+          />
+          <KPICard
+            label="Dropout rate"
+            value={LIFECYCLE.dropoutRate}
+            icon="⚠"
+            tone="danger"
+            trend={{
+              label: `Above target ${LIFECYCLE.dropoutTarget}`,
+              direction: "up",
+              tone: "danger",
+            }}
+          />
+          <KPICard
+            label="Completion rate"
+            value={LIFECYCLE.completionRate}
+            icon="🎓"
+            tone="success"
+            context="On track"
+          />
+          <Card padded={false}>
+            <div className="flex items-center justify-between gap-3 border-b border-[var(--color-border-subtle)] px-5 py-4">
+              <CardTitle>High-risk cohorts</CardTitle>
+              <Badge tone="danger">{HIGH_RISK_COHORTS.length} flagged</Badge>
+            </div>
+            <ul className="divide-y divide-[var(--color-border-subtle)]">
+              {HIGH_RISK_COHORTS.map((row, i) => (
+                <li
+                  key={i}
+                  className="grid grid-cols-[1fr_1fr_auto_auto] items-center gap-3 px-5 py-3 text-[var(--text-sm)]"
+                >
+                  <span className="font-[var(--weight-semibold)] text-[var(--color-text-primary)]">
+                    {row.district}
+                  </span>
+                  <span className="text-[var(--color-text-secondary)]">{row.course}</span>
+                  <Badge tone={row.severity === "critical" ? "danger" : "warning"}>
+                    {row.riskRate} {row.severity === "critical" ? "critical" : "warning"}
+                  </Badge>
+                  <Link
+                    href="#"
+                    className="text-[var(--text-xs)] font-[var(--weight-semibold)] text-[var(--color-text-link)] hover:underline underline-offset-4"
+                  >
+                    View
+                  </Link>
+                </li>
+              ))}
+            </ul>
           </Card>
         </div>
 
-        <div className="space-y-5">
+        <Card className="mt-5">
+          <CardTitle>Rural vs urban split</CardTitle>
+          <CardBody className="mt-4 space-y-4">
+            <SplitBar label="Rural" value={RURAL_URBAN.rural} tone="success" />
+            <SplitBar label="Urban" value={RURAL_URBAN.urban} tone="brand" />
+            <p className="rounded-[var(--radius-md)] bg-[var(--color-background-brand-subtle)] p-3 text-[var(--text-xs)] text-[var(--color-text-primary)]">
+              <span aria-hidden="true" className="mr-1">ℹ</span>
+              {RURAL_URBAN.note}
+            </p>
+          </CardBody>
+        </Card>
+      </section>
+
+      {/* ------- Section 5 · Faculty & HR ------- */}
+      <section aria-label="Faculty and HR" className="mt-8">
+        <SectionHeading
+          eyebrow="Faculty & HR"
+          title="Where is teaching capacity thin?"
+          href="#"
+        />
+        <div className="mt-4 grid gap-5 lg:grid-cols-[2fr_3fr]">
+          <div className="grid grid-cols-2 gap-4">
+            <KPICard
+              label="Sanctioned posts"
+              value={FACULTY.sanctioned.toLocaleString("en-IN")}
+              icon="💼"
+              tone="brand"
+              context={`+${FACULTY.newPosts} new posts`}
+            />
+            <KPICard
+              label="Filled posts"
+              value={FACULTY.filled.toLocaleString("en-IN")}
+              icon="🧑‍🏫"
+              tone="success"
+              context={`${FACULTY.occupancyPct} occupancy`}
+            />
+            <KPICard
+              label="Vacancies"
+              value={FACULTY.vacant.toLocaleString("en-IN")}
+              icon="❗"
+              tone="danger"
+              trend={{ label: FACULTY.vacancyPct, direction: "down", tone: "danger" }}
+            />
+            <KPICard
+              label="Retiring · 24 mo"
+              value={FACULTY.retiring24Months.toLocaleString("en-IN")}
+              icon="⏳"
+              tone="warning"
+              context="Recruitment planning needed"
+            />
+          </div>
+
+          <Card padded={false}>
+            <div className="flex items-center justify-between gap-3 border-b border-[var(--color-border-subtle)] px-5 py-4">
+              <div>
+                <CardTitle>Subject-wise vacancy (top 6)</CardTitle>
+                <CardBody className="mt-1">Sanctioned posts · filled vs vacant.</CardBody>
+              </div>
+              <Link
+                href="#"
+                className="text-[var(--text-xs)] font-[var(--weight-semibold)] text-[var(--color-text-link)] hover:underline underline-offset-4"
+              >
+                View all →
+              </Link>
+            </div>
+            <ul className="space-y-3 px-5 py-5">
+              {SUBJECT_VACANCY.map((row) => {
+                const total = row.filled + row.vacant;
+                const filledPct = (row.filled / maxSubjectVacancy) * 100;
+                const vacantPct = (row.vacant / maxSubjectVacancy) * 100;
+                return (
+                  <li
+                    key={row.subject}
+                    className="grid grid-cols-[7rem_1fr_5rem] items-center gap-3 text-[var(--text-sm)]"
+                  >
+                    <span className="font-[var(--weight-medium)] text-[var(--color-text-primary)]">
+                      {row.subject}
+                    </span>
+                    <span
+                      className="relative h-2.5 rounded-full bg-[var(--color-background-brand-subtle)]"
+                      aria-hidden="true"
+                    >
+                      <span
+                        className="absolute inset-y-0 left-0 rounded-full bg-[var(--color-chart-1)] transition-[width] duration-300 ease-out"
+                        style={{ width: `${filledPct}%` }}
+                      />
+                      <span
+                        className="absolute inset-y-0 rounded-r-full bg-[var(--color-chart-4)] transition-[width] duration-300 ease-out"
+                        style={{ left: `${filledPct}%`, width: `${vacantPct}%` }}
+                      />
+                    </span>
+                    <span className="flex items-baseline justify-end gap-2 tabular-nums">
+                      <span className="font-[var(--weight-semibold)] text-[var(--color-text-primary)]">
+                        {total}
+                      </span>
+                      <Badge tone="danger">{row.vacant}</Badge>
+                    </span>
+                  </li>
+                );
+              })}
+              <li className="flex items-center gap-4 border-t border-[var(--color-border-subtle)] pt-3 text-[var(--text-xs)] text-[var(--color-text-secondary)]">
+                <Legend color="var(--color-chart-1)" label="Filled" />
+                <Legend color="var(--color-chart-4)" label="Vacant" />
+              </li>
+            </ul>
+          </Card>
+        </div>
+
+        <Card padded={false} className="mt-5">
+          <div className="flex items-center justify-between gap-3 border-b border-[var(--color-border-subtle)] px-5 py-4">
+            <CardTitle>Critical shortages by college</CardTitle>
+            <Badge tone="danger">Vacancy &gt; 30%</Badge>
+          </div>
+          <ul className="divide-y divide-[var(--color-border-subtle)]">
+            {CRITICAL_SHORTAGES.map((row) => (
+              <li
+                key={row.college}
+                className="grid grid-cols-[1fr_8rem_6rem_5rem_5rem] items-center gap-3 px-5 py-3 text-[var(--text-sm)]"
+              >
+                <span className="font-[var(--weight-semibold)] text-[var(--color-text-primary)]">
+                  {row.college}
+                </span>
+                <span className="text-[var(--color-text-secondary)]">{row.district}</span>
+                <span className="text-[var(--color-text-secondary)]">{row.vacantPosts} vacant</span>
+                <span className="text-[var(--color-text-primary)] tabular-nums">{row.vacancyPct}</span>
+                <Badge tone={row.severity === "critical" ? "danger" : "warning"}>
+                  {row.severity === "critical" ? "Critical" : "High"}
+                </Badge>
+              </li>
+            ))}
+          </ul>
+        </Card>
+      </section>
+
+      {/* ------- Section 6 · Financial ------- */}
+      <section aria-label="Financial" className="mt-8">
+        <SectionHeading
+          eyebrow="Financial monitoring"
+          title="Is the money moving on time?"
+          href="#"
+        />
+        <div className="mt-4 grid gap-5 lg:grid-cols-4">
+          <KPICard
+            label="Total budget"
+            value={`₹${FINANCE.totalBudgetCr} Cr`}
+            icon="💳"
+            tone="brand"
+            context="State + RUSA · allocation finalised"
+          />
+          <KPICard
+            label="Utilisation YTD"
+            value={FINANCE.utilizationPct}
+            icon="📊"
+            tone="success"
+            trend={{
+              label: `On track (target ${FINANCE.utilizationTarget})`,
+              direction: "up",
+              tone: "success",
+            }}
+          />
+          <KPICard
+            label="Pending UCs"
+            value={FINANCE.pendingUCs}
+            icon="📄"
+            tone="danger"
+            context="Action required"
+          />
+          <KPICard
+            label="Available balance"
+            value={`₹${FINANCE.availableBalanceCr} Cr`}
+            icon="🏦"
+            tone="warning"
+            context="Remaining for Q4"
+          />
+        </div>
+
+        <div className="mt-5 grid gap-5 lg:grid-cols-[3fr_2fr]">
+          <Card padded={false}>
+            <div className="flex items-center justify-between gap-3 border-b border-[var(--color-border-subtle)] px-5 py-4">
+              <div>
+                <CardTitle>Budget vs utilisation · by scheme</CardTitle>
+                <CardBody className="mt-1">Figures in ₹ Crores.</CardBody>
+              </div>
+              <Link
+                href="#"
+                className="text-[var(--text-xs)] font-[var(--weight-semibold)] text-[var(--color-text-link)] hover:underline underline-offset-4"
+              >
+                Finance dashboard →
+              </Link>
+            </div>
+            <ul className="space-y-3 px-5 py-5">
+              {SCHEME_BUDGET.map((row) => {
+                const utilisedPct = (row.utilizedCr / maxSchemeBudget) * 100;
+                const allocatedPct = (row.allocatedCr / maxSchemeBudget) * 100;
+                const ratio = Math.round((row.utilizedCr / row.allocatedCr) * 100);
+                return (
+                  <li
+                    key={row.scheme}
+                    className="grid grid-cols-[9rem_1fr_6rem] items-center gap-3 text-[var(--text-sm)]"
+                  >
+                    <span className="font-[var(--weight-medium)] text-[var(--color-text-primary)]">
+                      {row.scheme}
+                    </span>
+                    <span className="relative h-3 rounded-full bg-[var(--color-background-muted)]" aria-hidden="true">
+                      <span
+                        className="absolute inset-y-0 left-0 rounded-full bg-[var(--color-chart-grid)] transition-[width] duration-300 ease-out"
+                        style={{ width: `${allocatedPct}%` }}
+                      />
+                      <span
+                        className="absolute inset-y-0 left-0 rounded-full bg-[var(--color-chart-1)] transition-[width] duration-300 ease-out"
+                        style={{ width: `${utilisedPct}%` }}
+                      />
+                    </span>
+                    <span className="flex items-baseline justify-end gap-2 tabular-nums">
+                      <span className="font-[var(--weight-semibold)] text-[var(--color-text-primary)]">
+                        {ratio}%
+                      </span>
+                      <span className="text-[var(--text-xs)] text-[var(--color-text-tertiary)]">
+                        ₹{row.utilizedCr}/{row.allocatedCr}
+                      </span>
+                    </span>
+                  </li>
+                );
+              })}
+              <li className="flex items-center gap-4 border-t border-[var(--color-border-subtle)] pt-3 text-[var(--text-xs)] text-[var(--color-text-secondary)]">
+                <Legend color="var(--color-chart-grid)" label="Allocated" />
+                <Legend color="var(--color-chart-1)" label="Utilised" />
+              </li>
+            </ul>
+          </Card>
+
           <Card>
-            <CardTitle>Scrutiny health</CardTitle>
-            <CardBody className="mt-3 space-y-2">
-              <div className="flex items-center justify-between">
-                <span>Pending</span>
-                <Badge tone="warning">{pending}</Badge>
-              </div>
-              <div className="flex items-center justify-between">
-                <span>Discrepancies</span>
-                <Badge tone="danger">{discrepancy}</Badge>
-              </div>
-              <div className="flex items-center justify-between">
-                <span>Verified</span>
-                <Badge tone="success">{verified}</Badge>
-              </div>
+            <CardTitle>Fund source distribution</CardTitle>
+            <CardBody className="mt-4 space-y-3">
+              {FINANCE.fundSources.map((src) => (
+                <div
+                  key={src.label}
+                  className="grid grid-cols-[8rem_1fr_3rem] items-center gap-3 text-[var(--text-sm)]"
+                >
+                  <span className="text-[var(--color-text-primary)]">{src.label}</span>
+                  <span className="relative h-2 rounded-full bg-[var(--color-background-brand-subtle)]">
+                    <span
+                      className="absolute inset-y-0 left-0 rounded-full bg-[var(--color-chart-1)] transition-[width] duration-300 ease-out"
+                      style={{ width: `${src.share}%` }}
+                    />
+                  </span>
+                  <span className="text-right tabular-nums font-[var(--weight-semibold)] text-[var(--color-text-primary)]">
+                    {src.share}%
+                  </span>
+                </div>
+              ))}
             </CardBody>
           </Card>
+        </div>
+      </section>
+
+      {/* ------- Section 7 · Infrastructure ------- */}
+      <section aria-label="Infrastructure" className="mt-8">
+        <SectionHeading
+          eyebrow="Infrastructure & assets"
+          title="Where does capacity need capex?"
+          href="#"
+        />
+        <div className="mt-4 grid gap-5 lg:grid-cols-4">
+          <KPICard
+            label="Student–classroom ratio"
+            value={INFRA.classroomRatio}
+            icon="🏫"
+            tone="danger"
+            trend={{
+              label: `Above target (${INFRA.classroomRatioTarget})`,
+              direction: "up",
+              tone: "danger",
+            }}
+          />
+          <KPICard
+            label="Smart classrooms"
+            value={INFRA.smartClassroomsInstalled.toLocaleString("en-IN")}
+            icon="💻"
+            tone="brand"
+            context={`Target · ${INFRA.smartClassroomsTarget.toLocaleString("en-IN")} by 2027`}
+          />
+          <KPICard
+            label="ICT enabled"
+            value={INFRA.ictEnabledPct}
+            icon="📡"
+            tone="success"
+            context="Colleges connected"
+          />
+          <KPICard
+            label="Lab utilisation"
+            value={INFRA.labUtilizationPct}
+            icon="🧪"
+            tone="warning"
+            context="Average weekly usage"
+          />
+        </div>
+
+        <div className="mt-5 grid gap-5 lg:grid-cols-[2fr_1fr]">
+          <Card padded={false}>
+            <div className="flex items-center justify-between gap-3 border-b border-[var(--color-border-subtle)] px-5 py-4">
+              <div>
+                <CardTitle>Priority CAPEX requirements</CardTitle>
+                <CardBody className="mt-1">Top-priority asset requirements pending funding or procurement.</CardBody>
+              </div>
+              <Badge tone="neutral">{CAPEX_REQUIREMENTS.length} items</Badge>
+            </div>
+            <ul className="divide-y divide-[var(--color-border-subtle)]">
+              {CAPEX_REQUIREMENTS.map((row) => (
+                <li
+                  key={row.asset}
+                  className="grid grid-cols-[1.5fr_1fr_1fr_6rem_1fr] items-center gap-3 px-5 py-3 text-[var(--text-sm)]"
+                >
+                  <span className="font-[var(--weight-semibold)] text-[var(--color-text-primary)]">
+                    {row.asset}
+                  </span>
+                  <span className="text-[var(--color-text-secondary)]">{row.quantity}</span>
+                  <span className="text-[var(--color-text-primary)] tabular-nums">{row.estCostCr}</span>
+                  <Badge tone={row.priority === "High" ? "danger" : "warning"}>
+                    {row.priority}
+                  </Badge>
+                  <span className="text-[var(--text-xs)] text-[var(--color-text-secondary)]">{row.status}</span>
+                </li>
+              ))}
+            </ul>
+          </Card>
+
           <Card>
-            <CardTitle>Next actions</CardTitle>
-            <CardBody className="mt-3">
-              Scrutiny and discrepancy workflows are live on the{" "}
-              <Link
-                href="/applications"
-                className="font-[var(--weight-semibold)] text-[var(--color-text-link)] hover:underline"
-              >
-                Applications queue
-              </Link>
-              .
+            <CardTitle>ICT infrastructure</CardTitle>
+            <CardBody className="mt-4 space-y-4">
+              <SplitBar label="Wi-Fi campus" value={INFRA.wifiCampusPct} tone="brand" />
+              <SplitBar label="Comp. labs (&gt;20 PCs)" value={INFRA.computerLabsPct} tone="success" />
+              <SplitBar label="Power backup" value={INFRA.powerBackupPct} tone="danger" />
+              <p className="rounded-[var(--radius-md)] bg-[var(--color-status-danger-bg)] p-3 text-[var(--text-xs)] text-[var(--color-status-danger-fg)]">
+                <span aria-hidden="true" className="mr-1">⚠</span>
+                Critical gap in remote areas. Prioritise Lahaul &amp; Spiti, Kinnaur.
+              </p>
             </CardBody>
           </Card>
         </div>
       </section>
     </PortalFrame>
+  );
+}
+
+// ---------- Small presentational helpers ----------
+
+function SectionHeading({
+  eyebrow,
+  title,
+  href,
+}: {
+  eyebrow: string;
+  title: string;
+  href?: string;
+}) {
+  return (
+    <div className="flex flex-wrap items-end justify-between gap-3 border-b border-[var(--color-border-subtle)] pb-3">
+      <div className="min-w-0">
+        <p className="text-[var(--text-xxs)] font-[var(--weight-semibold)] uppercase tracking-[var(--tracking-wide)] text-[var(--color-text-tertiary)]">
+          {eyebrow}
+        </p>
+        <h2 className="mt-1 text-[var(--text-xl)] font-[var(--weight-bold)] tracking-[var(--tracking-tight)] text-[var(--color-text-primary)]">
+          {title}
+        </h2>
+      </div>
+      {href ? (
+        <Link
+          href={href}
+          className="text-[var(--text-xs)] font-[var(--weight-semibold)] text-[var(--color-text-link)] transition-colors duration-150 ease-out hover:underline underline-offset-4"
+        >
+          Open full view →
+        </Link>
+      ) : null}
+    </div>
+  );
+}
+
+function Legend({ color, label, dashed }: { color: string; label: string; dashed?: boolean }) {
+  return (
+    <span className="inline-flex items-center gap-2">
+      <span
+        aria-hidden="true"
+        className={cn("inline-block h-0.5 w-5 rounded-full", dashed && "border-t-2 border-dashed")}
+        style={dashed ? { borderColor: color, height: 0 } : { backgroundColor: color }}
+      />
+      <span className="text-[var(--color-text-secondary)]">{label}</span>
+    </span>
+  );
+}
+
+function AlertRow({
+  label,
+  value,
+  tone,
+}: {
+  label: string;
+  value: number;
+  tone: "brand" | "success" | "warning" | "danger";
+}) {
+  return (
+    <div className="flex items-center justify-between">
+      <span className="text-[var(--color-text-secondary)]">{label}</span>
+      <Badge tone={tone}>{value}</Badge>
+    </div>
+  );
+}
+
+function SplitBar({
+  label,
+  value,
+  tone,
+}: {
+  label: string;
+  value: number;
+  tone: "brand" | "success" | "warning" | "danger";
+}) {
+  const barTone: Record<typeof tone, string> = {
+    brand: "bg-[var(--color-chart-1)]",
+    success: "bg-[var(--color-chart-2)]",
+    warning: "bg-[var(--color-chart-3)]",
+    danger: "bg-[var(--color-chart-4)]",
+  };
+  return (
+    <div>
+      <div className="flex items-center justify-between text-[var(--text-sm)]">
+        <span className="font-[var(--weight-medium)] text-[var(--color-text-primary)]">
+          {label}
+        </span>
+        <span className="tabular-nums font-[var(--weight-semibold)] text-[var(--color-text-primary)]">
+          {value}%
+        </span>
+      </div>
+      <div className="mt-2 h-2 rounded-full bg-[var(--color-background-brand-subtle)]">
+        <div
+          className={cn("h-full rounded-full transition-[width] duration-300 ease-out", barTone[tone])}
+          style={{ width: `${value}%` }}
+        />
+      </div>
+    </div>
   );
 }
