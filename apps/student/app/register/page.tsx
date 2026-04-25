@@ -1,22 +1,33 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useState, type FormEvent } from "react";
 import { Checkbox } from "@hp-mis/ui";
 import { PageShell } from "../_components/page-shell";
 import { Field } from "../_components/field";
 import { PrimaryButton } from "../_components/primary-button";
 import { useLocale } from "../_components/locale-provider";
-import { useProfile } from "../_components/profile/profile-provider";
 
 type Values = { email: string; mobile: string; password: string; confirmPassword: string };
 type Errors = Partial<Record<keyof Values | "declaration", string>>;
 
+/**
+ * localStorage keys that get reset when a brand-new user registers.
+ * Clearing them ensures the dashboard starts the journey at "Continue
+ * profile" — without this the dashboard inherits demo state (forced
+ * stage, prior submitted applications, allocations) from an earlier
+ * session and incorrectly shows the new user as already at "submitted".
+ */
+const RESET_KEYS = [
+  "hp-mis:applications",
+  "hp-mis:student-demo-stage",
+  "hp-mis:allocation",
+  "hp-mis:merit",
+  "hp-mis:scrutiny",
+] as const;
+
 export default function RegisterPage() {
-  const router = useRouter();
   const { t } = useLocale();
-  const { update: updateProfile } = useProfile();
   const [values, setValues] = useState<Values>({
     email: "",
     mobile: "",
@@ -53,13 +64,28 @@ export default function RegisterPage() {
     const next = validate();
     setErrors(next);
     if (Object.keys(next).length > 0) return;
-    // Registration is the source of truth for email + mobile. Sync both into
-    // the profile draft now so every downstream screen (profile, review,
-    // submission payload) can read them without asking the user to re-enter.
-    updateProfile("email", values.email.trim());
-    updateProfile("mobile", values.mobile.replace(/\s+/g, ""));
-    // No backend yet — move to dashboard shell for the demo.
-    router.push("/dashboard");
+    // Reset persisted student state so the brand-new user starts at
+    // "Continue profile" instead of inheriting an old demo session's
+    // submitted / allotted state. We then seed a fresh profile draft
+    // carrying just the email + mobile entered here so the journey has
+    // a real starting point. A full-page navigation (vs router.push)
+    // re-hydrates every provider from the cleared storage in one step.
+    try {
+      for (const key of RESET_KEYS) {
+        window.localStorage.removeItem(key);
+      }
+      window.localStorage.setItem(
+        "hp-mis:profile-draft",
+        JSON.stringify({
+          email: values.email.trim(),
+          mobile: values.mobile.replace(/\s+/g, ""),
+          claims: [],
+        }),
+      );
+    } catch {
+      /* ignore quota / private-mode errors — defaults take over */
+    }
+    window.location.href = "/dashboard";
   }
 
   return (

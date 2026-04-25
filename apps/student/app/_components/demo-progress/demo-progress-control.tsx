@@ -3,11 +3,7 @@
 import { useCallback, useMemo, useState } from "react";
 import { Badge, Button, Modal, useToast } from "@hp-mis/ui";
 import type { StatusStep } from "../status-tracker";
-import {
-  DEMO_ORDER,
-  useDemoProgress,
-  type DemoStage,
-} from "./demo-progress-provider";
+import { useDemoProgress, type DemoStage } from "./demo-progress-provider";
 
 interface Props {
   /** Current effective StatusStep shown by the tracker (real or forced). */
@@ -93,23 +89,18 @@ const TRANSITIONS: Record<TransitionKey, TransitionCopy> = {
 };
 
 /**
- * Operator control center for demo progression.
+ * Operator demo progression panel — sits beside the student status
+ * tracker on the dashboard. Marked visually (dashed border, "Demo" tag)
+ * so it reads as an operator aid, not a student affordance.
  *
- * Lives beside the student status tracker on the dashboard. Visually
- * muted (dashed border, "Demo" tag) so it reads as an operator aid
- * rather than something a student would interact with.
+ * Two controls only:
+ *   - Advance (primary, blue) — walks to the next stage. Toast for
+ *     soft transitions, modal for the bigger ones (merit / allotment /
+ *     admission). Setting any stage flips the override on automatically.
+ *   - Reset (link) — drops back to the real flow with one click.
  *
- * Capabilities:
- *   - Real flow ⇄ Demo override toggle (left segmented control)
- *   - Current + Next stage display
- *   - Advance to the next stage (toast for soft transitions, modal for
- *     bigger ones like merit publication / allotment / admission)
- *   - Jump directly to any stage via a select control
- *   - Reset back to the real flow with one click (no destructive
- *     confirmation — demo state is fully recoverable on next advance)
- *
- * The override is a pure UI overlay — real providers are never written
- * to from this component.
+ * The override is read-only — real providers are never written to from
+ * this component.
  */
 export function DemoProgressControl({ currentStep }: Props) {
   const { stage, nextStageAfter, setStage, reset } = useDemoProgress();
@@ -145,31 +136,6 @@ export function DemoProgressControl({ currentStep }: Props) {
     toast(copy.title, { tone: copy.tone ?? "info" });
   }, [nextStage, setStage, toast]);
 
-  const handleJump = useCallback(
-    (target: DemoStage) => {
-      const copy = TRANSITIONS[target];
-      // Jumps skip the modal confirmation — the operator already
-      // selected the destination intentionally. We still surface the
-      // follow-up toast so the dashboard feels reactive.
-      setStage(target);
-      if (copy.followUpToast) {
-        toast(copy.followUpToast.message, { tone: copy.followUpToast.tone });
-      } else {
-        toast(`Jumped to ${STAGE_LABEL[target]}`, { tone: "info" });
-      }
-    },
-    [setStage, toast],
-  );
-
-  const handleEnableDemo = useCallback(() => {
-    // First-time enable — start at the natural next stage from the
-    // student's real progress so the demo picks up where the real
-    // flow left off.
-    const target = nextStage ?? "submitted";
-    setStage(target);
-    toast(`Demo override enabled — ${STAGE_LABEL[target]}`, { tone: "info" });
-  }, [nextStage, setStage, toast]);
-
   const handleReset = useCallback(() => {
     reset();
     toast("Reset to real flow.", { tone: "success" });
@@ -193,7 +159,7 @@ export function DemoProgressControl({ currentStep }: Props) {
         aria-label="Demo progression controls"
         className="mt-4 rounded-[var(--radius-md)] border border-dashed border-[var(--color-border-strong)] bg-[var(--color-background-subtle)] p-4"
       >
-        <header className="flex flex-wrap items-center justify-between gap-3">
+        <header className="flex items-center justify-between gap-3">
           <div className="flex items-center gap-2">
             <span
               aria-hidden="true"
@@ -202,47 +168,13 @@ export function DemoProgressControl({ currentStep }: Props) {
               Demo
             </span>
             <h4 className="text-[var(--text-xs)] font-[var(--weight-semibold)] uppercase tracking-[var(--tracking-wide)] text-[var(--color-text-primary)]">
-              Operator control
+              Operator progression
             </h4>
           </div>
           {isOverriding ? (
             <Badge tone="warning">Override active</Badge>
-          ) : (
-            <Badge tone="neutral">Real flow</Badge>
-          )}
+          ) : null}
         </header>
-
-        {/* Real flow ⇄ Demo override segmented toggle */}
-        <div
-          role="group"
-          aria-label="Render mode"
-          className="mt-3 inline-flex rounded-[var(--radius-pill)] bg-[var(--color-background-muted)] p-0.5"
-        >
-          <button
-            type="button"
-            onClick={isOverriding ? handleReset : undefined}
-            aria-pressed={!isOverriding}
-            className={
-              !isOverriding
-                ? "inline-flex h-7 items-center rounded-[var(--radius-pill)] bg-[var(--color-surface)] px-3 text-[var(--text-2xs)] font-[var(--weight-semibold)] text-[var(--color-text-primary)] shadow-[var(--shadow-sm)]"
-                : "inline-flex h-7 items-center rounded-[var(--radius-pill)] px-3 text-[var(--text-2xs)] font-[var(--weight-medium)] text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]"
-            }
-          >
-            Real flow
-          </button>
-          <button
-            type="button"
-            onClick={!isOverriding ? handleEnableDemo : undefined}
-            aria-pressed={isOverriding}
-            className={
-              isOverriding
-                ? "inline-flex h-7 items-center rounded-[var(--radius-pill)] bg-[var(--color-surface)] px-3 text-[var(--text-2xs)] font-[var(--weight-semibold)] text-[var(--color-text-brand)] shadow-[var(--shadow-sm)]"
-                : "inline-flex h-7 items-center rounded-[var(--radius-pill)] px-3 text-[var(--text-2xs)] font-[var(--weight-medium)] text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]"
-            }
-          >
-            Demo override
-          </button>
-        </div>
 
         <dl className="mt-3 grid grid-cols-2 gap-3 text-[var(--text-xs)]">
           <div>
@@ -263,49 +195,17 @@ export function DemoProgressControl({ currentStep }: Props) {
           </div>
         </dl>
 
-        <div className="mt-4 flex flex-wrap items-center gap-2">
+        <div className="mt-4 flex flex-wrap items-center gap-3">
           {isComplete ? (
             <Button variant="secondary" size="sm" disabled>
               <span aria-hidden="true">✓</span> Journey complete
             </Button>
           ) : (
-            <Button
-              variant="primary"
-              size="sm"
-              onClick={handleAdvance}
-              disabled={!isOverriding && !nextStage}
-            >
-              {isOverriding ? "Advance" : "Start"} →{" "}
-              {nextStage ? STAGE_LABEL[nextStage] : "next stage"}
+            <Button variant="primary" size="sm" onClick={handleAdvance}>
+              Advance to {nextStage ? STAGE_LABEL[nextStage] : "next stage"}
+              <span aria-hidden="true">→</span>
             </Button>
           )}
-
-          {/* Jump-to-stage select. Only enabled while overriding so the
-              real flow's natural progression is preserved when the operator
-              is not actively curating. */}
-          <label className="inline-flex items-center gap-1.5 text-[var(--text-2xs)] font-[var(--weight-semibold)] uppercase tracking-[var(--tracking-wide)] text-[var(--color-text-tertiary)]">
-            <span className="sr-only md:not-sr-only">Jump to</span>
-            <select
-              aria-label="Jump to stage"
-              disabled={!isOverriding}
-              value={stage ?? ""}
-              onChange={(event) => {
-                const next = event.target.value as DemoStage | "";
-                if (next) handleJump(next);
-              }}
-              className="h-[var(--button-height-sm)] rounded-[var(--radius-pill)] border border-[var(--color-border-strong)] bg-[var(--color-surface)] px-3 text-[var(--text-xs)] font-[var(--weight-medium)] normal-case tracking-normal text-[var(--color-text-primary)] disabled:cursor-not-allowed disabled:opacity-60 focus-visible:outline-none focus-visible:shadow-[var(--focus-ring)]"
-            >
-              <option value="" disabled>
-                Pick a stage
-              </option>
-              {DEMO_ORDER.map((value) => (
-                <option key={value} value={value}>
-                  {STAGE_LABEL[value]}
-                </option>
-              ))}
-            </select>
-          </label>
-
           {isOverriding ? (
             <button
               type="button"
